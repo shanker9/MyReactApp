@@ -1,0 +1,34 @@
+    .container {
+        align-items : center;
+    }
+    .header {
+        font-size: 25;
+        color: #c00000;
+    }
+    .button {
+        flex: 1;
+        flex-direction: row;
+        height: 2em;
+        margin-bottom: 1em;
+        margin-right: 1em;
+        background-color: #F3EEEE
+    }
+    .td {
+        border: 1px solid black;
+        width: 100em;
+        flex-direction: row;
+        font-size: 100%;
+        text-align: center;
+    }
+    .table {
+        border-collapse: collapse;
+    }
+    .tableDiv {
+        height: 50em;
+        overflow: auto;
+        border: 1px solid grey;
+    }
+
+    .dummyStyle {
+        color: red;
+    }

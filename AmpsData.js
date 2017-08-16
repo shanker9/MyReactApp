@@ -1,39 +1,57 @@
 import React from 'react';
 import * as Amps from 'amps';
 
+var ampsServerUri = "ws://192.168.1.9:9008/amps/json";
+var ampsClient = new Amps.Client('shankersClient'); 
 export default class AmpsData {
-
-
+ 
     connectAndPublish() {
-        let ampsServerUri = 'tcp://54.165.50.179:9007/amps/json';
-        let ampsClient = new Amps.Client('shankersClient');
-
         ampsClient.connect(ampsServerUri)
             .then(() => {
-                ampsClient.publish('newsUpdate', { localWeather: 'Sunny day in Hyd', globalWeather: 'chilled in US' })
-                ampsClient.publish('newsUpdate', { localWeather: 'Chilled in Hyd', globalWeather: 'chilled in US' })
-                ampsClient.publish('newsUpdate', { localWeather: 'Its heavy down pouring', globalWeather: 'heavy snowfall in US' })
-                ampsClient.publish('newsUpdate', { localWeather: 'Hot and humid', globalWeather: 'Sunny day in US' })
+                console.log("Connection successful");
+                console.log("AMPS Version "+ ampsClient.Client);
+
+                for(var i=0;i<10;i++){
+                ampsClient.publish('Price', { localWeather: 'Sunny day in Hyd '+ i, globalWeather: 'chilled in US' })
+                ampsClient.publish('Price', { localWeather: 'Chilled in Hyd' + i, globalWeather: 'chilled in US' })
+                ampsClient.publish('Price', { localWeather: 'Its heavy down pouring' + i, globalWeather: 'heavy snowfall in US' })
+                ampsClient.publish('Price', { localWeather: 'Hot and humid' + i, globalWeather: 'Sunny day in US' })                
+                }
 
                 ampsClient.disconnect();
                 console.log('Published Data successfully!');
-                return true;
             })
             .catch((error) => {
+                console.log('Error Occured. See details below...');
                 console.log(error);
             })
-            
-    }
+        }
 
-    connectAndSubscribe() {
-        let ampsServerUri = 'tcp://54.165.50.179:9007/amps/json';
-        let ampsClient = new Amps.Client('shankersClient');
-
+    connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback) {
+        var subscriberId;
         ampsClient.connect(ampsServerUri)
             .then(() => {
-                ampsClient.subscribe((message) => {
-                    console.log(message);
-                })
+                return ampsClient.subscribe((message) => {
+                    // console.log(message.data);
+                    // console.log(message.data.customer);
+                    dataUpdateCallback(message.data);
+                },'Price')
+            }).then((subId)=>{
+                console.log("Subscription ID: "+ subId);
+                subscriberInfoCallback(subId);
             })
     }
+
+    testData(callback){
+        let i=0;
+        let dataFire = setInterval(()=>{
+            // for(var i=0;i<100;i++){
+                if(i==300){
+                    clearInterval(dataFire);
+                }
+              callback({ "id": i++, "name": "Shaz", "age": Math.floor((Math.random() * 50) + 1) });
+            // }
+        },100);
+    }
+
 }
