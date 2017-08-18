@@ -12,7 +12,7 @@ class TableView extends React.Component {
             viewableData: []
         }
         this.printNewData = this.printNewData.bind(this);
-        this.newDataForScroll = this.newDataForScroll.bind(this);
+        this.newDataForScroll = this.sliceLoadableData.bind(this);
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -41,15 +41,16 @@ class TableView extends React.Component {
     }
 
     updateTableView(updatedData) {
-        // this.state.data.push(updatedData);
         console.log('NEW DATA: \n' + this.printNewData(updatedData));
-        // this.setState({ data: this.state.data.concat(updatedData) }, () => {
-        //     this.props.recordsHandler(this.state.data.length);
-        // });
-            this.props.scrollHandler();
+  
+        if(this.state.data.length<=50){
+            this.props.scrollStateHandler();
             this.setState({ data: this.state.data.concat(updatedData) }, () => {
                 this.props.recordsHandler(this.state.data.length,this.state.viewableData.length);
             });
+        }else{
+            this.state.data = this.state.data.concat(updatedData);
+        }
         // this.state.data.push(updatedData);
     }
 
@@ -57,15 +58,15 @@ class TableView extends React.Component {
         return 'Customer: ' + data.customer + ' swapId: ' + data.swapId + ' interest: ' + data.interest;
     }
 
-    newDataForScroll(initialIndex,rowCount) {
-        let tempArr = Array.from(this.state.data);
-        this.state.viewableData = tempArr.slice(initialIndex,rowCount);
-        console.log("VIEWABLE DATA",this.state.viewableData.length);
+    sliceLoadableData(initialIndex,rowCount) {
+        // let tempArr = Array.from(this.state.data);
+        this.state.viewableData = this.state.data.slice(initialIndex,rowCount);
+        this.props.recordsHandler(this.state.data.length,this.state.viewableData.length);
     }
 
     render() {
-        let tempArr = Array.from(this.state.viewableData);
-        let viewableRows = tempArr.slice(0);
+        // let tempArr = Array.from(this.state.viewableData);
+        // let viewableRows = tempArr.slice(0);
         // console.log('Viewable Data Count:' + viewableRows);
         return (
             <table className={styles.table}>

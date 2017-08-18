@@ -19,8 +19,9 @@ class App extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.updateTable = this.updateTable.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+        this.updateLoadData = this.updateLoadData.bind(this);
         this.refreshChildTable = this.refreshChildTable.bind(this);
-        this.child = undefined;
+        this.addScrollOffset = true;
     }
 
     componentDidMount(){
@@ -62,10 +63,15 @@ class App extends React.Component {
     }
 
     handleScroll(){
-        this.lazyLoadData();
+        let node = document.getElementById('scrollableDiv');
+        if(this.addScrollOffset){
+            node.scrollTop = node.scrollTop + Math.floor(node.scrollHeight/15);
+        }
+        this.addScrollOffset = !this.addScrollOffset;
+        this.updateLoadData();
     }
 
-    lazyLoadData(){
+    updateLoadData(){
         let node = document.getElementById('scrollableDiv');
         console.log('ScrollTop Value: ' + node.scrollTop);
         let scrolledDistance = node.scrollTop;
@@ -74,11 +80,11 @@ class App extends React.Component {
         let lastRecord = this.state.lastRow < 50 ? 50 : this.state.lastRow;
         
         if(node.scrollTop < Math.floor(node.scrollHeight/2)){
-            this.child.newDataForScroll(0,lastRecord);
+            this.child.sliceLoadableData(0,lastRecord);
             console.log('Fetching records from 0 to 30');
         }
         else {
-            this.child.newDataForScroll(0,lastRecord + 20);
+            this.child.sliceLoadableData(0,lastRecord + 20);
             console.log('Fetching records from 0 to' + (lastRecord+20));
             // this.state.lastRow = lastRecord + 20;
             // this.state.loadedRows = this.state.lastRow;
@@ -115,11 +121,11 @@ class App extends React.Component {
                 <button className={styles.button} onClick={this.handleClick.bind(this)}>Subscribe</button>
                 <label>Total Records: {this.state.totalRecords}</label>
                 <label>  Subscriber Id : {this.state.subscriberId}</label>
-                {/* <label> Loaded Records: {this.state.loadedRows}</label> */}
+                 <label> Loaded Records: {this.state.loadedRows}</label> 
                 {/* <button onClick={this.refreshChildTable.bind(this)}>setRefreshInterval</button>   */}
                 <div id="scrollableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
                         <TableView onRef={ref => (this.child = ref)} recordsHandler={this.udpateTotalRecords.bind(this)}
-                            scrollHandler = {this.handleScroll} rowIndexHandler={this.updateLastRow.bind(this)}/>
+                            scrollStateHandler = {this.updateLoadData} rowIndexHandler={this.updateLastRow.bind(this)}/>
                 </div>
 
 

@@ -35,6 +35,7 @@ export default class AmpsData {
                     // console.log(message.data);
                     // console.log(message.data.customer);
                     dataUpdateCallback(message.data);
+                    // console.log(Date.now());
                 },'Price')
             }).then((subId)=>{
                 console.log("Subscription ID: "+ subId);
