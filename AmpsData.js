@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-var ampsServerUri = "ws://192.168.1.9:9008/amps/json";
+var ampsServerUri = "ws://10.0.0.19:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient'); 
 export default class AmpsData {
  
@@ -46,12 +46,12 @@ export default class AmpsData {
         let i=0;
         let dataFire = setInterval(()=>{
             // for(var i=0;i<100;i++){
-                if(i==300){
+                if(i==50){
                     clearInterval(dataFire);
                 }
               callback({ "id": i++, "name": "Shaz", "age": Math.floor((Math.random() * 50) + 1) });
             // }
-        },100);
+        },1/100000);
     }
 
 }

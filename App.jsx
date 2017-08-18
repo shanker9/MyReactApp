@@ -11,43 +11,101 @@ class App extends React.Component {
 
         this.state = {
             data: [],
+            subscriberId: '',
             totalRecords: 0,
-            subscriberId : ''
+            lastRow : 0,
+            loadedRows: 0
         }
         this.handleClick = this.handleClick.bind(this);
         this.updateTable = this.updateTable.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.refreshChildTable = this.refreshChildTable.bind(this);
         this.child = undefined;
     }
 
-    updateTable(updateData,subId) {
+    componentDidMount(){
+        this.state.lastRow = 30;
+    }
+
+    updateTable(updateData, subId) {
         if (typeof updateData == 'object') {
-            this.state.data.unshift(updateData); // pushing the data without any update logic
+            // this.state.data.unshift(updateData); // pushing the data without any update logic
             // let latestData = this.state.data;
             let latestRecords = this.state.totalRecords + 1;
             console.log('total records: ' + latestRecords);
-            this.setState({ data: this.state.data.unshift(updateData), totalRecords: latestRecords, subscriberId : '  Subscriber Id: '+ subId })
+            this.setState({ data: this.state.data.unshift(updateData), totalRecords: latestRecords, subscriberId: '  Subscriber Id: ' + subId })
         }
     }
 
-    updateSubId(subId){
-        this.setState({subscriberId : subId})
+    updateSubId(subId) {
+        this.setState({ subscriberId: subId })
+    }
+
+    udpateTotalRecords(totalRecordsCount,loadedRecordsCount) {
+        // this.setState({ 
+            this.state.totalRecords = totalRecordsCount;
+            this.state.loadedRows = loadedRecordsCount;
+            this.state.lastRow = loadedRecordsCount;
+        // });
     }
 
     handleClick() {
         let controller = new AmpsClientData();
-        // controller.connectAndSubscribe(this.child.updateTableView.bind(this.child),this.updateSubId.bind(this));
-        controller.testData(this.child.updateTableView.bind(this.child));
-        // controller.connectAndPublish();
-        // if (result) {
-        //     controller.connectAndSubscribe();
-        //     console.log('Operation completed Successfully');
-        // }
-        // else {
-        //     console.log('Error Occured. See details below...');
-        // }
+        controller.connectAndSubscribe(this.child.updateTableView.bind(this.child), this.updateSubId.bind(this),
+            this.udpateTotalRecords.bind(this));
+        // controller.testData(this.child.updateTableView.bind(this.child));
+
     }
 
+    updateLastRow(lastRowIndex){
+        this.state.lastRow = lastRowIndex;
+    }
 
+    handleScroll(){
+        this.lazyLoadData();
+    }
+
+    lazyLoadData(){
+        let node = document.getElementById('scrollableDiv');
+        console.log('ScrollTop Value: ' + node.scrollTop);
+        let scrolledDistance = node.scrollTop;
+        let rowHeight = 20;
+        // let approximateNumberOfRowsHidden = Math.floor(scrolledDistance/rowHeight)==0 ? 0 : Math.floor(scrolledDistance/rowHeight)-1 ;// NEED TO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
+        let lastRecord = this.state.lastRow < 50 ? 50 : this.state.lastRow;
+        
+        if(node.scrollTop < Math.floor(node.scrollHeight/2)){
+            this.child.newDataForScroll(0,lastRecord);
+            console.log('Fetching records from 0 to 30');
+        }
+        else {
+            this.child.newDataForScroll(0,lastRecord + 20);
+            console.log('Fetching records from 0 to' + (lastRecord+20));
+            // this.state.lastRow = lastRecord + 20;
+            // this.state.loadedRows = this.state.lastRow;
+        }
+        this.forceUpdate();
+    }
+
+    setScrollHeight(){
+        var node = document.getElementById('scrollableDiv');
+        console.log('Current Scroll height: ' + node.scrollHeight);
+        
+        node.scrollHeight = node.scrollHeight + 1;
+
+        console.log('New Scroll height: ' + node.scrollHeight);
+
+    }
+
+    refreshChildTable(){
+        var childRefresh = this.child.tableRefresh.bind(this.child);
+        console.log('Calling child Refresh');
+        childRefresh();
+    }
+
+    setTableRefreshInterval(){
+        console.log('CALLING REFRESH INTERVAL METHOD');
+        // this.child.refreshInterval.bind(this.child);
+    }
 
     render() {
 
@@ -55,13 +113,15 @@ class App extends React.Component {
             <div className={styles.container}>
                 <h1 className={styles.header}>Random Data from AMPS</h1>
                 <button className={styles.button} onClick={this.handleClick.bind(this)}>Subscribe</button>
-                {/* <label>Total Records: {this.state.totalRecords}</label> */}
+                <label>Total Records: {this.state.totalRecords}</label>
                 <label>  Subscriber Id : {this.state.subscriberId}</label>
-                <table className={styles.table}>
-                    <div className={styles.tableDiv}>
-                        <TableView onRef={ref => (this.child = ref)}/>
-                    </div>
-                </table>
+                {/* <label> Loaded Records: {this.state.loadedRows}</label> */}
+                {/* <button onClick={this.refreshChildTable.bind(this)}>setRefreshInterval</button>   */}
+                <div id="scrollableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
+                        <TableView onRef={ref => (this.child = ref)} recordsHandler={this.udpateTotalRecords.bind(this)}
+                            scrollHandler = {this.handleScroll} rowIndexHandler={this.updateLastRow.bind(this)}/>
+                </div>
+
 
             </div>
         );

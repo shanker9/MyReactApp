@@ -10,23 +10,29 @@ class TableRow extends React.Component {
 
     render() {
         return (
-            // <tr>
-            //     <td style={tableRowStyles.td}>{this.props.data.customer}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.swapId}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.interest}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.swap_rate}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.YearsIn}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.PayFixedRate}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.PayCurrency}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.YearsIn}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.PayFixedRate}</td>
-            //     <td style={tableRowStyles.td}>{this.props.data.PayCurrency}</td>                
-            // </tr>
-            <tr>
-                <td className={styles.td}>{this.props.data.id}</td>
-                <td className={styles.td}>{this.props.data.name}</td>
-                <td className={styles.td}>{this.props.data.age}</td>
+            <tr className={styles.tableRow}>
+                <td className={styles.td}>{this.props.data.customer}</td>
+                <td className={styles.td}>{this.props.data.swapId}</td>
+                <td className={styles.td}>{this.props.data.interest}</td>
+                <td className={styles.td}>{this.props.data.swap_rate}</td>
+                <td className={styles.td}>{this.props.data.YearsIn}</td>
+                <td className={styles.td}>{this.props.data.PayFixedRate}</td>
+                <td className={styles.td}>{this.props.data.PayCurrency}</td>
+                <td className={styles.td}>{this.props.data.YearsIn * 2}</td>
+                <td className={styles.td}>{this.props.data.PayFixedRate * 100}</td>
+                <td className={styles.td}>{this.props.data.PayCurrency}</td>
+                <td className={styles.td}>{this.props.data.customer}</td>
+                <td className={styles.td}>{this.props.data.swapId}</td>
+                <td className={styles.td}>{this.props.data.interest}</td>
+                <td className={styles.td}>{this.props.data.swap_rate}</td>
+                <td className={styles.td}>{this.props.data.YearsIn}</td>
+                <td className={styles.td}>{this.props.data.PayFixedRate}</td>
             </tr>
+            // <tr>
+            //     <td className={styles.td}>{this.props.data.id}</td>
+            //     <td className={styles.td}>{this.props.data.name}</td>
+            //     <td className={styles.td}>{this.props.data.age}</td>
+            // </tr>
         )
     }
 
