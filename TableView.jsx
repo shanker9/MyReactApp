@@ -13,6 +13,9 @@ class TableView extends React.Component {
         }
         this.printNewData = this.printNewData.bind(this);
         this.newDataForScroll = this.sliceLoadableData.bind(this);
+        this.topDivHeight = 0;
+        this.bottomDivHeight = 0;
+        this.rowIndex = 0;
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -28,40 +31,38 @@ class TableView extends React.Component {
         this.props.rowIndexHandler(this.state.viewableData.length);
     }
 
-    refreshInterval() {
-        // setInterval(() => {
-        //     this.forceUpdate();
-        // }, 5000)
-        // this.forceUpdate();
-        console.log('DATA SIZE',this.state.data.length);
-    }
 
-    tableRefresh(){
+    tableRefresh() {
         this.forceUpdate();
     }
 
     updateTableView(updatedData) {
-        console.log('NEW DATA: \n' + this.printNewData(updatedData));
-  
-        if(this.state.data.length<=50){
-            this.props.scrollStateHandler();
-            this.setState({ data: this.state.data.concat(updatedData) }, () => {
-                this.props.recordsHandler(this.state.data.length,this.state.viewableData.length);
+        // console.log('NEW DATA: \n' + this.printNewData(updatedData));
+        let rowData = {"rowID":this.rowIndex++,"data":updatedData};
+        this.state.data = this.state.data.concat(rowData); // Adding the received row data to the data array
+
+        this.props.scrollStateHandler();
+
+        // if (this.state.data.length <= 100) {  // Checking the available records length
+            this.setState({ data: this.state.data }, () => {
+                this.props.recordsHandler(this.state.data.length, this.state.viewableData.length); //For Debugging Purpose
             });
-        }else{
-            this.state.data = this.state.data.concat(updatedData);
-        }
-        // this.state.data.push(updatedData);
+
     }
 
     printNewData(data) {
         return 'Customer: ' + data.customer + ' swapId: ' + data.swapId + ' interest: ' + data.interest;
     }
 
-    sliceLoadableData(initialIndex,rowCount) {
-        // let tempArr = Array.from(this.state.data);
-        this.state.viewableData = this.state.data.slice(initialIndex,rowCount);
-        this.props.recordsHandler(this.state.data.length,this.state.viewableData.length);
+    sliceLoadableData(initialIndex, lastDisplayRow) {
+        this.state.viewableData = this.state.data.slice(initialIndex, lastDisplayRow);
+        this.topDivHeight = initialIndex==0 ? 0 : (initialIndex-1)*20; // 20 is the height of each row
+
+        let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length-1];
+        this.bottomDivHeight = (this.state.data.length-(lastDisplayableRowIndex.rowID+1))*20;
+        // this.bottomDivHeight = scrollHeight-(this.state.viewableData.length*20 + this.topDivHeight);
+
+        this.props.recordsHandler(this.state.data.length, this.state.viewableData.length); // For debugging purposes
     }
 
     render() {
@@ -90,8 +91,10 @@ class TableView extends React.Component {
                         <th className={styles.th}>PayFixedRate</th>
                     </tr>
                 </thead>
-                <tbody className={styles.tableBody}>
-                    {this.state.viewableData.map((item, i) => <TableRow key={i} data={item} />)}
+                <tbody className={styles.tableBody} >
+                    <div style={{ height: this.topDivHeight }}></div>
+                    {this.state.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} />)}
+                    <div style={{ height: this.bottomDivHeight }}></div>
                 </tbody>
             </table>
 

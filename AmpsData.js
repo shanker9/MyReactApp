@@ -44,15 +44,16 @@ export default class AmpsData {
     }
 
     testData(callback){
-        let i=0;
-        let dataFire = setInterval(()=>{
-            // for(var i=0;i<100;i++){
-                if(i==50){
-                    clearInterval(dataFire);
-                }
-              callback({ "id": i++, "name": "Shaz", "age": Math.floor((Math.random() * 50) + 1) });
-            // }
-        },1/100000);
+        // let i=0;
+        // let dataFire = setInterval(()=>{
+            for(let i=0;i<=20000;i++){
+                // if(i==10000){
+                //     clearInterval(dataFire);
+                // }
+              callback({ "swapId": i, "customer": "Shaz", "interest": Math.floor((Math.random() * 50) + 1), "swap_rate": Math.random()*50,
+                         "YearsIn": i*2, "PayFixedRate": i*2.123, "PayCurrency": "USD"});
+            }
+        // },0.0001);
     }
 
 }

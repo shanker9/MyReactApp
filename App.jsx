@@ -22,6 +22,7 @@ class App extends React.Component {
         this.updateLoadData = this.updateLoadData.bind(this);
         this.refreshChildTable = this.refreshChildTable.bind(this);
         this.addScrollOffset = true;
+        this.previousScrollTop = 0;
     }
 
     componentDidMount(){
@@ -52,8 +53,9 @@ class App extends React.Component {
 
     handleClick() {
         let controller = new AmpsClientData();
-        controller.connectAndSubscribe(this.child.updateTableView.bind(this.child), this.updateSubId.bind(this),
-            this.udpateTotalRecords.bind(this));
+        // controller.connectAndSubscribe(this.child.updateTableView.bind(this.child), this.updateSubId.bind(this),
+            // this.udpateTotalRecords.bind(this));
+        controller.testData(this.child.updateTableView.bind(this.child));
         // controller.testData(this.child.updateTableView.bind(this.child));
 
     }
@@ -62,12 +64,24 @@ class App extends React.Component {
         this.state.lastRow = lastRowIndex;
     }
 
+    handleNewData(newData) {
+        
+    }
+
+
+
     handleScroll(){
-        let node = document.getElementById('scrollableDiv');
-        if(this.addScrollOffset){
-            node.scrollTop = node.scrollTop + Math.floor(node.scrollHeight/15);
-        }
-        this.addScrollOffset = !this.addScrollOffset;
+        // let node = document.getElementById('scrollableDiv');
+        // if(this.addScrollOffset && node.scrollTop > this.previousScrollTop){
+        // // if(this.addScrollOffset){
+        //     node.scrollTop = node.scrollTop + Math.floor(node.scrollHeight/15);
+        //     this.previousScrollTop = node.scrollTop;
+        // }
+        // else if(this.addScrollOffset && node.scrollTop < this.previousScrollTop){
+        //     node.scrollTop = node.scrollTop - Math.floor(node.scrollHeight/15);
+        //     this.previousScrollTop = node.scrollTop;
+        // }
+        // this.addScrollOffset = !this.addScrollOffset;
         this.updateLoadData();
     }
 
@@ -76,19 +90,22 @@ class App extends React.Component {
         console.log('ScrollTop Value: ' + node.scrollTop);
         let scrolledDistance = node.scrollTop;
         let rowHeight = 20;
-        // let approximateNumberOfRowsHidden = Math.floor(scrolledDistance/rowHeight)==0 ? 0 : Math.floor(scrolledDistance/rowHeight)-1 ;// NEED TO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
-        let lastRecord = this.state.lastRow < 50 ? 50 : this.state.lastRow;
+        let approximateNumberOfRowsHidden = Math.floor(scrolledDistance/rowHeight)==0 ? 0 : Math.floor(scrolledDistance/rowHeight)  ;// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
+        // let lastRecord = this.state.lastRow < 50 ? 50 : this.state.lastRow;
         
-        if(node.scrollTop < Math.floor(node.scrollHeight/2)){
-            this.child.sliceLoadableData(0,lastRecord);
-            console.log('Fetching records from 0 to 30');
-        }
-        else {
-            this.child.sliceLoadableData(0,lastRecord + 20);
-            console.log('Fetching records from 0 to' + (lastRecord+20));
-            // this.state.lastRow = lastRecord + 20;
-            // this.state.loadedRows = this.state.lastRow;
-        }
+        // if(node.scrollTop < Math.floor(node.scrollHeight/2)){
+        //     this.child.sliceLoadableData(0,lastRecord);
+        //     // console.log('Fetching records from 0 to 30');
+        // }
+        // else {
+        //     this.child.sliceLoadableData(0,lastRecord + 20);
+        //     console.log('Fetching records from 0 to' + (lastRecord+20));
+        //     // this.state.lastRow = lastRecord + 20;
+        //     // this.state.loadedRows = this.state.lastRow;
+        // }
+        this.child.sliceLoadableData(approximateNumberOfRowsHidden,approximateNumberOfRowsHidden+20);
+        // node.scrollTop = node.scrollTop-approximateNumberOfRowsHidden*20;
+        // node.scrollTop = 0;
         this.forceUpdate();
     }
 
@@ -106,11 +123,6 @@ class App extends React.Component {
         var childRefresh = this.child.tableRefresh.bind(this.child);
         console.log('Calling child Refresh');
         childRefresh();
-    }
-
-    setTableRefreshInterval(){
-        console.log('CALLING REFRESH INTERVAL METHOD');
-        // this.child.refreshInterval.bind(this.child);
     }
 
     render() {
