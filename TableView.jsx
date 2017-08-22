@@ -23,7 +23,7 @@ class TableView extends React.Component {
     // }
 
     componentDidMount() {
-        this.props.onRef(this);
+        // this.props.onRef(this);
         // this.props.recordsHandler(this.state.data.size);
     }
 
@@ -38,15 +38,15 @@ class TableView extends React.Component {
 
     updateTableView(updatedData) {
         // console.log('NEW DATA: \n' + this.printNewData(updatedData));
-        let rowData = {"rowID":this.rowIndex++,"data":updatedData};
+        let rowData = { "rowID": this.rowIndex++, "data": updatedData };
         this.state.data = this.state.data.concat(rowData); // Adding the received row data to the data array
 
         this.props.scrollStateHandler();
 
         // if (this.state.data.length <= 100) {  // Checking the available records length
-            this.setState({ data: this.state.data }, () => {
-                this.props.recordsHandler(this.state.data.length, this.state.viewableData.length); //For Debugging Purpose
-            });
+        this.setState({ data: this.state.data }, () => {
+            this.props.recordsHandler(this.state.data.length, this.state.viewableData.length); //For Debugging Purpose
+        });
 
     }
 
@@ -56,10 +56,10 @@ class TableView extends React.Component {
 
     sliceLoadableData(initialIndex, lastDisplayRow) {
         this.state.viewableData = this.state.data.slice(initialIndex, lastDisplayRow);
-        this.topDivHeight = initialIndex==0 ? 0 : (initialIndex-1)*20; // 20 is the height of each row
+        this.topDivHeight = initialIndex == 0 ? 0 : (initialIndex - 1) * 20; // 20 is the height of each row
 
-        let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length-1];
-        this.bottomDivHeight = (this.state.data.length-(lastDisplayableRowIndex.rowID+1))*20;
+        let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length - 1];
+        this.bottomDivHeight = (this.state.data.length - (lastDisplayableRowIndex.rowID + 1)) * 20;
         // this.bottomDivHeight = scrollHeight-(this.state.viewableData.length*20 + this.topDivHeight);
 
         this.props.recordsHandler(this.state.data.length, this.state.viewableData.length); // For debugging purposes
@@ -70,33 +70,15 @@ class TableView extends React.Component {
         // let viewableRows = tempArr.slice(0);
         // console.log('Viewable Data Count:' + viewableRows);
         return (
-            <table className={styles.table}>
-                <thead className={styles.tableHead}>
-                    <tr className={styles.tableRow}>
-                        <th className={styles.th}>Customer</th>
-                        <th className={styles.th}>SwapId</th>
-                        <th className={styles.th}>Interest</th>
-                        <th className={styles.th}>SwapRate</th>
-                        <th className={styles.th}>YearsIn</th>
-                        <th className={styles.th}>PayFixedRate</th>
-                        <th className={styles.th}>PayCurrency</th>
-                        <th className={styles.th}>YearsLeft</th>
-                        <th className={styles.th}>PayFixedRate</th>
-                        <th className={styles.th}>SecondaryCurrency</th>
-                        <th className={styles.th}>Customer</th>
-                        <th className={styles.th}>SwapId</th>
-                        <th className={styles.th}>Interest</th>
-                        <th className={styles.th}>SwapRate</th>
-                        <th className={styles.th}>YearsIn</th>
-                        <th className={styles.th}>PayFixedRate</th>
-                    </tr>
-                </thead>
-                <tbody className={styles.tableBody} >
-                    <div style={{ height: this.topDivHeight }}></div>
-                    {this.state.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} />)}
-                    <div style={{ height: this.bottomDivHeight }}></div>
-                </tbody>
-            </table>
+            <div>
+                <table className={styles.table}>
+                    <tbody className={styles.tableBody} >
+                        <div style={{ height: this.props.topDivHeight }}></div>
+                        {this.props.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} />)}
+                        <div style={{ height: this.props.bottomDivHeight }}></div>
+                    </tbody>
+                </table>
+            </div>
 
         );
     }

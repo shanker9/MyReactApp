@@ -46,11 +46,11 @@ export default class AmpsData {
     testData(callback){
         // let i=0;
         // let dataFire = setInterval(()=>{
-            for(let i=0;i<=20000;i++){
-                // if(i==10000){
+            for(let i=0;i<=10000;i++){
+                // if(i==100){
                 //     clearInterval(dataFire);
                 // }
-              callback({ "swapId": i, "customer": "Shaz", "interest": Math.floor((Math.random() * 50) + 1), "swap_rate": Math.random()*50,
+              callback({ "swapId": i, "customer": "customer", "interest": Math.floor((Math.random() * 50) + 1), "swap_rate": Math.random()*50,
                          "YearsIn": i*2, "PayFixedRate": i*2.123, "PayCurrency": "USD"});
             }
         // },0.0001);

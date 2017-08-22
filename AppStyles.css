@@ -15,30 +15,30 @@
     }
     .td {
         border: 1px solid black;
-        flex-direction: row;
         font-size: 80%;
         font-weight: 300;
         text-align: center;
         padding: 1px;
-        width: 150px;
+        min-width: 150px;
+        box-sizing: border-box;        
     }
 
     .th {
         border: 1px solid black;
-        flex-direction: row;
-        font-size: 90%;
-        font-weight: 500;
+        font-size: 80%;
+        font-weight: 300;
         text-align: center;
         padding: 1px;
-        width: 150px;
+        min-width: 150px;
+        box-sizing: border-box;        
     }
 
     .tableDiv {
         height: 25em;
         width: 100%;
-        overflow: auto;
-        border: 1px solid grey;
-
+        overflow: scroll;
+        overflow-x: scroll;
+        z-index: -1;        
     }
     .table {
         border-collapse: collapse;
@@ -48,6 +48,8 @@
         height: 20px;
     }
 
-    .dummyStyle {
-        color: red;
+    .containerDiv {
+        overflow-x: hidden;     
+        overflow-y: scroll;   
     }
+    
