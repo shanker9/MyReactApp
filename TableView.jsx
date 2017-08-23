@@ -18,17 +18,12 @@ class TableView extends React.Component {
         this.rowIndex = 0;
     }
 
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return true;
-    // }
 
     componentDidMount() {
-        // this.props.onRef(this);
-        // this.props.recordsHandler(this.state.data.size);
+
     }
 
     componentDidUpdate() {
-        this.props.rowIndexHandler(this.state.viewableData.length);
     }
 
 
@@ -74,7 +69,7 @@ class TableView extends React.Component {
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.props.topDivHeight }}></div>
-                        {this.props.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} />)}
+                        {this.props.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} indexVal ={item.rowID}/>)}
                         <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>

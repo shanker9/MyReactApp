@@ -4,13 +4,22 @@ import styles from './AppStyles.css';
 
 class TableRow extends React.Component {
 
+    constructor(){
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
     componentWillMount() {
         // console.log(this.props.data);
     }
 
+    handleClick(){
+        // this.refs.tableRow.style.backgroundColor = '#92A3B0';
+    }
+
     render() {
         return (
-            <tr className={styles.tableRow}>
+            <tr ref={"tableRow"} className={styles.tableRow} onClick={this.handleClick}>
                 <td className={styles.td}>{this.props.data.customer}</td>
                 <td className={styles.td}>{this.props.data.swapId}</td>
                 <td className={styles.td}>{this.props.data.interest}</td>
