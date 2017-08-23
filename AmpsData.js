@@ -1,22 +1,22 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-var ampsServerUri = "ws://10.0.0.19:9008/amps/json";
+var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient');
-var i=0; 
+var i = 0;
 export default class AmpsData {
- 
+
     connectAndPublish() {
         ampsClient.connect(ampsServerUri)
             .then(() => {
                 console.log("Connection successful");
-                console.log("AMPS Version "+ ampsClient.Client);
+                console.log("AMPS Version " + ampsClient.Client);
 
-                for(var i=0;i<10;i++){
-                ampsClient.publish('Price', { localWeather: 'Sunny day in Hyd '+ i, globalWeather: 'chilled in US' })
-                ampsClient.publish('Price', { localWeather: 'Chilled in Hyd' + i, globalWeather: 'chilled in US' })
-                ampsClient.publish('Price', { localWeather: 'Its heavy down pouring' + i, globalWeather: 'heavy snowfall in US' })
-                ampsClient.publish('Price', { localWeather: 'Hot and humid' + i, globalWeather: 'Sunny day in US' })                
+                for (var i = 0; i < 10; i++) {
+                    ampsClient.publish('Price', { localWeather: 'Sunny day in Hyd ' + i, globalWeather: 'chilled in US' })
+                    ampsClient.publish('Price', { localWeather: 'Chilled in Hyd' + i, globalWeather: 'chilled in US' })
+                    ampsClient.publish('Price', { localWeather: 'Its heavy down pouring' + i, globalWeather: 'heavy snowfall in US' })
+                    ampsClient.publish('Price', { localWeather: 'Hot and humid' + i, globalWeather: 'Sunny day in US' })
                 }
 
                 ampsClient.disconnect();
@@ -26,7 +26,7 @@ export default class AmpsData {
                 console.log('Error Occured. See details below...');
                 console.log(error);
             })
-        }
+    }
 
     connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback) {
         var subscriberId;
@@ -37,25 +37,33 @@ export default class AmpsData {
                     // console.log(message.data.customer);
                     dataUpdateCallback(message.data);
                     // console.log(Date.now());
-                },'Price')
-            }).then((subId)=>{
-                console.log("Subscription ID: "+ subId);
+                }, 'Price')
+            }).then((subId) => {
+                console.log("Subscription ID: " + subId);
                 subscriberInfoCallback(subId);
             })
     }
 
-    testData(callback){
+    testData(callback) {
         // let i=0;
         // let dataFire = setInterval(()=>{
-            let j = i+500000;
-            for(;i<j;i++){
-                // if(i==100){
-                //     clearInterval(dataFire);
-                // }
-              callback({ "swapId": i, "customer": "shank", "interest": Math.floor((Math.random() * 50) + 1), "swap_rate": Math.random()*50,
-                         "YearsIn": i*2, "PayFixedRate": i*2.123, "PayCurrency": "USD"});
-            }
+        let j = i + 500000;
+        var counterParty = ["Goldman Sachs", "Bank of America", "JP Morgan", "PIMCO", "Bridgewater", "Morgan Stanley", "General Electric",
+            "General Motors", "Deutsche Bank", "Fidelity"];
+        var interest = ["2.5", "3", "4.5", "5.6", "3.3", "6.5", "2.3","3.4", "4.2", "3.2"];
+        for (; i < j; i++) {
+            // if(i==100){
+            //     clearInterval(dataFire);
+            // }
+            callback({
+                "swapId": i+1, "customer": counterParty[i%10], "interest": interest[i%10], "swap_rate": (interest[1%10]*2.3).toFixed(2),
+                "YearsIn": i * 2, "PayFixedRate": (i * 2.123).toFixed(2), "PayCurrency": "USD"
+            });
+        }
         // },0.0001);
+        let endTime = Date.now().toString();
+        console.log('End Time : ', endTime);
+        return endTime;
     }
 
 }

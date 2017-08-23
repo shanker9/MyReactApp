@@ -24,18 +24,18 @@ class TableRow extends React.Component {
                 <td className={styles.td}>{this.props.data.swapId}</td>
                 <td className={styles.td}>{this.props.data.interest}</td>
                 <td className={styles.td}>{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.YearsIn}</td>
-                <td className={styles.td}>{this.props.data.PayFixedRate}</td>
-                <td className={styles.td}>{this.props.data.PayCurrency}</td>
-                <td className={styles.td}>{this.props.data.YearsIn * 2}</td>
-                <td className={styles.td}>{this.props.data.PayFixedRate * 100}</td>
-                <td className={styles.td}>{this.props.data.PayCurrency}</td>
+                <td className={styles.td}>{this.props.data.yearsIn}</td>
+                <td className={styles.td}>{this.props.data.payFixedRate}</td>
+                <td className={styles.td}>{this.props.data.payCurrency}</td>
+                <td className={styles.td}>{this.props.data.yearsIn * 2}</td>
+                <td className={styles.td}>{this.props.data.payFixedRate}</td>
+                <td className={styles.td}>{this.props.data.payCurrency}</td>
                 <td className={styles.td}>{this.props.data.customer}</td>
                 <td className={styles.td}>{this.props.data.swapId}</td>
                 <td className={styles.td}>{this.props.data.interest}</td>
                 <td className={styles.td}>{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.YearsIn}</td>
-                <td className={styles.td}>{this.props.data.PayFixedRate}</td>
+                <td className={styles.td}>{this.props.data.yearsIn}</td>
+                <td className={styles.td}>{this.props.data.payFixedRate}</td>
             </tr>
             // <tr>
             //     <td className={styles.td}>{this.props.data.id}</td>

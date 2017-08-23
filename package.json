@@ -4,7 +4,7 @@
   "description": "Practice React",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --hot"
+    "start": "webpack-dev-server --hot --inline --content-base ./ --host 192.168.2.84 --port 8080"
   },
   "author": "Shanker",
   "license": "ISC",

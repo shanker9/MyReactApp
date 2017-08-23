@@ -1,5 +1,6 @@
     .container {
         align-items : center;
+        padding: 2px;
     }
     .header {
         font-size: 15px;
@@ -19,7 +20,7 @@
         font-weight: 300;
         text-align: center;
         padding: 1px;
-        min-width: 150px;
+        min-width: 120px;
         box-sizing: border-box;        
     }
 
@@ -29,30 +30,43 @@
         font-weight: 300;
         text-align: center;
         padding: 1px;
-        min-width: 150px;
+        min-width: 120px;
         box-sizing: border-box;
-        color: white;        
+        color: #F7F7F7;        
     }
 
     .tableDiv {
-        height: 25em;
+        height: 40em;
         width: 100%;
-        overflow: scroll;
-        overflow-x: scroll;
+        overflow-y: scroll;
+        overflow-x: auto;
         z-index: -1;        
     }
+
+    .tableDiv::-webkit-scrollbar * {
+        background:transparent;
+    }
+
+    .tableDiv::-webkit-scrollbar * {
+        width:40px;
+    }
+
     .table {
         border-collapse: collapse;
     }
 
     .tableRow{
-        height: 30px;
+        height: 20px;
     }
 
-    .containerDiv {
+    .headerDiv {
         overflow-x: hidden;     
         overflow-y: scroll;
         background-color: #2C4C65;
+        /* background-color: white; */
 
     }
     
+    .gridContainerDiv {
+        border: 1px solid grey;
+    }
