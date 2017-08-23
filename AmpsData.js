@@ -57,7 +57,7 @@ export default class AmpsData {
             // }
             callback({
                 "swapId": i+1, "customer": counterParty[i%10], "interest": interest[i%10], "swap_rate": (interest[1%10]*2.3).toFixed(2),
-                "YearsIn": i * 2, "PayFixedRate": (i * 2.123).toFixed(2), "PayCurrency": "USD"
+                "yearsIn": i * 2, "payFixedRate": (i * 2.123).toFixed(2), "payCurrency": "USD"
             });
         }
         // },0.0001);

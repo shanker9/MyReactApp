@@ -26,7 +26,7 @@ class App extends React.Component {
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
-        this.rowHeight = 20;
+        this.rowHeight = 30;
         this.lowerLimit = undefined;
         this.upperLimit = undefined;
         this.scrollableDivClientHeight = undefined;

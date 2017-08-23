@@ -37,7 +37,7 @@
 
     .tableDiv {
         height: 40em;
-        width: 100%;
+        /* width: 100%; */
         overflow-y: scroll;
         overflow-x: auto;
         z-index: -1;        
@@ -56,7 +56,7 @@
     }
 
     .tableRow{
-        height: 20px;
+        height: 30px;
     }
 
     .headerDiv {
@@ -69,4 +69,5 @@
     
     .gridContainerDiv {
         border: 1px solid grey;
+        flex-wrap: wrap;
     }
