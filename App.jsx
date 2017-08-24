@@ -12,17 +12,20 @@ class App extends React.Component {
         this.state = {
             data: [],
             viewableData: [],
+            selectedData: [],
             subscriberId: '',
             totalRecords: 0,
             lastRow: 0,
             loadedRows: 0,
-            loadTime: 0
+            loadTime: 0,
+            currentSelectedRowIndex : undefined
         }
         this.handleClick = this.handleClick.bind(this);
         this.updateTable = this.updateTable.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.updateLoadData = this.updateLoadData.bind(this);
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
+        this.updateIsSelected = this.updateIsSelected.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -30,6 +33,7 @@ class App extends React.Component {
         this.lowerLimit = undefined;
         this.upperLimit = undefined;
         this.scrollableDivClientHeight = undefined;
+        // this.currentSelectedRowIndex = undefined;
     }
 
     componentDidMount() {
@@ -52,6 +56,44 @@ class App extends React.Component {
     updateSubId(subId) {
         this.setState({ subscriberId: subId })
         // this.state.subscriberId = subId;
+    }
+
+    updateIsSelected(index, isMultiSelect) {
+        let i;
+        // if (this.currentSelectedRowIndex == undefined) {
+        //     this.state.data[index].isSelected = !this.state.data[index].isSelected;
+        //     this.currentSelectedRowIndex = index;
+        // } else {
+        //     if (isMultiSelect) {
+        //         for (i = this.currentSelectedRowIndex; i <= index; i++) {
+        //             this.state.data[i].isSelected = true;
+        //         }
+        //     }
+        //     else {
+
+        //     }
+        // }
+
+        if(this.state.currentSelectedRowIndex !== undefined && isMultiSelect){
+            for (i = this.state.currentSelectedRowIndex; i <= index; i++) {
+                this.state.data[i].isSelected = true;
+            }
+        }else{
+            this.state.data[index].isSelected = !this.state.data[index].isSelected;
+        }
+        this.state.currentSelectedRowIndex = index;
+        this.setState({data: this.state.data,currentSelectedRowIndex: index},()=>{console.log('stateUpdated');});
+        // this.forceUpdate();
+        // this.state.data[index].isSelected = !this.state.data[index].isSelected;
+        // if (this.currentSelectedRowIndex !== undefined) {
+        //     // this.selectedData = this.state.data.slice(this.currentSelectedRowIndex,index+1);
+        //     for (i = this.currentSelectedRowIndex; i <= index; i++) {
+        //         this.state.data[i].isSelected = true;
+        //     }
+        //     this.setState({ data: this.state.data });
+        // }
+        // this.currentSelectedRowIndex = index;
+
     }
 
     // udpateTotalRecords(totalRecordsCount, loadedRecordsCount) {
@@ -81,7 +123,7 @@ class App extends React.Component {
     /* New Data from AMPS will be handled here first */
 
     handleNewData(newData) {
-        let rowData = { "rowID": this.rowIndex++, "data": newData };
+        let rowData = { "rowID": this.rowIndex++, "data": newData, "isSelected": false };
         // this.state.data = this.state.data.concat(rowData); // Adding the received row data to the data array
         // var tempArr = this.state.data.slice(0);
         this.state.data[this.rowIndex - 1] = rowData;
@@ -117,8 +159,8 @@ class App extends React.Component {
         this.topDivHeight = initialIndex * this.rowHeight;
         let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length - 1];
         this.bottomDivHeight = (this.state.data.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
-        this.lowerLimit = this.state.viewableData[0].rowID+1;
-        this.upperLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight-1*this.rowHeight)/this.rowHeight);
+        this.lowerLimit = this.state.viewableData[0].rowID + 1;
+        this.upperLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
     }
 
@@ -134,7 +176,7 @@ class App extends React.Component {
                     <label> | Total Records: {this.state.data.length}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     {/* <label> | Load Time : {this.state.loadTime}ms</label> */}
-                    <label style={{ float: 'right'}}>Showing {this.lowerLimit}-{this.upperLimit} of {this.state.data.length}</label>
+                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.state.data.length}</label>
                 </div>
                 <div>
                     <div className={styles.gridContainerDiv}>
@@ -164,7 +206,7 @@ class App extends React.Component {
                         </div>
                         <div>
                             <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} />
+                                <TableView viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateIsSelected} />
                             </div>
                         </div>
                     </div>
