@@ -12,7 +12,7 @@ class App extends React.Component {
         this.state = {
             data: [],
             viewableData: [],
-            selectedData: [],
+            selectedData: undefined,
             subscriberId: '',
             totalRecords: 0,
             lastRow: 0,
@@ -25,7 +25,7 @@ class App extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
         this.updateLoadData = this.updateLoadData.bind(this);
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
-        this.updateIsSelected = this.updateIsSelected.bind(this);
+        this.updateIsSelected = this.updateSelected.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -58,41 +58,36 @@ class App extends React.Component {
         // this.state.subscriberId = subId;
     }
 
-    updateIsSelected(index, isMultiSelect) {
-        let i;
-        // if (this.currentSelectedRowIndex == undefined) {
-        //     this.state.data[index].isSelected = !this.state.data[index].isSelected;
-        //     this.currentSelectedRowIndex = index;
-        // } else {
-        //     if (isMultiSelect) {
-        //         for (i = this.currentSelectedRowIndex; i <= index; i++) {
-        //             this.state.data[i].isSelected = true;
-        //         }
-        //     }
-        //     else {
-
-        //     }
-        // }
+    updateSelected(index, isMultiSelect) {
+        let i, selectedStart, selectedEnd;
 
         if(this.state.currentSelectedRowIndex !== undefined && isMultiSelect){
-            for (i = this.state.currentSelectedRowIndex; i <= index; i++) {
-                this.state.data[i].isSelected = true;
-            }
+            if(this.state.currentSelectedRowIndex<index)
+                for (i=this.state.currentSelectedRowIndex; i<=index; i++) {
+                    this.state.data[i].isSelected = true;
+                }
+            else
+                for (i=index; i<=this.state.currentSelectedRowIndex; i++) {
+                    this.state.data[i].isSelected = true;
+                }
         }else{
+
+            /* Deselecting the multiselected rows */
+            if(this.state.selectedData!==undefined){
+                // this.state.data[this.state.currentSelectedRowIndex].isSelected = !this.state.data[this.state.currentSelectedRowIndex].isSelected;
+                selectedStart = this.state.data.indexOf(this.state.selectedData[0]);
+                selectedEnd = this.state.data.indexOf(this.state.selectedData[this.state.selectedData.length-1]);
+                for(;selectedStart<=selectedEnd;selectedStart++){
+                    this.state.data[selectedStart].isSelected = false;
+                }
+            }
+
             this.state.data[index].isSelected = !this.state.data[index].isSelected;
         }
+        this.state.selectedData = this.state.data.filter((row)=>{return row.isSelected==true});            
+       
         this.state.currentSelectedRowIndex = index;
         this.setState({data: this.state.data,currentSelectedRowIndex: index},()=>{console.log('stateUpdated');});
-        // this.forceUpdate();
-        // this.state.data[index].isSelected = !this.state.data[index].isSelected;
-        // if (this.currentSelectedRowIndex !== undefined) {
-        //     // this.selectedData = this.state.data.slice(this.currentSelectedRowIndex,index+1);
-        //     for (i = this.currentSelectedRowIndex; i <= index; i++) {
-        //         this.state.data[i].isSelected = true;
-        //     }
-        //     this.setState({ data: this.state.data });
-        // }
-        // this.currentSelectedRowIndex = index;
 
     }
 
@@ -166,7 +161,7 @@ class App extends React.Component {
 
 
     render() {
-
+        console.log('Parent Render Start');
         return (
             <div>
                 <div className={styles.container}>
@@ -206,7 +201,7 @@ class App extends React.Component {
                         </div>
                         <div>
                             <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateIsSelected} />
+                                <TableView viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} />
                             </div>
                         </div>
                     </div>

@@ -18,8 +18,13 @@ class TableRow extends React.Component {
         this.state.isSelected = this.props.selectState;
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps.selectState);
+        this.state.isSelected = nextProps.selectState;
+    }
+
     componentWillUpdate(){
-        this.state.isSelected = this.props.selectState;
+        // this.state.isSelected = this.props.selectState;
     }
 
     componentDidUpdate() {
