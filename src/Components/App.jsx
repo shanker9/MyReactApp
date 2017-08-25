@@ -1,8 +1,8 @@
 import React from 'react';
-import AmpsClientData from './AmpsData.js';
+import AmpsClientData from '../Amps/AmpsData.js';
 import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
-import styles from './AppStyles.css'
+import styles from '../../styles/AppStyles.css'
 
 class App extends React.Component {
 
@@ -25,7 +25,7 @@ class App extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
         this.updateLoadData = this.updateLoadData.bind(this);
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
-        this.updateIsSelected = this.updateSelected.bind(this);
+        this.updateSelected = this.updateSelected.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;

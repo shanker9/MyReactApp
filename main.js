@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App.jsx';
-// import TpTable from './TpTable.jsx';
+import App from './src/Components/App.jsx';
 
 ReactDOM.render(<App />, document.getElementById('app'));

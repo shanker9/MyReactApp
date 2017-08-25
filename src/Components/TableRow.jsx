@@ -1,6 +1,5 @@
 import React from 'react';
-// import { myStyles } from './App.jsx';
-import styles from './AppStyles.css';
+import styles from '../../styles/AppStyles.css'
 
 class TableRow extends React.Component {
 
