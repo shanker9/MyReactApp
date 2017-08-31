@@ -18,7 +18,15 @@ class TableView extends React.Component {
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.props.topDivHeight }}></div>
-                        {this.props.viewableData.map((item, i) => <TableRow key={item.rowID} data={item.data} indexVal ={item.rowID} dataUpdateHandler={this.props.selectionDataUpdateHandler} selectState={item.isSelected}/>)}    
+                        {this.props.viewableData.map((item, i) =>
+                            <TableRow
+                                key={item.rowID}
+                                data={item.data}
+                                indexVal={item.rowID}
+                                dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                                selectState={item.isSelected}
+                                isUpdate={item.isUpdated}
+                                rowDataUpdateStatus={this.props.dataUpdateStatus} />)}
                         <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>

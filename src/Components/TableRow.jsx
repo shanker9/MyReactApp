@@ -10,6 +10,7 @@ class TableRow extends React.Component {
         }
 
         this.handleRowClick = this.handleRowClick.bind(this);
+        this.dataUpdateAnimation = this.dataUpdateAnimation.bind(this);
     }
 
     componentWillMount() {
@@ -17,19 +18,35 @@ class TableRow extends React.Component {
         this.state.isSelected = this.props.selectState;
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log(nextProps.selectState);
+    componentWillReceiveProps(nextProps) {
+        // console.log(nextProps.selectState);
         this.state.isSelected = nextProps.selectState;
     }
 
-    componentWillUpdate(){
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps.isUpdate == true){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    componentWillUpdate() {
         // this.state.isSelected = this.props.selectState;
+        // this.refs.tableRow.style.animationName = true ? styles.example : 0;
+        console.log('is Data Updated: ', this.props.isUpdate);
+        if (this.props.isUpdate) {
+            console.log('updated Row');
+        }
     }
 
     componentDidUpdate() {
         // this.state.isSelected = this.props.selectState;
-        if (this.props.indexVal == 7) {
-            console.log('isSelectedVal', this.state.isSelected);
+        // this.dataUpdateAnimation();
+        // console.log('comp update');
+        // this.props.isUpdate = false;
+        if (this.props.isUpdate) {
+            this.props.rowDataUpdateStatus(this.props.indexVal, false);
         }
     }
 
@@ -46,9 +63,19 @@ class TableRow extends React.Component {
         // this.setState({ isSelected : !this.state.isSelected });
     }
 
+    dataUpdateAnimation() {
+        let id = setInterval(() => {
+            if (this.style.backgroundColor == '#B0B020') {
+                clearInterval(id);
+            }
+            this.style.backgroundColor = '#B0B020';
+        }, 100);
+    }
+
     render() {
+
         return (
-            <tr ref={"tableRow"} className={styles.tableRow} onClick={this.handleRowClick}
+            <tr ref={"tableRow"} className={this.props.isUpdate ? styles.animateTableRow : styles.tableRow} onClick={this.handleRowClick}
                 style={{ backgroundColor: this.state.isSelected ? '#92A3B0' : 'white' }}>
                 <td className={styles.td} >{this.props.data.customer}</td>
                 <td className={styles.td} >{this.props.data.swapId}</td>
@@ -58,7 +85,7 @@ class TableRow extends React.Component {
                 <td className={styles.td}>{this.props.data.payFixedRate}</td>
                 <td className={styles.td}>{this.props.data.payCurrency}</td>
                 <td className={styles.td}>{this.props.data.yearsIn * 2}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
+                {/* <td className={styles.td}>{this.props.data.payFixedRate}</td> */}
                 <td className={styles.td}>{this.props.data.payCurrency}</td>
                 <td className={styles.td}>{this.props.data.customer}</td>
                 <td className={styles.td}>{this.props.data.swapId}</td>
