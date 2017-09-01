@@ -149,10 +149,11 @@ class App extends React.Component {
             this.state.data[newData.swapId - 1] = rowData;
         }
         else {
-            let temp = this.state.data[newData.swapId - 1];
+            let temp = JSON.parse(JSON.stringify(this.state.data[newData.swapId - 1]));
             temp.data.swap_rate = newData.swap_rate;
             temp.data.payFixedRate = newData.payFixedRate;
             temp.isUpdated = true;
+            this.state.data[newData.swapId - 1] = temp;
         }
         this.updateLoadData();
 

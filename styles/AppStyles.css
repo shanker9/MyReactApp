@@ -66,8 +66,8 @@
 
     .animateTableRow {
         height: 30px;        
-        animation-name: example;
-        animation-duration: 1s;
+        animation: example 1s;
+        /* animation-iteration-count: infinite; */
     }
 
     .headerDiv {

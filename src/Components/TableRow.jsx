@@ -6,70 +6,53 @@ class TableRow extends React.Component {
     constructor() {
         super();
         this.state = {
-            isSelected: undefined
+            isSelected: undefined,
+            shouldAnimate : false
         }
 
         this.handleRowClick = this.handleRowClick.bind(this);
-        this.dataUpdateAnimation = this.dataUpdateAnimation.bind(this);
     }
 
     componentWillMount() {
-        // console.log(this.props.data);
         this.state.isSelected = this.props.selectState;
     }
 
     componentWillReceiveProps(nextProps) {
-        // console.log(nextProps.selectState);
         this.state.isSelected = nextProps.selectState;
     }
 
-
+    shouldComponentUpdate(nextProps, nextState) {
+        // console.log('currentPropsSwapRate',this.props.data.swap_rate);
+        // console.log('nextPropsSwapRate',nextProps.data.swap_rate);
+        if(this.props.data.swap_rate!=nextProps.data.swap_rate){
+            console.log('propschanged');
+            nextState.shouldAnimate = true;
+        }
+        return true;
+    }
 
     componentWillUpdate() {
-        // this.state.isSelected = this.props.selectState;
-        // this.refs.tableRow.style.animationName = true ? styles.example : 0;
-        // console.log('is Data Updated: ', this.props.isUpdate);
-        // if (this.props.isUpdate) {
-        //     console.log('updated Row');
-        // }
+        // this.state.shouldAnimate = true;
     }
 
     componentDidUpdate() {
-        // this.state.isSelected = this.props.selectState;
-        // this.dataUpdateAnimation();
-        // console.log('comp update');
-        // this.props.isUpdate = false;
-        // if (this.props.isUpdate) {
-        //     this.props.rowDataUpdateStatus(this.props.indexVal, false);
-        // }
+
     }
 
     handleRowClick(e) {
         e.preventDefault();
-        // let isMultiSelect = true;
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
         this.props.dataUpdateHandler(this.props.indexVal, e.shiftKey); // Update the selection state in the data
-        // if(this.state.isSelected==undefined){
-        //     this.state.isSelected = this.props.selectState;
-        // }
-        // if(isMultiSelect)
 
-        // this.setState({ isSelected : !this.state.isSelected });
     }
 
-    dataUpdateAnimation() {
-        let id = setInterval(() => {
-            if (this.style.backgroundColor == '#B0B020') {
-                clearInterval(id);
-            }
-            this.style.backgroundColor = '#B0B020';
-        }, 100);
-    }
 
     render() {
 
         return (
-            <tr ref={"tableRow"} className={styles.tableRow} onClick={this.handleRowClick}
+            <tr ref={"tableRow"}
+                className={this.state.shouldAnimate ? styles.animateTableRow : styles.tableRow}
+                onClick={this.handleRowClick}
                 style={{ backgroundColor: this.state.isSelected ? '#92A3B0' : 'white' }}>
                 <td className={styles.td} >{this.props.data.customer}</td>
                 <td className={styles.td} >{this.props.data.swapId}</td>
@@ -88,21 +71,9 @@ class TableRow extends React.Component {
                 <td className={styles.td}>{this.props.data.yearsIn}</td>
                 <td className={styles.td}>{this.props.data.payFixedRate}</td>
             </tr>
-            // <tr>
-            //     <td className={styles.td}>{this.props.data.id}</td>
-            //     <td className={styles.td}>{this.props.data.name}</td>
-            //     <td className={styles.td}>{this.props.data.age}</td>
-            // </tr>
         )
     }
 
 }
-// export const tableRowStyles = {
-//     td: {
-//         border: '1px solid black',
-//         width: '100px',
-//         fontSize: 15
-//     }
-// }
 
 export default TableRow;
