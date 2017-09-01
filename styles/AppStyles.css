@@ -61,7 +61,9 @@
 
     .tableRow{
         height: 30px;
-        /* background-color: yellow; */
+        -webkit-transition: background-color 0.5s;
+        -moz-transition: background-color 0.5s;
+        transition: background-color 0.5s;
     }
 
     .animateTableRow {

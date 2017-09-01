@@ -1,4 +1,5 @@
 import React from 'react';
+import TableCell from './TableCell.jsx';
 import styles from '../../styles/AppStyles.css'
 
 class TableRow extends React.Component {
@@ -11,6 +12,7 @@ class TableRow extends React.Component {
         }
 
         this.handleRowClick = this.handleRowClick.bind(this);
+        this.detectTheEnd = this.detectTheEnd.bind(this);
     }
 
     componentWillMount() {
@@ -26,9 +28,9 @@ class TableRow extends React.Component {
         // console.log('nextPropsSwapRate',nextProps.data.swap_rate);
         if(this.props.data.swap_rate!=nextProps.data.swap_rate){
             console.log('propschanged');
-            nextState.shouldAnimate = true;
-        }
-        return true;
+            return true;            
+        }else
+            return false;
     }
 
     componentWillUpdate() {
@@ -36,7 +38,24 @@ class TableRow extends React.Component {
     }
 
     componentDidUpdate() {
+        
+        this.refs.tableRow.style.backgroundColor = 'yellow';
 
+        let blueCircle = this.refs.tableRow;
+        
+       blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
+       blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
+       blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
+       blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
+       blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
+        
+
+
+    }
+
+    detectTheEnd(e) {
+        console.log('Transition End');
+        this.refs.tableRow.style.backgroundColor = 'white';
     }
 
     handleRowClick(e) {
@@ -51,7 +70,7 @@ class TableRow extends React.Component {
 
         return (
             <tr ref={"tableRow"}
-                className={this.state.shouldAnimate ? styles.animateTableRow : styles.tableRow}
+                className= {styles.tableRow}
                 onClick={this.handleRowClick}
                 style={{ backgroundColor: this.state.isSelected ? '#92A3B0' : 'white' }}>
                 <td className={styles.td} >{this.props.data.customer}</td>
@@ -62,7 +81,7 @@ class TableRow extends React.Component {
                 <td className={styles.td}>{this.props.data.payFixedRate}</td>
                 <td className={styles.td}>{this.props.data.payCurrency}</td>
                 <td className={styles.td}>{this.props.data.yearsIn * 2}</td>
-                {/* <td className={styles.td}>{this.props.data.payFixedRate}</td> */}
+                <td className={styles.td}>{this.props.data.payFixedRate}</td>
                 <td className={styles.td}>{this.props.data.payCurrency}</td>
                 <td className={styles.td}>{this.props.data.customer}</td>
                 <td className={styles.td}>{this.props.data.swapId}</td>

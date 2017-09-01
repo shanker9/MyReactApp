@@ -37,6 +37,7 @@ class App extends React.Component {
         this.selectStart = undefined;
         this.selectEnd = undefined;
         this.isSorted = false;
+        this.tempArr = [];
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -103,8 +104,8 @@ class App extends React.Component {
 
         }
         this.state.selectedData = this.state.data.filter((row) => { return row.isSelected == true });
-        this.selectStart = this.state.selectedData.length > 0 ? this.state.selectedData[0].rowID : undefined;
-        this.selectEnd = this.selectStart==undefined? undefined : this.state.selectedData[this.state.selectedData.length - 1].rowID;
+        this.selectStart = this.state.selectedData[0].rowID;
+        this.selectEnd = this.state.selectedData[this.state.selectedData.length - 1].rowID;
         this.state.currentSelectedRowIndex = index;
         this.setState({ data: this.state.data, currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
 
@@ -132,33 +133,36 @@ class App extends React.Component {
     }
 
     rowDataUpdateStatus(index,updateStatus) {
-        this.state.data[index].isUpdated = updateStatus;
+        this.tempArr[index].isUpdated = updateStatus;
+        this.setState({data : this.state.data});
     }
 
     /* New Data from AMPS will be handled here first */
 
     handleNewData(newData) {
         // let rowData = { "rowID": this.rowIndex++, "data": newData, "isSelected": false };
-
-        if (this.state.data[newData.swapId - 1] == undefined) {
+        // this.tempArr = 
+        if (this.tempArr[newData.swapId - 1] == undefined) {
             // if(this.state.data.findIndex((item)=>{item.data.swapId==newData.swapId}) == -1){
             let rowData = {
                 "rowID": newData.swapId - 1, "data": newData,
                 "isSelected": false, "isUpdated" : false
             };
-            this.state.data[newData.swapId - 1] = rowData;
+            // this.state.data[newData.swapId - 1] = rowData;
+            this.tempArr[newData.swapId-1] = rowData;
         }
         else {
-            let temp = JSON.parse(JSON.stringify(this.state.data[newData.swapId - 1]));
+            // const temp = this.state.data[newData.swapId - 1];
+            const temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
             temp.data.swap_rate = newData.swap_rate;
             temp.data.payFixedRate = newData.payFixedRate;
             temp.isUpdated = true;
-            this.state.data[newData.swapId - 1] = temp;
+            this.tempArr[newData.swapId-1] = temp;
         }
-        this.updateLoadData();
+        let loadableData =  this.updateLoadData(this.tempArr);
 
         // if(this.state.data.length==50)
-        this.setState({ data: this.state.data });
+        this.setState({ viewableData : loadableData });
         // this.forceUpdate();
     }
 
@@ -172,27 +176,40 @@ class App extends React.Component {
         this.forceUpdate();
     }
 
-    updateLoadData() {
+    updateLoadData(array) {
         let node = document.getElementById('scrollableTableDiv');
         // console.log('ScrollTop Value: ' + node.scrollTop);
         let scrolledDistance = node.scrollTop;
         // this.rowHeight = 30;
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
-        this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50);
+        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50,array);
 
     }
 
-    sliceLoadableData(initialIndex, lastDisplayRow) {
+    sliceLoadableData(initialIndex, lastDisplayRow,dataArr) {
 
-        this.state.viewableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : this.state.data.slice(initialIndex, lastDisplayRow);
+        // this.state.viewableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : this.state.data.slice(initialIndex, lastDisplayRow);
+        // this.topDivHeight = initialIndex * this.rowHeight;
+        // let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length - 1];
+        // this.bottomDivHeight = (this.state.data.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
+        // // this.lowerLimit = this.state.viewableData[0].rowID + 1;
+        // this.lowerLimit = initialIndex + 1;
+        // let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
+        // this.upperLimit = upperRowLimit > this.state.viewableData[this.state.viewableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
+        // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
+
+        let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
+        // loadableData = JSON.parse(JSON.stringify(loadableData));
+        // loadableData[0].data.swap_rate = 10.45;
         this.topDivHeight = initialIndex * this.rowHeight;
-        let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length - 1];
-        this.bottomDivHeight = (this.state.data.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
+        let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
+        this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
         // this.lowerLimit = this.state.viewableData[0].rowID + 1;
         this.lowerLimit = initialIndex + 1;
         let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
-        this.upperLimit = upperRowLimit > this.state.viewableData[this.state.viewableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
-        // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
+        this.upperLimit = upperRowLimit > loadableData[loadableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
+
+        return loadableData;
     }
 
 
@@ -204,10 +221,10 @@ class App extends React.Component {
                     <h1 className={styles.header}>Random Data from AMPS</h1>
                     {/* <button className={styles.button} onClick={this.sortData.bind(this)}>Subscribe</button> */}
                     <label>  Subscriber Id : {this.state.subscriberId}</label>
-                    <label> | Total Records: {this.state.data.length}</label>
+                    <label> | Total Records: {this.tempArr.length}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     {/* <label> | Load Time : {this.state.loadTime}ms</label> */}
-                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.state.data.length}</label>
+                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.tempArr.length}</label>
                 </div>
                 <div>
                     <div className={styles.gridContainerDiv}>
@@ -223,7 +240,7 @@ class App extends React.Component {
                                         <th className={styles.th}>PayFixedRate</th>
                                         <th className={styles.th}>PayCurrency</th>
                                         <th className={styles.th}>YearsLeft</th>
-                                        {/* <th className={styles.th}>PayFixedRate</th> */}
+                                        <th className={styles.th}>PayFixedRate</th>
                                         <th className={styles.th}>SecondaryCurrency</th>
                                         <th className={styles.th}>Customer</th>
                                         <th className={styles.th}>SwapId</th>
