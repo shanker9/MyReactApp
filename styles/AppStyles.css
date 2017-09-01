@@ -16,15 +16,22 @@
         background-color: #F3EEEE
     }
     .td {
-        border: 1px solid black;
+        border: 1px solid grey;
         font-size: 80%;
         font-weight: 300;
-        text-align: center;
+        color: #E7E2E2;                
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
+        background-color: #323232;
+        -webkit-transition: background-color 3s;
+        -moz-transition: background-color 3s;
+        transition: background-color 3s;       
+    }
 
-       
+    .leftAlignContentCells {
+        align-content: left;
+        align-items : left;
     }
 
     .th {
@@ -35,7 +42,7 @@
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
-        color: #F7F7F7;        
+        color: #E7E2E2;        
     }
 
     .tableDiv {
@@ -61,15 +68,7 @@
 
     .tableRow{
         height: 30px;
-        -webkit-transition: background-color 0.5s;
-        -moz-transition: background-color 0.5s;
-        transition: background-color 0.5s;
-    }
-
-    .animateTableRow {
-        height: 30px;        
-        animation: example 1s;
-        /* animation-iteration-count: infinite; */
+        text-align: center;        
     }
 
     .headerDiv {

@@ -172,8 +172,10 @@ class App extends React.Component {
 
         headerNode.scrollLeft = tableNode.scrollLeft;
 
-        this.updateLoadData();
-        this.forceUpdate();
+        let loadableData = this.updateLoadData(this.tempArr);
+        this.setState({ viewableData : loadableData });
+        
+        // this.forceUpdate();
     }
 
     updateLoadData(array) {
@@ -240,14 +242,14 @@ class App extends React.Component {
                                         <th className={styles.th}>PayFixedRate</th>
                                         <th className={styles.th}>PayCurrency</th>
                                         <th className={styles.th}>YearsLeft</th>
-                                        <th className={styles.th}>PayFixedRate</th>
+                                        <th className={styles.th}>NewInterest</th>
                                         <th className={styles.th}>SecondaryCurrency</th>
                                         <th className={styles.th}>Customer</th>
                                         <th className={styles.th}>SwapId</th>
                                         <th className={styles.th}>Interest</th>
-                                        <th className={styles.th}>SwapRate</th>
+                                        <th className={styles.th}>YearsPay</th>
                                         <th className={styles.th}>YearsIn</th>
-                                        <th className={styles.th}>PayFixedRate</th>
+                                        <th className={styles.th}>FixedRate</th>
                                     </tr>
                                 </thead>
                             </table>

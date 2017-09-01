@@ -8,7 +8,7 @@ class TableRow extends React.Component {
         super();
         this.state = {
             isSelected: undefined,
-            shouldAnimate : false
+            shouldAnimate: false
         }
 
         this.handleRowClick = this.handleRowClick.bind(this);
@@ -23,39 +23,39 @@ class TableRow extends React.Component {
         this.state.isSelected = nextProps.selectState;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        // console.log('currentPropsSwapRate',this.props.data.swap_rate);
-        // console.log('nextPropsSwapRate',nextProps.data.swap_rate);
-        if(this.props.data.swap_rate!=nextProps.data.swap_rate){
-            console.log('propschanged');
-            return true;            
-        }else
-            return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     // console.log('currentPropsSwapRate',this.props.data.swap_rate);
+    //     // console.log('nextPropsSwapRate',nextProps.data.swap_rate);
+    //     // if (this.props.data.swap_rate != nextProps.data.swap_rate) {
+    //     //     console.log('propschanged');
+    //     //     return true;
+    //     // } else
+    //     //     return false;
+    // }
 
     componentWillUpdate() {
         // this.state.shouldAnimate = true;
     }
 
     componentDidUpdate() {
-        
-        this.refs.tableRow.style.backgroundColor = 'yellow';
 
-        let blueCircle = this.refs.tableRow;
-        
-       blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
-       blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
-       blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
-       blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
-       blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
-        
+        // this.refs.tableRow.style.backgroundColor = 'yellow';
+
+        // let blueCircle = this.refs.tableRow;
+
+        // blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
+        // blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
+        // blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
+        // blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
+        // blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
+
 
 
     }
 
     detectTheEnd(e) {
-        console.log('Transition End');
-        this.refs.tableRow.style.backgroundColor = 'white';
+        // console.log('Transition End');
+        // this.refs.tableRow.style.backgroundColor = 'white';
     }
 
     handleRowClick(e) {
@@ -70,10 +70,26 @@ class TableRow extends React.Component {
 
         return (
             <tr ref={"tableRow"}
-                className= {styles.tableRow}
-                onClick={this.handleRowClick}
-                style={{ backgroundColor: this.state.isSelected ? '#92A3B0' : 'white' }}>
-                <td className={styles.td} >{this.props.data.customer}</td>
+                className={styles.tableRow}
+                onClick={this.handleRowClick}>
+                <TableCell cellData={this.props.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
+                <TableCell cellData={this.props.data.swapId}></TableCell>
+                <TableCell cellData={this.props.data.interest}></TableCell>
+                <TableCell cellData={this.props.data.swap_rate}></TableCell>
+                <TableCell cellData={this.props.data.yearsIn}></TableCell>
+                <TableCell cellData={this.props.data.payFixedRate}></TableCell>
+                <TableCell cellData={this.props.data.payCurrency}></TableCell>
+                <TableCell cellData={this.props.data.yearsIn * 2}></TableCell>
+                <TableCell cellData={this.props.data.interest*2}></TableCell>
+                <TableCell cellData={this.props.data.payCurrency}></TableCell>
+                <TableCell cellData={this.props.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
+                <TableCell cellData={this.props.data.swapId}></TableCell>
+                <TableCell cellData={this.props.data.interest}></TableCell>
+                <TableCell cellData={this.props.data.yearsIn*3}></TableCell>
+                <TableCell cellData={this.props.data.yearsIn}></TableCell>
+                <TableCell cellData={this.props.data.payCurrency}></TableCell>
+
+                {/* <td className={styles.td} >{this.props.data.customer}</td>
                 <td className={styles.td} >{this.props.data.swapId}</td>
                 <td className={styles.td} >{this.props.data.interest}</td>
                 <td className={styles.td} >{this.props.data.swap_rate}</td>
@@ -88,11 +104,13 @@ class TableRow extends React.Component {
                 <td className={styles.td}>{this.props.data.interest}</td>
                 <td className={styles.td}>{this.props.data.swap_rate}</td>
                 <td className={styles.td}>{this.props.data.yearsIn}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
+                <td className={styles.td}>{this.props.data.payFixedRate}</td> */}
             </tr>
         )
     }
 
 }
+
+
 
 export default TableRow;
