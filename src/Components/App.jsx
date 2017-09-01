@@ -103,8 +103,8 @@ class App extends React.Component {
 
         }
         this.state.selectedData = this.state.data.filter((row) => { return row.isSelected == true });
-        this.selectStart = this.state.selectedData[0].rowID;
-        this.selectEnd = this.state.selectedData[this.state.selectedData.length - 1].rowID;
+        this.selectStart = this.state.selectedData.length > 0 ? this.state.selectedData[0].rowID : undefined;
+        this.selectEnd = this.selectStart==undefined? undefined : this.state.selectedData[this.state.selectedData.length - 1].rowID;
         this.state.currentSelectedRowIndex = index;
         this.setState({ data: this.state.data, currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
 
@@ -157,8 +157,8 @@ class App extends React.Component {
         this.updateLoadData();
 
         // if(this.state.data.length==50)
-        // this.setState({ data: this.state.data });
-        this.forceUpdate();
+        this.setState({ data: this.state.data });
+        // this.forceUpdate();
     }
 
     handleScroll() {

@@ -25,8 +25,7 @@ class TableView extends React.Component {
                                 indexVal={item.rowID}
                                 dataUpdateHandler={this.props.selectionDataUpdateHandler}
                                 selectState={item.isSelected}
-                                isUpdate={item.isUpdated}
-                                rowDataUpdateStatus={this.props.dataUpdateStatus} />)}
+                                />)}
                         <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>

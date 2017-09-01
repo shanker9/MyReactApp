@@ -23,21 +23,15 @@ class TableRow extends React.Component {
         this.state.isSelected = nextProps.selectState;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps.isUpdate == true){
-            return true;
-        }
-        else
-            return false;
-    }
+
 
     componentWillUpdate() {
         // this.state.isSelected = this.props.selectState;
         // this.refs.tableRow.style.animationName = true ? styles.example : 0;
-        console.log('is Data Updated: ', this.props.isUpdate);
-        if (this.props.isUpdate) {
-            console.log('updated Row');
-        }
+        // console.log('is Data Updated: ', this.props.isUpdate);
+        // if (this.props.isUpdate) {
+        //     console.log('updated Row');
+        // }
     }
 
     componentDidUpdate() {
@@ -45,9 +39,9 @@ class TableRow extends React.Component {
         // this.dataUpdateAnimation();
         // console.log('comp update');
         // this.props.isUpdate = false;
-        if (this.props.isUpdate) {
-            this.props.rowDataUpdateStatus(this.props.indexVal, false);
-        }
+        // if (this.props.isUpdate) {
+        //     this.props.rowDataUpdateStatus(this.props.indexVal, false);
+        // }
     }
 
     handleRowClick(e) {
@@ -75,7 +69,7 @@ class TableRow extends React.Component {
     render() {
 
         return (
-            <tr ref={"tableRow"} className={this.props.isUpdate ? styles.animateTableRow : styles.tableRow} onClick={this.handleRowClick}
+            <tr ref={"tableRow"} className={styles.tableRow} onClick={this.handleRowClick}
                 style={{ backgroundColor: this.state.isSelected ? '#92A3B0' : 'white' }}>
                 <td className={styles.td} >{this.props.data.customer}</td>
                 <td className={styles.td} >{this.props.data.swapId}</td>
