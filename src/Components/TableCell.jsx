@@ -23,7 +23,7 @@ class TableCell extends React.Component {
         if (this.props.cellData != nextProps.cellData) {
             console.log('propschanged');
             // nextState.animateColor = parseInt(this.props.cellData.toString()) > parseInt(nextProps.cellData.toString()) ? '#D94C4C' : 'green';
-            nextState.animateColor = 'yellow';
+            // nextState.animateColor = 'yellow';
             return true;
         } else
             return false;
@@ -36,21 +36,19 @@ class TableCell extends React.Component {
 
         this.refs.tableCell.style.backgroundColor = this.state.animateColor;
 
-        let blueCircle = this.refs.tableCell;
+        let tableCell = this.refs.tableCell;
 
-        blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
-        blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
-        blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
-        blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
-        blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
-
-
-
+        tableCell.addEventListener("transitionend", this.detectTheEnd, false);
+        tableCell.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("msTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("oTransitionEnd", this.detectTheEnd, false);
     }
 
     detectTheEnd(e) {
         console.log('Transition End');
-        this.refs.tableCell.style.backgroundColor = 'white';
+        // this.refs.tableCell.style.backgroundColor = this.props.parentBackgroundColor;
+        this.refs.tableCell.style.backgroundColor = "";
     }
 
 

@@ -75,11 +75,11 @@ class App extends React.Component {
         if (this.state.currentSelectedRowIndex !== undefined && isMultiSelect) {
             if (this.state.currentSelectedRowIndex < index)
                 for (i = this.state.currentSelectedRowIndex; i <= index; i++) {
-                    this.state.data[i].isSelected = true;
+                    this.tempArr[i].isSelected = true;
                 }
             else
                 for (i = index; i <= this.state.currentSelectedRowIndex; i++) {
-                    this.state.data[i].isSelected = true;
+                    this.tempArr[i].isSelected = true;
                 }
         } else {
 
@@ -88,26 +88,28 @@ class App extends React.Component {
                 // this.state.data[this.state.currentSelectedRowIndex].isSelected = !this.state.data[this.state.currentSelectedRowIndex].isSelected;
                 // selectedStart = this.state.data.indexOf(this.state.selectedData[0]);
                 // selectedEnd = this.state.data.indexOf(this.state.selectedData[this.state.selectedData.length-1]);
-                if (this.state.selectedData.length == 1 && this.state.selectedData[0] == this.state.data[index]) {
+                if (this.state.selectedData.length == 1 && this.state.selectedData[0] == this.tempArr[index]) {
 
                 }
                 else {
                     selectedStart = this.selectStart;
                     selectedEnd = this.selectEnd;
                     for (; selectedStart <= selectedEnd; selectedStart++) {
-                        this.state.data[selectedStart].isSelected = false;
+                        this.tempArr[selectedStart].isSelected = false;
                     }
                 }
             }
 
-            this.state.data[index].isSelected = !this.state.data[index].isSelected;
+            this.tempArr[index].isSelected = !this.tempArr[index].isSelected;
 
         }
-        this.state.selectedData = this.state.data.filter((row) => { return row.isSelected == true });
+        this.state.selectedData = this.tempArr.filter((row) => { return row.isSelected == true });
         this.selectStart = this.state.selectedData[0].rowID;
         this.selectEnd = this.state.selectedData[this.state.selectedData.length - 1].rowID;
         this.state.currentSelectedRowIndex = index;
-        this.setState({ data: this.state.data, currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
+        // this.setState({ currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
+        let loadableData = this.updateLoadData(this.tempArr);
+        this.setState({ viewableData : loadableData, currentSelectedRowIndex : index });
 
     }
 

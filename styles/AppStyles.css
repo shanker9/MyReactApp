@@ -23,7 +23,6 @@
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
-        background-color: white;
         -webkit-transition: background-color 1s;
         -moz-transition: background-color 1s;
         transition: background-color 1s;       
@@ -83,6 +82,6 @@
     }
 
     @keyframes example {
-        from {background-color: white;}
+        from {background-color: #8593A4;}
         to {background-color: yellow;}
     }
