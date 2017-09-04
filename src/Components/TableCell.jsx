@@ -22,7 +22,8 @@ class TableCell extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.cellData != nextProps.cellData) {
             console.log('propschanged');
-            nextState.animateColor = parseInt(this.props.cellData.toString()) > parseInt(nextProps.cellData.toString()) ? '#D94C4C' : 'green';
+            // nextState.animateColor = parseInt(this.props.cellData.toString()) > parseInt(nextProps.cellData.toString()) ? '#D94C4C' : 'green';
+            nextState.animateColor = 'yellow';
             return true;
         } else
             return false;
@@ -49,7 +50,7 @@ class TableCell extends React.Component {
 
     detectTheEnd(e) {
         console.log('Transition End');
-        this.refs.tableCell.style.backgroundColor = '#323232';
+        this.refs.tableCell.style.backgroundColor = 'white';
     }
 
 
