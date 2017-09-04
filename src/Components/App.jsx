@@ -36,7 +36,7 @@ class App extends React.Component {
         this.scrollableDivClientHeight = undefined;
         this.selectStart = undefined;
         this.selectEnd = undefined;
-        this.isSorted = false;
+        this.isSorted = true;
         this.tempArr = [];
         // this.currentSelectedRowIndex = undefined;
     }
@@ -155,12 +155,15 @@ class App extends React.Component {
         }
         else {
             // const temp = this.state.data[newData.swapId - 1];
-            const temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
+            let temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
             temp.data.swap_rate = newData.swap_rate;
             temp.data.payFixedRate = newData.payFixedRate;
             temp.isUpdated = true;
             this.tempArr[newData.swapId-1] = temp;
         }
+        // if(this.isSorted)
+            // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
+
         let loadableData =  this.updateLoadData(this.tempArr);
 
         // if(this.state.data.length==50)
@@ -202,12 +205,13 @@ class App extends React.Component {
         // this.upperLimit = upperRowLimit > this.state.viewableData[this.state.viewableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
-        let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
+        let loadableData = dataArr.slice(initialIndex, lastDisplayRow);
         // loadableData = JSON.parse(JSON.stringify(loadableData));
         // loadableData[0].data.swap_rate = 10.45;
         this.topDivHeight = initialIndex * this.rowHeight;
         let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
-        this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
+        // this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
+        this.bottomDivHeight = (dataArr.length - (initialIndex + loadableData.length + 1)) * this.rowHeight;
         // this.lowerLimit = this.state.viewableData[0].rowID + 1;
         this.lowerLimit = initialIndex + 1;
         let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
@@ -258,7 +262,7 @@ class App extends React.Component {
                         </div>
                         <div>
                             <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
+                                <TableView viewType = "GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
                             </div>
                         </div>
                     </div>
