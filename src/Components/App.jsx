@@ -205,17 +205,19 @@ class App extends React.Component {
         // this.upperLimit = upperRowLimit > this.state.viewableData[this.state.viewableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
+        // let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
         let loadableData = dataArr.slice(initialIndex, lastDisplayRow);
         // loadableData = JSON.parse(JSON.stringify(loadableData));
         // loadableData[0].data.swap_rate = 10.45;
         this.topDivHeight = initialIndex * this.rowHeight;
         let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
         // this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
-        this.bottomDivHeight = (dataArr.length - (initialIndex + loadableData.length + 1)) * this.rowHeight;
+        this.bottomDivHeight = (dataArr.length - (initialIndex + loadableData.length)) * this.rowHeight;
         // this.lowerLimit = this.state.viewableData[0].rowID + 1;
         this.lowerLimit = initialIndex + 1;
         let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
-        this.upperLimit = upperRowLimit > loadableData[loadableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
+        // this.upperLimit = upperRowLimit > loadableData[loadableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
+        this.upperLimit = upperRowLimit;
 
         return loadableData;
     }
