@@ -3,7 +3,7 @@ import AmpsClientData from '../Amps/AmpsData.js';
 import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
-
+var values;
 class App extends React.Component {
 
     constructor() {
@@ -28,6 +28,7 @@ class App extends React.Component {
         this.updateSelected = this.updateSelected.bind(this);
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
+        this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -111,7 +112,7 @@ class App extends React.Component {
         this.state.currentSelectedRowIndex = index;
         // this.setState({ currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
         let loadableData = this.updateLoadData(this.tempArr);
-        this.setState({ viewableData : loadableData, currentSelectedRowIndex : index });
+        this.setState({ viewableData: loadableData, currentSelectedRowIndex: index });
 
     }
 
@@ -136,9 +137,9 @@ class App extends React.Component {
         // })
     }
 
-    rowDataUpdateStatus(index,updateStatus) {
+    rowDataUpdateStatus(index, updateStatus) {
         this.tempArr[index].isUpdated = updateStatus;
-        this.setState({data : this.state.data});
+        this.setState({ data: this.state.data });
     }
 
     /* New Data from AMPS will be handled here first */
@@ -165,20 +166,27 @@ class App extends React.Component {
         //     this.tempArr[newData.swapId-1] = temp;
         // }
         // if(this.isSorted)
-            // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
-            let item = this.dataMap.get(newData.swapId);
-            if(item==undefined){
-                this.dataMap.set(newData.swapId,{"rowID": newData.swapId - 1, "data":newData,"isSelected":false,"isUpdated":false});
-            }else{
-                this.dataMap.set(newData.swapId,{"rowID":item.rowID, "data":newData,"isSelected":item.isSelected,"isUpdated":true});
-            }
+        // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
+        let item = this.dataMap.get(newData.swapId);
+        if (item == undefined) {
+            this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
+        } else {
+            this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+            this.triggerConditionalUIUpdate();
+        }
 
-        let loadableData =  this.updateLoadData(this.dataMap);
 
-        // if(this.state.data.length==50)
-        this.setState({ viewableData : loadableData });
+        if (this.dataMap.size == 100) {
+            this.triggerConditionalUIUpdate();
+        }
         // this.forceUpdate();
     }
+
+    triggerConditionalUIUpdate() {
+        let loadableData = this.updateLoadData(this.dataMap);
+        this.setState({ viewableData: loadableData });
+    }
+
 
     handleScroll() {
         let headerNode = document.getElementById('scrollableHeaderDiv');
@@ -187,8 +195,8 @@ class App extends React.Component {
         headerNode.scrollLeft = tableNode.scrollLeft;
 
         let loadableData = this.updateLoadData(this.dataMap);
-        this.setState({ viewableData : loadableData });
-        
+        this.setState({ viewableData: loadableData });
+
         // this.forceUpdate();
     }
 
@@ -198,11 +206,11 @@ class App extends React.Component {
         let scrolledDistance = node.scrollTop;
         // this.rowHeight = 30;
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
-        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50,array);
+        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, array);
 
     }
 
-    sliceLoadableData(initialIndex, lastDisplayRow,dataArr) {
+    sliceLoadableData(initialIndex, lastDisplayRow, dataArr) {
 
         // this.state.viewableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : this.state.data.slice(initialIndex, lastDisplayRow);
         // this.topDivHeight = initialIndex * this.rowHeight;
@@ -215,11 +223,11 @@ class App extends React.Component {
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
         // let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
-        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow,dataArr);
+        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow, dataArr);
         // loadableData = JSON.parse(JSON.stringify(loadableData));
         // loadableData[0].data.swap_rate = 10.45;
         this.topDivHeight = initialIndex * this.rowHeight;
-        let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
+        // let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
         // this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
         this.bottomDivHeight = (dataArr.size - (initialIndex + loadableData.length)) * this.rowHeight;
         // this.lowerLimit = this.state.viewableData[0].rowID + 1;
@@ -231,14 +239,28 @@ class App extends React.Component {
         return loadableData;
     }
 
-    sliceHashmap(initialIndex, endIndex, hashMap){
-        let keys = Array.from(hashMap.keys());
-        let availableEndIndex,i,result=[];
-        availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
+    sliceHashmap(initialIndex, endIndex, hashMap) {
+        // let keys = Array.from(hashMap.keys());
+        // let availableEndIndex, i, result = [];
+        // availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
 
-        for(i=initialIndex;i<availableEndIndex;i++){
-            result.push(hashMap.get(keys[i]));
+        // for (i = initialIndex; i < availableEndIndex; i++) {
+        //     result.push(hashMap.get(keys[i]));
+        // }
+
+        // values = Array.from(hashMap.values());
+        // let result = values.slice(initialIndex, endIndex);
+
+        let iter = hashMap.keys();
+
+        let i=0,result = [];
+        for(;i<initialIndex;i++){
+            iter.next();
         }
+        for(;i<endIndex;i++){
+            result.push(iter.next().value);
+        }
+
         return result;
     }
 
@@ -284,7 +306,7 @@ class App extends React.Component {
                         </div>
                         <div>
                             <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewType = "GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
+                                <TableView viewType="GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
                             </div>
                         </div>
                     </div>

@@ -47,7 +47,7 @@ export default class AmpsData {
     testData(callback) {
         // let i=0;
         // let dataFire = setInterval(()=>{
-        let j = i + 500;
+        let j = i + 500000;
         var counterParty = ["Goldman Sachs", "Bank of America", "JP Morgan", "PIMCO", "Bridgewater", "Morgan Stanley", "General Electric",
             "General Motors", "Deutsche Bank", "Fidelity"];
         var interest = ["2.5", "3", "4.5", "5.6", "3.3", "6.5", "2.3", "3.4", "4.2", "3.2"];
@@ -60,6 +60,10 @@ export default class AmpsData {
                 "yearsIn": i * 2, "payFixedRate": (i * 2.123).toFixed(2), "payCurrency": "USD"
             });
         }
+        // callback({
+        //         "swapId": 1, "customer": counterParty[8], "interest": interest[7], "swap_rate": (interest[7] * 2.3).toFixed(2),
+        //         "yearsIn": 2, "payFixedRate": (2.123).toFixed(2), "payCurrency": "USD"
+        // });
 
         // setInterval(() => {
         //     let k = 0;
