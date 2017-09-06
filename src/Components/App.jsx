@@ -166,17 +166,13 @@ class App extends React.Component {
         // }
         // if(this.isSorted)
             // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
-        let item = this.dataMap.get(newData.swapId);
-        if(item==undefined){
-            this.dataMap.set(newData.swapId,{"data":newData,"isSelected":false,"isUpdated":false});
-        }else{
-            this.dataMap.set(newData.swapId,{"data":newData,"isSelected":item.isSelected,"isUpdated":true});
-        }
+            let item = this.dataMap.get(newData.swapId);
+            if(item==undefined){
+                this.dataMap.set(newData.swapId,{"rowID": newData.swapId - 1, "data":newData,"isSelected":false,"isUpdated":false});
+            }else{
+                this.dataMap.set(newData.swapId,{"rowID":item.rowID, "data":newData,"isSelected":item.isSelected,"isUpdated":true});
+            }
 
-        
-
-
-        // let loadableData =  this.updateLoadData(this.tempArr);
         let loadableData =  this.updateLoadData(this.dataMap);
 
         // if(this.state.data.length==50)
@@ -219,7 +215,6 @@ class App extends React.Component {
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
         // let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
-        // let loadableData = dataArr.slice(initialIndex, lastDisplayRow);
         let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow,dataArr);
         // loadableData = JSON.parse(JSON.stringify(loadableData));
         // loadableData[0].data.swap_rate = 10.45;
@@ -246,7 +241,6 @@ class App extends React.Component {
         }
         return result;
     }
-
 
 
     render() {
