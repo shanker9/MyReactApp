@@ -27,6 +27,7 @@ class App extends React.Component {
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
         this.updateSelected = this.updateSelected.bind(this);
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
+        this.sliceHashmap = this.sliceHashmap.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -38,6 +39,7 @@ class App extends React.Component {
         this.selectEnd = undefined;
         this.isSorted = true;
         this.tempArr = [];
+        this.dataMap = new Map();
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -142,29 +144,40 @@ class App extends React.Component {
     /* New Data from AMPS will be handled here first */
 
     handleNewData(newData) {
+        let i;
         // let rowData = { "rowID": this.rowIndex++, "data": newData, "isSelected": false };
         // this.tempArr = 
-        if (this.tempArr[newData.swapId - 1] == undefined) {
-            // if(this.state.data.findIndex((item)=>{item.data.swapId==newData.swapId}) == -1){
-            let rowData = {
-                "rowID": newData.swapId - 1, "data": newData,
-                "isSelected": false, "isUpdated" : false
-            };
-            // this.state.data[newData.swapId - 1] = rowData;
-            this.tempArr[newData.swapId-1] = rowData;
-        }
-        else {
-            // const temp = this.state.data[newData.swapId - 1];
-            let temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
-            temp.data.swap_rate = newData.swap_rate;
-            temp.data.payFixedRate = newData.payFixedRate;
-            temp.isUpdated = true;
-            this.tempArr[newData.swapId-1] = temp;
-        }
+        // if (this.tempArr[newData.swapId - 1] == undefined) {
+        //     // if(this.state.data.findIndex((item)=>{item.data.swapId==newData.swapId}) == -1){
+        //     let rowData = {
+        //         "rowID": newData.swapId - 1, "data": newData,
+        //         "isSelected": false, "isUpdated" : false
+        //     };
+        //     // this.state.data[newData.swapId - 1] = rowData;
+        //     this.tempArr[newData.swapId-1] = rowData;
+        // }
+        // else {
+        //     // const temp = this.state.data[newData.swapId - 1];
+        //     let temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
+        //     temp.data.swap_rate = newData.swap_rate;
+        //     temp.data.payFixedRate = newData.payFixedRate;
+        //     temp.isUpdated = true;
+        //     this.tempArr[newData.swapId-1] = temp;
+        // }
         // if(this.isSorted)
             // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
+        let item = this.dataMap.get(newData.swapId);
+        if(item==undefined){
+            this.dataMap.set(newData.swapId,{"data":newData,"isSelected":false,"isUpdated":false});
+        }else{
+            this.dataMap.set(newData.swapId,{"data":newData,"isSelected":item.isSelected,"isUpdated":true});
+        }
 
-        let loadableData =  this.updateLoadData(this.tempArr);
+        
+
+
+        // let loadableData =  this.updateLoadData(this.tempArr);
+        let loadableData =  this.updateLoadData(this.dataMap);
 
         // if(this.state.data.length==50)
         this.setState({ viewableData : loadableData });
@@ -177,7 +190,7 @@ class App extends React.Component {
 
         headerNode.scrollLeft = tableNode.scrollLeft;
 
-        let loadableData = this.updateLoadData(this.tempArr);
+        let loadableData = this.updateLoadData(this.dataMap);
         this.setState({ viewableData : loadableData });
         
         // this.forceUpdate();
@@ -206,13 +219,14 @@ class App extends React.Component {
         // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
         // let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
-        let loadableData = dataArr.slice(initialIndex, lastDisplayRow);
+        // let loadableData = dataArr.slice(initialIndex, lastDisplayRow);
+        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow,dataArr);
         // loadableData = JSON.parse(JSON.stringify(loadableData));
         // loadableData[0].data.swap_rate = 10.45;
         this.topDivHeight = initialIndex * this.rowHeight;
         let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
         // this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
-        this.bottomDivHeight = (dataArr.length - (initialIndex + loadableData.length)) * this.rowHeight;
+        this.bottomDivHeight = (dataArr.size - (initialIndex + loadableData.length)) * this.rowHeight;
         // this.lowerLimit = this.state.viewableData[0].rowID + 1;
         this.lowerLimit = initialIndex + 1;
         let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
@@ -221,6 +235,18 @@ class App extends React.Component {
 
         return loadableData;
     }
+
+    sliceHashmap(initialIndex, endIndex, hashMap){
+        let keys = Array.from(hashMap.keys());
+        let availableEndIndex,i,result=[];
+        availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
+
+        for(i=initialIndex;i<availableEndIndex;i++){
+            result.push(hashMap.get(keys[i]));
+        }
+        return result;
+    }
+
 
 
     render() {
@@ -231,10 +257,10 @@ class App extends React.Component {
                     <h1 className={styles.header}>Random Data from AMPS</h1>
                     {/* <button className={styles.button} onClick={this.sortData.bind(this)}>Subscribe</button> */}
                     <label>  Subscriber Id : {this.state.subscriberId}</label>
-                    <label> | Total Records: {this.tempArr.length}</label>
+                    <label> | Total Records: {this.dataMap.size}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     {/* <label> | Load Time : {this.state.loadTime}ms</label> */}
-                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.tempArr.length}</label>
+                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
                 </div>
                 <div>
                     <div className={styles.gridContainerDiv}>

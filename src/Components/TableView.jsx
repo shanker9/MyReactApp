@@ -20,9 +20,9 @@ class TableView extends React.Component {
                         <div style={{ height: this.props.topDivHeight }}></div>
                         {this.props.viewableData.map((item, i) =>
                             <TableRow
-                                key={item.rowID}
+                                key={i}
                                 data={item.data}
-                                indexVal={item.rowID}
+                                indexVal={item.data.swapId}
                                 dataUpdateHandler={this.props.selectionDataUpdateHandler}
                                 selectState={item.isSelected}
                                 />)}
