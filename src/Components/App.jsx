@@ -145,41 +145,15 @@ class App extends React.Component {
     /* New Data from AMPS will be handled here first */
 
     handleNewData(newData) {
-        let i;
-        // let rowData = { "rowID": this.rowIndex++, "data": newData, "isSelected": false };
-        // this.tempArr = 
-        // if (this.tempArr[newData.swapId - 1] == undefined) {
-        //     // if(this.state.data.findIndex((item)=>{item.data.swapId==newData.swapId}) == -1){
-        //     let rowData = {
-        //         "rowID": newData.swapId - 1, "data": newData,
-        //         "isSelected": false, "isUpdated" : false
-        //     };
-        //     // this.state.data[newData.swapId - 1] = rowData;
-        //     this.tempArr[newData.swapId-1] = rowData;
-        // }
-        // else {
-        //     // const temp = this.state.data[newData.swapId - 1];
-        //     let temp = JSON.parse(JSON.stringify(this.tempArr[newData.swapId-1]));
-        //     temp.data.swap_rate = newData.swap_rate;
-        //     temp.data.payFixedRate = newData.payFixedRate;
-        //     temp.isUpdated = true;
-        //     this.tempArr[newData.swapId-1] = temp;
-        // }
-        // if(this.isSorted)
-        // this.tempArr.sort((a,b)=>{a.data.customer.localeCompare(b.data.customer)});
+
         let item = this.dataMap.get(newData.swapId);
         if (item == undefined) {
             this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
             this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-            this.triggerConditionalUIUpdate();
         }
 
-
-        if (this.dataMap.size == 100) {
             this.triggerConditionalUIUpdate();
-        }
-        // this.forceUpdate();
     }
 
     triggerConditionalUIUpdate() {
@@ -194,52 +168,33 @@ class App extends React.Component {
 
         headerNode.scrollLeft = tableNode.scrollLeft;
 
-        let loadableData = this.updateLoadData(this.dataMap);
-        this.setState({ viewableData: loadableData });
+        this.triggerConditionalUIUpdate();
 
-        // this.forceUpdate();
     }
 
-    updateLoadData(array) {
+    updateLoadData(map) {
         let node = document.getElementById('scrollableTableDiv');
         // console.log('ScrollTop Value: ' + node.scrollTop);
         let scrolledDistance = node.scrollTop;
-        // this.rowHeight = 30;
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
-        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, array);
+        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
 
     }
 
-    sliceLoadableData(initialIndex, lastDisplayRow, dataArr) {
+    sliceLoadableData(initialIndex, lastDisplayRow, map) {
 
-        // this.state.viewableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : this.state.data.slice(initialIndex, lastDisplayRow);
-        // this.topDivHeight = initialIndex * this.rowHeight;
-        // let lastDisplayableRowIndex = this.state.viewableData[this.state.viewableData.length - 1];
-        // this.bottomDivHeight = (this.state.data.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
-        // // this.lowerLimit = this.state.viewableData[0].rowID + 1;
-        // this.lowerLimit = initialIndex + 1;
-        // let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
-        // this.upperLimit = upperRowLimit > this.state.viewableData[this.state.viewableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
-        // this.udpateTotalRecords(this.state.data.length, this.state.viewableData.length); // For debugging purposes
 
-        // let loadableData = this.isSorted ? this.state.sortedData.slice(initialIndex, lastDisplayRow) : dataArr.slice(initialIndex, lastDisplayRow);
-        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow, dataArr);
-        // loadableData = JSON.parse(JSON.stringify(loadableData));
-        // loadableData[0].data.swap_rate = 10.45;
+        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow, map);
         this.topDivHeight = initialIndex * this.rowHeight;
-        // let lastDisplayableRowIndex = loadableData[loadableData.length - 1];
-        // this.bottomDivHeight = (dataArr.length - (lastDisplayableRowIndex.rowID + 1)) * this.rowHeight;
-        this.bottomDivHeight = (dataArr.size - (initialIndex + loadableData.length)) * this.rowHeight;
-        // this.lowerLimit = this.state.viewableData[0].rowID + 1;
+        this.bottomDivHeight = (map.size - (initialIndex + loadableData.length)) * this.rowHeight;
         this.lowerLimit = initialIndex + 1;
         let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
-        // this.upperLimit = upperRowLimit > loadableData[loadableData.length - 1].rowID + 1 ? lastDisplayableRowIndex.rowID + 1 : upperRowLimit;
         this.upperLimit = upperRowLimit;
 
         return loadableData;
     }
 
-    sliceHashmap(initialIndex, endIndex, hashMap) {
+    sliceHashmap(initialIndex, endIndex, map) {
         // let keys = Array.from(hashMap.keys());
         // let availableEndIndex, i, result = [];
         // availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
@@ -251,14 +206,15 @@ class App extends React.Component {
         // values = Array.from(hashMap.values());
         // let result = values.slice(initialIndex, endIndex);
 
-        let iter = hashMap.keys();
+        let iter = map.keys();
+        let i=0,result = [],availableEndIndex;        
+        availableEndIndex = endIndex > map.size ? map.size : endIndex;
 
-        let i=0,result = [];
         for(;i<initialIndex;i++){
             iter.next();
         }
-        for(;i<endIndex;i++){
-            result.push(iter.next().value);
+        for(;i<availableEndIndex;i++){
+            result.push(map.get(iter.next().value));
         }
 
         return result;
@@ -266,7 +222,6 @@ class App extends React.Component {
 
 
     render() {
-        // console.log('Parent Render Start');
         return (
             <div>
                 <div className={styles.container}>

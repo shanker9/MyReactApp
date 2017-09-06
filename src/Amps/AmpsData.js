@@ -47,18 +47,20 @@ export default class AmpsData {
     testData(callback) {
         // let i=0;
         // let dataFire = setInterval(()=>{
-        let j = i + 500000;
+        let publishedData = [];
+        let iterData;
+        let j = i + 50000;
         var counterParty = ["Goldman Sachs", "Bank of America", "JP Morgan", "PIMCO", "Bridgewater", "Morgan Stanley", "General Electric",
             "General Motors", "Deutsche Bank", "Fidelity"];
         var interest = ["2.5", "3", "4.5", "5.6", "3.3", "6.5", "2.3", "3.4", "4.2", "3.2"];
+
         for (; i < j; i++) {
-            // if(i==100){
-            //     clearInterval(dataFire);
-            // }
-            callback({
+            iterData = {
                 "swapId": i + 1, "customer": counterParty[i % 10], "interest": interest[i % 10], "swap_rate": (interest[i % 10] * 2.3).toFixed(2),
                 "yearsIn": i * 2, "payFixedRate": (i * 2.123).toFixed(2), "payCurrency": "USD"
-            });
+            };
+            publishedData.push(iterData);
+            callback(iterData);
         }
         // callback({
         //         "swapId": 1, "customer": counterParty[8], "interest": interest[7], "swap_rate": (interest[7] * 2.3).toFixed(2),
@@ -76,8 +78,17 @@ export default class AmpsData {
         //             "yearsIn": k * 2, "payFixedRate": (k * 2.123).toFixed(2), "payCurrency": "USD"
         //         });
         //     }
-        // },1000);
+        // },4000);
 
+        setInterval(() => {
+            let k = 0,updateData;
+            for (; k < 100; k++) {
+                updateData = publishedData[(Math.floor((Math.random() * 100) + 1) + 1)];
+                updateData.swap_rate = (interest[k % 10] * 2.3).toFixed(2);
+                updateData.payFixedRate = (k * 2.123).toFixed(2);
+                callback(updateData);
+            }
+        }, 5000);
 
     }
 
