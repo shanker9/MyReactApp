@@ -23,9 +23,9 @@
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
-        -webkit-transition: background-color 1s;
-        -moz-transition: background-color 1s;
-        transition: background-color 1s;       
+        -webkit-transition: background-color 3s;
+        -moz-transition: background-color 3s;
+        transition: background-color 3s;       
     }
 
     .leftAlignContentCells {
@@ -51,14 +51,6 @@
         overflow-x: auto;
         /* z-index: -1;         */
         /* box-sizing: border-box;         */
-    }
-
-    .tableDiv::-webkit-scrollbar * {
-        background:transparent;
-    }
-
-    .tableDiv::-webkit-scrollbar * {
-        width:40px;
     }
 
     .table {

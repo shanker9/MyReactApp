@@ -16,10 +16,11 @@ class TableView extends React.Component {
         return (
             <div>
                 <table className={styles.table}>
-                    <tbody className={styles.tableBody} >
+                    <tbody >
                         <div style={{ height: this.props.topDivHeight }}></div>
                         {this.props.viewableData.map((item, i) =>
                             <TableRow
+                                isHeaderRow={item.isHeaderRow}
                                 key={item.rowID}
                                 data={item.data}
                                 indexVal={item.data.swapId}

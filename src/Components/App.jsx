@@ -19,7 +19,8 @@ class App extends React.Component {
             lastRow: 0,
             loadedRows: 0,
             loadTime: 0,
-            currentSelectedRowIndex: undefined
+            currentSelectedRowIndex: undefined,
+            groupview: false
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
@@ -29,6 +30,7 @@ class App extends React.Component {
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
+        this.enableGroupView = this.enableGroupView.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -50,16 +52,6 @@ class App extends React.Component {
         this.scrollableDivClientHeight = tableNode.clientHeight;
         this.handleClick();
     }
-
-    // updateTable(updateData, subId) {
-    //     if (typeof updateData == 'object') {
-    //         // this.state.data.unshift(updateData); // pushing the data without any update logic
-    //         // let latestData = this.state.data;
-    //         let latestRecords = this.state.totalRecords + 1;
-    //         console.log('total records: ' + latestRecords);
-    //         this.setState({ data: this.state.data.unshift(updateData), totalRecords: latestRecords, subscriberId: '  Subscriber Id: ' + subId })
-    //     }
-    // }
 
     updateSubId(subId) {
         this.setState({ subscriberId: subId })
@@ -116,14 +108,6 @@ class App extends React.Component {
 
     }
 
-    // udpateTotalRecords(totalRecordsCount, loadedRecordsCount) {
-    //     // this.setState({ 
-    //     this.state.totalRecords = totalRecordsCount;
-    //     this.state.loadedRows = loadedRecordsCount;
-    //     this.state.lastRow = loadedRecordsCount;
-    //     // });
-    // }
-
     handleClick() {
         let controller = new AmpsClientData();
         // controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
@@ -147,13 +131,14 @@ class App extends React.Component {
     handleNewData(newData) {
 
         let item = this.dataMap.get(newData.swapId);
+        let isHeaderRow = this.dataMap.size%10==0 ? true : false;
         if (item == undefined) {
-            this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
+            this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false, "isHeaderRow":isHeaderRow });
         } else {
-            this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+            this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true, "isHeaderRow":item.isHeaderRow });
         }
 
-            this.triggerConditionalUIUpdate();
+        this.triggerConditionalUIUpdate();
     }
 
     triggerConditionalUIUpdate() {
@@ -195,80 +180,72 @@ class App extends React.Component {
     }
 
     sliceHashmap(initialIndex, endIndex, map) {
-        // let keys = Array.from(hashMap.keys());
-        // let availableEndIndex, i, result = [];
-        // availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
-
-        // for (i = initialIndex; i < availableEndIndex; i++) {
-        //     result.push(hashMap.get(keys[i]));
-        // }
-
-        // values = Array.from(hashMap.values());
-        // let result = values.slice(initialIndex, endIndex);
-
         let iter = map.keys();
-        let i=0,result = [],availableEndIndex;        
+        let i = 0, result = [], availableEndIndex;
         availableEndIndex = endIndex > map.size ? map.size : endIndex;
 
-        for(;i<initialIndex;i++){
+        for (; i < initialIndex; i++) {
             iter.next();
         }
-        for(;i<availableEndIndex;i++){
+        for (; i < availableEndIndex; i++) {
             result.push(map.get(iter.next().value));
         }
 
         return result;
     }
 
+    enableGroupView() {
+        this.setState({ groupview: true });
+    }
 
     render() {
-        return (
-            <div>
-                <div className={styles.container}>
-                    <h1 className={styles.header}>Random Data from AMPS</h1>
-                    {/* <button className={styles.button} onClick={this.sortData.bind(this)}>Subscribe</button> */}
-                    <label>  Subscriber Id : {this.state.subscriberId}</label>
-                    <label> | Total Records: {this.dataMap.size}</label>
-                    <label> | Loaded Records: {this.state.viewableData.length}</label>
-                    {/* <label> | Load Time : {this.state.loadTime}ms</label> */}
-                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
-                </div>
+            return (
                 <div>
-                    <div className={styles.gridContainerDiv}>
-                        <div id="scrollableHeaderDiv" className={styles.headerDiv}>
-                            <table className={styles.table}>
-                                <thead className={styles.tableHead}>
-                                    <tr className={styles.tableRow}>
-                                        <th className={styles.th}>Counter Party</th>
-                                        <th className={styles.th}>SwapId</th>
-                                        <th className={styles.th}>Interest</th>
-                                        <th className={styles.th}>SwapRate</th>
-                                        <th className={styles.th}>YearsIn</th>
-                                        <th className={styles.th}>PayFixedRate</th>
-                                        <th className={styles.th}>PayCurrency</th>
-                                        <th className={styles.th}>YearsLeft</th>
-                                        <th className={styles.th}>NewInterest</th>
-                                        <th className={styles.th}>SecondaryCurrency</th>
-                                        <th className={styles.th}>Customer</th>
-                                        <th className={styles.th}>SwapId</th>
-                                        <th className={styles.th}>Interest</th>
-                                        <th className={styles.th}>YearsPay</th>
-                                        <th className={styles.th}>YearsIn</th>
-                                        <th className={styles.th}>FixedRate</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div>
-                            <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewType="GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
+                    <div className={styles.container}>
+                        <h1 className={styles.header}>Random Data from AMPS</h1>
+                        {/* <button className={styles.button} onClick={this.sortData.bind(this)}>Subscribe</button> */}
+                        <label>  Subscriber Id : {this.state.subscriberId}</label>
+                        <label> | Total Records: {this.dataMap.size}</label>
+                        <label> | Loaded Records: {this.state.viewableData.length}</label>
+                        {/* <label onClick={this.enableGroupView}> | Group View </label> */}
+                        <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
+                    </div>
+                    <div>
+                        <div className={styles.gridContainerDiv}>
+                            <div id="scrollableHeaderDiv" className={styles.headerDiv}>
+                                <table className={styles.table}>
+                                    <thead className={styles.tableHead}>
+                                        <tr className={styles.tableRow}>
+                                            <th className={styles.th}>Counter Party</th>
+                                            <th className={styles.th}>SwapId</th>
+                                            <th className={styles.th}>Interest</th>
+                                            <th className={styles.th}>SwapRate</th>
+                                            <th className={styles.th}>YearsIn</th>
+                                            <th className={styles.th}>PayFixedRate</th>
+                                            <th className={styles.th}>PayCurrency</th>
+                                            <th className={styles.th}>YearsLeft</th>
+                                            <th className={styles.th}>NewInterest</th>
+                                            <th className={styles.th}>SecondaryCurrency</th>
+                                            <th className={styles.th}>Customer</th>
+                                            <th className={styles.th}>SwapId</th>
+                                            <th className={styles.th}>Interest</th>
+                                            <th className={styles.th}>YearsPay</th>
+                                            <th className={styles.th}>YearsIn</th>
+                                            <th className={styles.th}>FixedRate</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div>
+                                <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
+                                    <TableView groupView = {this.state.groupview} viewType="GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
-            </div>
-        );
+            );
 
     }
 

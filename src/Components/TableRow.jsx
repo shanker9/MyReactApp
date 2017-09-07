@@ -60,47 +60,55 @@ class TableRow extends React.Component {
 
 
     render() {
+        // if (!this.props.isHeaderRow) {
+            return (
+                <tr ref={"tableRow"}
+                    className={styles.tableRow}
+                    onClick={this.handleRowClick}
+                    style={{ backgroundColor: this.props.isHeaderRow ? 'grey' : this.dynamicBackgroundColor }}>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swap_rate}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payFixedRate}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn * 2}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest * 2}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn * 3}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
+                    <TableCell isHeaderCell={this.props.isHeaderRow} parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
 
-        return (
-            <tr ref={"tableRow"}
-                className={styles.tableRow}
-                onClick={this.handleRowClick}
-                style={{backgroundColor : this.dynamicBackgroundColor}}>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swap_rate}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payFixedRate}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn * 2}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest*2}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn*3}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
-
-                {/* <td className={styles.td} >{this.props.data.customer}</td>
-                <td className={styles.td} >{this.props.data.swapId}</td>
-                <td className={styles.td} >{this.props.data.interest}</td>
-                <td className={styles.td} >{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.yearsIn}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
-                <td className={styles.td}>{this.props.data.payCurrency}</td>
-                <td className={styles.td}>{this.props.data.yearsIn * 2}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
-                <td className={styles.td}>{this.props.data.payCurrency}</td>
-                <td className={styles.td}>{this.props.data.customer}</td>
-                <td className={styles.td}>{this.props.data.swapId}</td>
-                <td className={styles.td}>{this.props.data.interest}</td>
-                <td className={styles.td}>{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.yearsIn}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td> */}
-            </tr>
-        )
+                </tr>
+            )
+        // } else {
+            // return (
+            //     <tr ref={"tableRow"}
+            //         className={styles.tableRow}
+            //         style={{ backgroundColor: 'grey' }}>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //         <TableCell parentBackgroundColor='grey' ></TableCell>
+            //     </tr>
+            // )
+        // }
     }
 
 }
