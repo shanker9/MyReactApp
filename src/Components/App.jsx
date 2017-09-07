@@ -29,6 +29,7 @@ class App extends React.Component {
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
+        this.handleDataPricingResults = this.handleDataPricingResults.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -41,6 +42,7 @@ class App extends React.Component {
         this.isSorted = true;
         this.tempArr = [];
         this.dataMap = new Map();
+        this.sowDataEnd = false;
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -126,12 +128,11 @@ class App extends React.Component {
 
     handleClick() {
         let controller = new AmpsClientData();
-        // controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
-        // controller.testData(this.child.updateTableView.bind(this.child));
+        controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
         // let startTimeVal = Date.now().toString();
         // console.log('Start Time: ', startTimeVal);
         // let endTimeVal = 
-        controller.testData(this.handleNewData.bind(this));
+        // controller.testData(this.handleNewData.bind(this));
         // this.setState({
         //     loadTime: endTimeVal - startTimeVal
         // })
@@ -144,21 +145,46 @@ class App extends React.Component {
 
     /* New Data from AMPS will be handled here first */
 
-    handleNewData(newData) {
-
-        let item = this.dataMap.get(newData.swapId);
-        if (item == undefined) {
-            this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
-        } else {
-            this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-        }
-
+    handleNewData(message) {
+        let messageStatus = this.handleDataPricingResults(message);
+        // let newData = message;
+        // let item = this.dataMap.get(newData.swapId);
+        // if (item == undefined) {
+        //     this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
+        // } else {
+        //     this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+        // }
+        if (messageStatus == 'group_end' || this.sowDataEnd==true){
+            // if(this.dataMap.size==50)
             this.triggerConditionalUIUpdate();
+        }
     }
+
+    handleDataPricingResults(message) {
+
+        if (message.c == 'group_begin') {
+            console.log('Group Begin...');
+            return;
+        }
+        if (message.c == 'group_end') {
+            console.log('Group End...');
+            return message.c;
+        }
+        let newData = message.data;
+        let rowKey = message.k;
+        let item = this.dataMap.get(rowKey);
+        if (item == undefined) {
+            this.dataMap.set(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
+        } else {
+            this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+        }
+    }
+
 
     triggerConditionalUIUpdate() {
         let loadableData = this.updateLoadData(this.dataMap);
         this.setState({ viewableData: loadableData });
+        this.sowDataEnd = true;
     }
 
 
@@ -207,13 +233,13 @@ class App extends React.Component {
         // let result = values.slice(initialIndex, endIndex);
 
         let iter = map.keys();
-        let i=0,result = [],availableEndIndex;        
+        let i = 0, result = [], availableEndIndex;
         availableEndIndex = endIndex > map.size ? map.size : endIndex;
 
-        for(;i<initialIndex;i++){
+        for (; i < initialIndex; i++) {
             iter.next();
         }
-        for(;i<availableEndIndex;i++){
+        for (; i < availableEndIndex; i++) {
             result.push(map.get(iter.next().value));
         }
 

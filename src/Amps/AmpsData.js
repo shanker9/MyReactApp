@@ -32,12 +32,27 @@ export default class AmpsData {
         var subscriberId;
         ampsClient.connect(ampsServerUri)
             .then(() => {
-                return ampsClient.subscribe((message) => {
-                    // console.log(message.data);
-                    // console.log(message.data.customer);
-                    dataUpdateCallback(message.data);
-                    // console.log(Date.now());
-                }, 'Price')
+                // return ampsClient.subscribe((message) => {
+                //     // console.log(message.data);
+                //     // console.log(message.data.customer);
+                //     dataUpdateCallback(message.data);
+                //     // console.log(Date.now());
+                // }, 'Price')
+
+                // return ampsClient.execute(
+                //     new Amps.Command('subscribe')
+                //         .topic('Price'),
+                //         // .filter('/id > 100'),
+                //         dataUpdateCallback
+                // );
+
+                return ampsClient.sow(
+                        dataUpdateCallback,
+                        'Price',
+                        '/swapId>=10001'
+                );
+
+
             }).then((subId) => {
                 console.log("Subscription ID: " + subId);
                 subscriberInfoCallback(subId);
@@ -49,7 +64,7 @@ export default class AmpsData {
         // let dataFire = setInterval(()=>{
         let publishedData = [];
         let iterData;
-        let j = i + 50000;
+        let j = i + 500;
         var counterParty = ["Goldman Sachs", "Bank of America", "JP Morgan", "PIMCO", "Bridgewater", "Morgan Stanley", "General Electric",
             "General Motors", "Deutsche Bank", "Fidelity"];
         var interest = ["2.5", "3", "4.5", "5.6", "3.3", "6.5", "2.3", "3.4", "4.2", "3.2"];
@@ -81,7 +96,7 @@ export default class AmpsData {
         // },4000);
 
         setInterval(() => {
-            let k = 0,updateData;
+            let k = 0, updateData;
             for (; k < 100; k++) {
                 updateData = publishedData[(Math.floor((Math.random() * 100) + 1) + 1)];
                 updateData.swap_rate = (interest[k % 10] * 2.3).toFixed(2);
