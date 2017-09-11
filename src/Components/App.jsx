@@ -46,11 +46,14 @@ class App extends React.Component {
         // this.currentSelectedRowIndex = undefined;
     }
 
+    componentWillMount(){
+        this.handleClick();        
+    }
+
     componentDidMount() {
         // this.state.lastRow = 30;
         let tableNode = document.getElementById('scrollableTableDiv');
         this.scrollableDivClientHeight = tableNode.clientHeight;
-        this.handleClick();
     }
 
     // updateTable(updateData, subId) {
@@ -214,8 +217,9 @@ class App extends React.Component {
         this.topDivHeight = initialIndex * this.rowHeight;
         this.bottomDivHeight = (map.size - (initialIndex + loadableData.length)) * this.rowHeight;
         this.lowerLimit = initialIndex + 1;
-        let upperRowLimit = this.lowerLimit + Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
-        this.upperLimit = upperRowLimit;
+        let displayableRecordCount = Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
+        let upperRowLimit = this.lowerLimit + displayableRecordCount;
+        this.upperLimit = displayableRecordCount > loadableData.length ? loadableData.length : upperRowLimit;
 
         return loadableData;
     }

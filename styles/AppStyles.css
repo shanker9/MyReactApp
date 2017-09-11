@@ -23,9 +23,9 @@
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
-        -webkit-transition: background-color 1s;
-        -moz-transition: background-color 1s;
-        transition: background-color 1s;       
+        -webkit-transition: background-color 2s;
+        -moz-transition: background-color 2s;
+        transition: background-color 2s;       
     }
 
     .leftAlignContentCells {

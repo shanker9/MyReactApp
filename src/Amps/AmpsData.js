@@ -39,19 +39,14 @@ export default class AmpsData {
                 //     // console.log(Date.now());
                 // }, 'Price')
 
-                // return ampsClient.execute(
-                //     new Amps.Command('subscribe')
-                //         .topic('Price'),
-                //         // .filter('/id > 100'),
-                //         dataUpdateCallback
-                // );
-
-                return ampsClient.sow(
-                        dataUpdateCallback,
-                        'Price',
-                        '/swapId>=10001'
+                return ampsClient.execute(
+                    new Amps.Command('sow_and_subscribe')
+                        .topic('Price')
+                        .filter('/swapId >=0')
+                        .orderBy('/swapId')
+                        .options('projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]')
+                        ,dataUpdateCallback
                 );
-
 
             }).then((subId) => {
                 console.log("Subscription ID: " + subId);
@@ -97,8 +92,8 @@ export default class AmpsData {
 
         setInterval(() => {
             let k = 0, updateData;
-            for (; k < 100; k++) {
-                updateData = publishedData[(Math.floor((Math.random() * 100) + 1) + 1)];
+            for (; k < 1000; k++) {
+                updateData = publishedData[(Math.floor((Math.random() * 499) + 1) + 1)];
                 updateData.swap_rate = (interest[k % 10] * 2.3).toFixed(2);
                 updateData.payFixedRate = (k * 2.123).toFixed(2);
                 callback(updateData);
