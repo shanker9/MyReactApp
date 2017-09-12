@@ -1,7 +1,8 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
+// var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
+var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient');
 var i = 0;
 export default class AmpsData {
