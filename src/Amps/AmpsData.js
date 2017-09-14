@@ -1,32 +1,14 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
-// var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
+// var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
+var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient');
 var i = 0;
 export default class AmpsData {
 
-    connectAndPublish() {
-        ampsClient.connect(ampsServerUri)
-            .then(() => {
-                console.log("Connection successful");
-                console.log("AMPS Version " + ampsClient.Client);
-
-                for (var i = 0; i < 10; i++) {
-                    ampsClient.publish('Price', { localWeather: 'Sunny day in Hyd ' + i, globalWeather: 'chilled in US' })
-                    ampsClient.publish('Price', { localWeather: 'Chilled in Hyd' + i, globalWeather: 'chilled in US' })
-                    ampsClient.publish('Price', { localWeather: 'Its heavy down pouring' + i, globalWeather: 'heavy snowfall in US' })
-                    ampsClient.publish('Price', { localWeather: 'Hot and humid' + i, globalWeather: 'Sunny day in US' })
-                }
-
-                ampsClient.disconnect();
-                console.log('Published Data successfully!');
-            })
-            .catch((error) => {
-                console.log('Error Occured. See details below...');
-                console.log(error);
-            })
+    constructor(){
+        this.ampsconnectObject = undefined;
     }
 
     connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback) {
@@ -51,7 +33,11 @@ export default class AmpsData {
     connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject) {
         var subscriberId;
         let ampsCommandObject;
-        ampsClient.connect(ampsServerUri)
+        if(this.ampsconnectObject==undefined){
+            this.ampsconnectObject = ampsClient.connect(ampsServerUri);
+        }
+
+        this.ampsconnectObject
             .then(() => {
                 if (commandObject.command != undefined) {
                     ampsCommandObject = new Amps.Command(commandObject.command);

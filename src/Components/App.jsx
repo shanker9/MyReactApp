@@ -4,7 +4,7 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
-var values;
+var values=0;
 class App extends React.Component {
 
     constructor() {
@@ -32,6 +32,7 @@ class App extends React.Component {
         this.sliceHashmap = this.sliceHashmap.bind(this);
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
         this.handleDataPricingResults = this.handleDataPricingResults.bind(this);
+        this.createGroupBuckets = this.createGroupBuckets.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -45,6 +46,10 @@ class App extends React.Component {
         this.tempArr = [];
         this.dataMap = new Map();
         this.sowDataEnd = false;
+        this.controller = undefined;
+        this.groupedDataColumns = new Map();
+        this.sowGroupDataEnd = false;
+        this.valueKeyMap = new Map();
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -107,24 +112,24 @@ class App extends React.Component {
     }
 
     handleClick() {
-        let controller = new AmpsClientData();
+        this.controller = new AmpsClientData();
         // controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
-        let commandObject = {
-            "command": "sow_and_subscribe",
-            "topic": "Price",
-            "filter": "/swapId >=0",
-            "orderBy": "/swapId",
-            "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
-        }
-
         // let commandObject = {
         //     "command": "sow_and_subscribe",
         //     "topic": "Price",
         //     "filter": "/swapId >=0",
-        //     "orderBy": "/swapId"
+        //     "orderBy": "/swapId",
+        //     "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
         // }
 
-        controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this), commandObject);
+        let commandObject = {
+            "command": "sow_and_subscribe",
+            "topic": "Price",
+            "filter": "/swapId >=0",
+            "orderBy": "/swapId"
+        }
+
+        this.controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this), commandObject);
 
     }
 
@@ -151,13 +156,18 @@ class App extends React.Component {
         }
 
         let newData = message.data;
+        // console.log('NEWDATA',JSON.stringify(newData));
         let rowKey = message.k;
         let item = this.dataMap.get(rowKey);
         if (item == undefined) {
             this.dataMap.set(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
+            // if(values%100==0){
+            //     console.log("====================================================================");
+            // }
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-        }
+            values++;
+        } 
     }
 
 
@@ -217,6 +227,58 @@ class App extends React.Component {
         return result;
     }
 
+    groupedDataHandle(message){
+
+        if(message.c=='group_begin'){
+            return ;
+        }
+
+        if(message.c=='group_end'){
+            this.sowGroupDataEnd = true;
+            this.createGroupBuckets();
+            return ;
+        }
+
+        if(!this.sowGroupDataEnd){
+            this.groupedDataColumns.set(message.k,message.data);
+            this.valueKeyMap.set(message.data.customer,message.k);
+        }
+
+    }
+
+    createGroupBuckets(){
+        let resultMap = new Map();
+        let uniqueColumnValueBuckets = new Map();
+        let columnKeyIterator = this.valueKeyMap.keys();
+
+        this.valueKeyMap.forEach(function (item, key, mapObj) {  
+            uniqueColumnValueBuckets.set(key,[]);
+        });
+        let groupKey,groupVal;
+        this.dataMap.forEach((item, key, mapObj) => {  
+            groupKey = this.valueKeyMap.get(item.data.customer);
+            groupVal = this.groupedDataColumns.get(groupKey);
+            uniqueColumnValueBuckets.get(item.data.customer).push(item)
+            this.groupedDataColumns.set(groupKey,{"groupData":groupVal, "bucketData":uniqueColumnValueBuckets.get(item.data.customer)});
+        })
+        console.log(this.groupedDataColumns);
+    }
+
+    groupedDataSubscription(subId){
+        console.log('GROUPEDSUBSCRIPTION ID:',subId);
+    }
+
+    formGroupedData(){
+        let commandObject = {
+            "command": "sow",
+            "topic": "Price",
+            "filter": "/swapId >=0",
+            "orderBy": "/swapId",
+            "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+        }
+
+        this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this),this.groupedDataSubscription.bind(this),commandObject);
+    }
 
     render() {
         return (
@@ -227,7 +289,7 @@ class App extends React.Component {
                     <label>  Subscriber Id : {this.state.subscriberId}</label>
                     <label> | Total Records: {this.dataMap.size}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
-                    {/* <label> | Load Time : {this.state.loadTime}ms</label> */}
+                    <label onClick={this.formGroupedData.bind(this)}> | Grouped View </label>
                     <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
                 </div>
                 <div>

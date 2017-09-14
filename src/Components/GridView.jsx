@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TableRow from './TableRow.jsx';
 import styles from '../../styles/AppStyles.css'
 
@@ -78,5 +79,14 @@ class GridView extends React.Component {
     }
 }
 
+GridView.propTypes = {
+    isGroupedView : PropTypes.bool,
+    groupedData : PropTypes.array,
+    viewableData : PropTypes.array,
+    topDivHeight : PropTypes.number,
+    bottomDivHeight : PropTypes.number,
+    selectionDataUpdateHandler : PropTypes.func,
+    dataUpdateStatus : PropTypes.func
+}
 
 export default GridView;
