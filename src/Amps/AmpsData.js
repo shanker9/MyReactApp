@@ -1,8 +1,8 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-// var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
-var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
+var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
+// var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient');
 var i = 0;
 export default class AmpsData {
@@ -33,20 +33,13 @@ export default class AmpsData {
         var subscriberId;
         ampsClient.connect(ampsServerUri)
             .then(() => {
-                // return ampsClient.subscribe((message) => {
-                //     // console.log(message.data);
-                //     // console.log(message.data.customer);
-                //     dataUpdateCallback(message.data);
-                //     // console.log(Date.now());
-                // }, 'Price')
-
                 return ampsClient.execute(
                     new Amps.Command('sow_and_subscribe')
                         .topic('Price')
                         .filter('/swapId >=0')
                         .orderBy('/swapId')
                         .options('projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]')
-                        ,dataUpdateCallback
+                    , dataUpdateCallback
                 );
 
             }).then((subId) => {
@@ -55,9 +48,41 @@ export default class AmpsData {
             })
     }
 
+    connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject) {
+        var subscriberId;
+        let ampsCommandObject;
+        ampsClient.connect(ampsServerUri)
+            .then(() => {
+                if (commandObject.command != undefined) {
+                    ampsCommandObject = new Amps.Command(commandObject.command);
+                }
+
+                if (commandObject.topic != undefined) {
+                    ampsCommandObject = ampsCommandObject.topic(commandObject.topic);
+                }
+
+                if (commandObject.filter != undefined) {
+                    ampsCommandObject = ampsCommandObject.filter(commandObject.filter);
+                }
+
+                if (commandObject.orderBy != undefined) {
+                    ampsCommandObject = ampsCommandObject.orderBy(commandObject.orderBy);
+                }
+
+                if (commandObject.options != undefined) {
+                    ampsCommandObject = ampsCommandObject.options(commandObject.options);
+                }
+
+                return ampsClient.execute(ampsCommandObject, dataUpdateCallback);
+
+            }).then((subId) => {
+                console.log("Subscription ID: " + subId);
+                subscriberInfoCallback(subId);
+            })
+    }
+
     testData(callback) {
-        // let i=0;
-        // let dataFire = setInterval(()=>{
+
         let publishedData = [];
         let iterData;
         let j = i + 500;
@@ -73,23 +98,6 @@ export default class AmpsData {
             publishedData.push(iterData);
             callback(iterData);
         }
-        // callback({
-        //         "swapId": 1, "customer": counterParty[8], "interest": interest[7], "swap_rate": (interest[7] * 2.3).toFixed(2),
-        //         "yearsIn": 2, "payFixedRate": (2.123).toFixed(2), "payCurrency": "USD"
-        // });
-
-        // setInterval(() => {
-        //     let k = 0;
-        //     for (; k < 10; k++) {
-        //         // if(i==100){
-        //         //     clearInterval(dataFire);
-        //         // }
-        //         callback({
-        //             "swapId": Math.floor((Math.random() * 100) + 1) + 1, "customer": counterParty[k % 10], "interest": interest[k % 10], "swap_rate": (interest[k % 10] * 2.3).toFixed(2),
-        //             "yearsIn": k * 2, "payFixedRate": (k * 2.123).toFixed(2), "payCurrency": "USD"
-        //         });
-        //     }
-        // },4000);
 
         setInterval(() => {
             let k = 0, updateData;

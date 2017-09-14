@@ -46,7 +46,7 @@ class TableCell extends React.Component {
     }
 
     detectTheEnd(e) {
-        console.log('Transition End');
+        // console.log('Transition End');
         // this.refs.tableCell.style.backgroundColor = this.props.parentBackgroundColor;
         this.refs.tableCell.style.backgroundColor = "";
     }

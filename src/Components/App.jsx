@@ -3,6 +3,7 @@ import AmpsClientData from '../Amps/AmpsData.js';
 import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
+import GridView from './GridView.jsx'
 var values;
 class App extends React.Component {
 
@@ -13,6 +14,7 @@ class App extends React.Component {
             data: [],
             sortedData: [],
             viewableData: [],
+            groupedData: [],
             selectedData: undefined,
             subscriberId: '',
             totalRecords: 0,
@@ -46,8 +48,8 @@ class App extends React.Component {
         // this.currentSelectedRowIndex = undefined;
     }
 
-    componentWillMount(){
-        this.handleClick();        
+    componentWillMount() {
+        this.handleClick();
     }
 
     componentDidMount() {
@@ -56,25 +58,8 @@ class App extends React.Component {
         this.scrollableDivClientHeight = tableNode.clientHeight;
     }
 
-    // updateTable(updateData, subId) {
-    //     if (typeof updateData == 'object') {
-    //         // this.state.data.unshift(updateData); // pushing the data without any update logic
-    //         // let latestData = this.state.data;
-    //         let latestRecords = this.state.totalRecords + 1;
-    //         console.log('total records: ' + latestRecords);
-    //         this.setState({ data: this.state.data.unshift(updateData), totalRecords: latestRecords, subscriberId: '  Subscriber Id: ' + subId })
-    //     }
-    // }
-
     updateSubId(subId) {
         this.setState({ subscriberId: subId })
-        // this.state.subscriberId = subId;
-    }
-
-    sortData() {
-        let sortedData = this.state.data.sort((a, b) => { return a.data.customer.toString().localeCompare(b.data.customer.toString()) });
-        this.state.sortedData = sortedData;
-        this.isSorted = true;
     }
 
     updateSelected(index, isMultiSelect) {
@@ -121,24 +106,26 @@ class App extends React.Component {
 
     }
 
-    // udpateTotalRecords(totalRecordsCount, loadedRecordsCount) {
-    //     // this.setState({ 
-    //     this.state.totalRecords = totalRecordsCount;
-    //     this.state.loadedRows = loadedRecordsCount;
-    //     this.state.lastRow = loadedRecordsCount;
-    //     // });
-    // }
-
     handleClick() {
         let controller = new AmpsClientData();
-        controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
-        // let startTimeVal = Date.now().toString();
-        // console.log('Start Time: ', startTimeVal);
-        // let endTimeVal = 
-        // controller.testData(this.handleNewData.bind(this));
-        // this.setState({
-        //     loadTime: endTimeVal - startTimeVal
-        // })
+        // controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
+        let commandObject = {
+            "command": "sow_and_subscribe",
+            "topic": "Price",
+            "filter": "/swapId >=0",
+            "orderBy": "/swapId",
+            "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+        }
+
+        // let commandObject = {
+        //     "command": "sow_and_subscribe",
+        //     "topic": "Price",
+        //     "filter": "/swapId >=0",
+        //     "orderBy": "/swapId"
+        // }
+
+        controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this), commandObject);
+
     }
 
     rowDataUpdateStatus(index, updateStatus) {
@@ -150,29 +137,19 @@ class App extends React.Component {
 
     handleNewData(message) {
         let messageStatus = this.handleDataPricingResults(message);
-        // let newData = message;
-        // let item = this.dataMap.get(newData.swapId);
-        // if (item == undefined) {
-        //     this.dataMap.set(newData.swapId, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
-        // } else {
-        //     this.dataMap.set(newData.swapId, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-        // }
-        if (messageStatus == 'group_end' || this.sowDataEnd==true){
-            // if(this.dataMap.size==50)
+
+        if (messageStatus == 'group_end' || this.sowDataEnd == true) {
             this.triggerConditionalUIUpdate();
         }
     }
 
     handleDataPricingResults(message) {
 
-        if (message.c == 'group_begin') {
-            console.log('Group Begin...');
-            return;
-        }
-        if (message.c == 'group_end') {
-            console.log('Group End...');
+        if (message.c == 'group_begin' || message.c == 'group_end') {
+            console.log(message.c);
             return message.c;
         }
+
         let newData = message.data;
         let rowKey = message.k;
         let item = this.dataMap.get(rowKey);
@@ -190,7 +167,7 @@ class App extends React.Component {
         this.sowDataEnd = true;
     }
 
-
+    /* Event Handler for scroll */
     handleScroll() {
         let headerNode = document.getElementById('scrollableHeaderDiv');
         let tableNode = document.getElementById('scrollableTableDiv');
@@ -225,16 +202,6 @@ class App extends React.Component {
     }
 
     sliceHashmap(initialIndex, endIndex, map) {
-        // let keys = Array.from(hashMap.keys());
-        // let availableEndIndex, i, result = [];
-        // availableEndIndex = endIndex > keys.length ? keys.length : endIndex;
-
-        // for (i = initialIndex; i < availableEndIndex; i++) {
-        //     result.push(hashMap.get(keys[i]));
-        // }
-
-        // values = Array.from(hashMap.values());
-        // let result = values.slice(initialIndex, endIndex);
 
         let iter = map.keys();
         let i = 0, result = [], availableEndIndex;
@@ -264,7 +231,7 @@ class App extends React.Component {
                     <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
                 </div>
                 <div>
-                    <div className={styles.gridContainerDiv}>
+                    {/* <div className={styles.gridContainerDiv}>
                         <div id="scrollableHeaderDiv" className={styles.headerDiv}>
                             <table className={styles.table}>
                                 <thead className={styles.tableHead}>
@@ -294,8 +261,14 @@ class App extends React.Component {
                                 <TableView viewType="GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
                             </div>
                         </div>
-                    </div>
-
+                    </div> */}
+                    <TableView viewableData={this.state.viewableData}
+                        groupedData={this.state.groupedData}
+                        topDivHeight={this.topDivHeight}
+                        bottomDivHeight={this.bottomDivHeight}
+                        selectionDataUpdateHandler={this.updateSelected}
+                        dataUpdateStatus={this.rowDataUpdateStatus}
+                        handleScroll={this.handleScroll} />
                 </div>
             </div>
         );
