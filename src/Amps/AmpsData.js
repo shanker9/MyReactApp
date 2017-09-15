@@ -1,8 +1,8 @@
 import React from 'react';
 import * as Amps from 'amps';
 
-// var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
-var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
+var ampsServerUri = "ws://192.168.2.119:9008/amps/json";
+// var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
 var ampsClient = new Amps.Client('shankersClient');
 var i = 0;
 export default class AmpsData {
@@ -85,15 +85,15 @@ export default class AmpsData {
             callback(iterData);
         }
 
-        setInterval(() => {
-            let k = 0, updateData;
-            for (; k < 1000; k++) {
-                updateData = publishedData[(Math.floor((Math.random() * 499) + 1) + 1)];
-                updateData.swap_rate = (interest[k % 10] * 2.3).toFixed(2);
-                updateData.payFixedRate = (k * 2.123).toFixed(2);
-                callback(updateData);
-            }
-        }, 5000);
+        // setInterval(() => {
+        //     let k = 0, updateData;
+        //     for (; k < 1000; k++) {
+        //         updateData = publishedData[(Math.floor((Math.random() * 499) + 1) + 1)];
+        //         updateData.swap_rate = (interest[k % 10] * 2.3).toFixed(2);
+        //         updateData.payFixedRate = (k * 2.123).toFixed(2);
+        //         callback(updateData);
+        //     }
+        // }, 5000);
 
     }
 

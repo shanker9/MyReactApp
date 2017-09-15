@@ -14,7 +14,6 @@ class App extends React.Component {
             data: [],
             sortedData: [],
             viewableData: [],
-            groupedData: [],
             selectedData: undefined,
             subscriberId: '',
             totalRecords: 0,
@@ -47,9 +46,10 @@ class App extends React.Component {
         this.dataMap = new Map();
         this.sowDataEnd = false;
         this.controller = undefined;
-        this.groupedDataColumns = new Map();
+        this.groupedData = new Map();
         this.sowGroupDataEnd = false;
         this.valueKeyMap = new Map();
+        this.isGroupedView = false;
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -240,7 +240,7 @@ class App extends React.Component {
         }
 
         if(!this.sowGroupDataEnd){
-            this.groupedDataColumns.set(message.k,message.data);
+            this.groupedData.set(message.k,message.data);
             this.valueKeyMap.set(message.data.customer,message.k);
         }
 
@@ -257,11 +257,12 @@ class App extends React.Component {
         let groupKey,groupVal;
         this.dataMap.forEach((item, key, mapObj) => {  
             groupKey = this.valueKeyMap.get(item.data.customer);
-            groupVal = this.groupedDataColumns.get(groupKey).groupData == undefined ? this.groupedDataColumns.get(groupKey) : this.groupedDataColumns.get(groupKey).groupData;
+            groupVal = this.groupedData.get(groupKey).groupData == undefined ? this.groupedData.get(groupKey) : this.groupedData.get(groupKey).groupData;
             uniqueColumnValueBuckets.get(item.data.customer).push(item)
-            this.groupedDataColumns.set(groupKey,{"groupData":groupVal, "bucketData":uniqueColumnValueBuckets.get(item.data.customer)});
+            this.groupedData.set(groupKey,{"groupData":groupVal, "bucketData":uniqueColumnValueBuckets.get(item.data.customer)});
         })
-        console.log(this.groupedDataColumns);
+        console.log(this.groupedData);
+        this.isGroupedView = true;
     }
 
     groupedDataSubscription(subId){
@@ -325,7 +326,8 @@ class App extends React.Component {
                         </div>
                     </div> */}
                     <TableView viewableData={this.state.viewableData}
-                        groupedData={this.state.groupedData}
+                        isGroupedData={this.isGroupedView}
+                        groupedData={this.groupedData}
                         topDivHeight={this.topDivHeight}
                         bottomDivHeight={this.bottomDivHeight}
                         selectionDataUpdateHandler={this.updateSelected}

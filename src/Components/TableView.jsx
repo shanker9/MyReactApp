@@ -50,7 +50,7 @@ class TableView extends React.Component {
                 </div>
                 <div>
                     <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.props.handleScroll}>
-                        <GridView isGroupedView= {false}
+                        <GridView isGroupedView= {this.props.isGroupedData}
                             groupedData={this.props.groupedData}
                             viewableData={this.props.viewableData}
                             topDivHeight={this.props.topDivHeight}
