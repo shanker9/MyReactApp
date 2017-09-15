@@ -257,7 +257,7 @@ class App extends React.Component {
         let groupKey,groupVal;
         this.dataMap.forEach((item, key, mapObj) => {  
             groupKey = this.valueKeyMap.get(item.data.customer);
-            groupVal = this.groupedDataColumns.get(groupKey);
+            groupVal = this.groupedDataColumns.get(groupKey).groupData == undefined ? this.groupedDataColumns.get(groupKey) : this.groupedDataColumns.get(groupKey).groupData;
             uniqueColumnValueBuckets.get(item.data.customer).push(item)
             this.groupedDataColumns.set(groupKey,{"groupData":groupVal, "bucketData":uniqueColumnValueBuckets.get(item.data.customer)});
         })
