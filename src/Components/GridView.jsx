@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TableRow from './TableRow.jsx';
+import TableAggregatedRow from './TableAggregatedRow.jsx';
 import styles from '../../styles/AppStyles.css'
 
 class GridView extends React.Component {
@@ -28,23 +29,32 @@ class GridView extends React.Component {
     }
 
     returnGroupedView(mapData) {
-        let divElem = <div></div>;
         let rowArray = [];
+        let randToggle = false;
         mapData.forEach((item, key, mapObj) => {
-           rowArray.push(<TableRow data={item.groupData}
+            // rowArray.push(<TableRow data={item.groupData}
+            //     key={key}
+            //     indexVal={item.groupData.swapId}
+            //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
+            //     selectState={false}
+            //     bucketData={item.bucketData} />);
+
+            rowArray.push(<TableAggregatedRow data={item.groupData}
+                key={key}
                 indexVal={item.groupData.swapId}
                 dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                selectState={false} />);
+                selectState={false}
+                showBucketData={!randToggle}
+                bucketData={item.bucketData} />);
 
-
-            rowArray.push(item.bucketData.map((value, k) =>
-                <TableRow
-                    key={value.rowID}
-                    data={value.data}
-                    indexVal={value.data.swapId}
-                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                    selectState={value.isSelected} />
-            ));
+            // rowArray.push(item.bucketData.map((value, k) =>
+            //     <TableRow
+            //         key={value.rowID}
+            //         data={value.data}
+            //         indexVal={value.data.swapId}
+            //         dataUpdateHandler={this.props.selectionDataUpdateHandler}
+            //         selectState={value.isSelected} />));
+            randToggle = true;
         }
         );
         return rowArray;
@@ -56,22 +66,7 @@ class GridView extends React.Component {
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div>
-                            {/* {
-                                <TableRow data={this.props.groupedData.get('17885674475400222038').groupData}
-                                    indexVal={this.props.groupedData.get('17885674475400222038').groupData.swapId}
-                                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                    selectState={false} />
-                            }
-                            {
-                                this.props.groupedData.get('17885674475400222038').bucketData.map((value, k) =>
-                                    <TableRow
-                                        key={value.rowID}
-                                        data={value.data}
-                                        indexVal={value.data.swapId}
-                                        dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                        selectState={value.isSelected} />
-                                )}  */}
-                                {this.returnGroupedView()};
+                            {this.returnGroupedView(this.props.groupedData)}
                         </div>
                     </tbody>
                 </table>
@@ -105,7 +100,7 @@ class GridView extends React.Component {
 
 GridView.propTypes = {
     isGroupedView: PropTypes.bool,
-    groupedData: PropTypes.array,
+    groupedData: PropTypes.object,
     viewableData: PropTypes.array,
     topDivHeight: PropTypes.number,
     bottomDivHeight: PropTypes.number,

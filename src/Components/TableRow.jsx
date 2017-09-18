@@ -12,7 +12,7 @@ class TableRow extends React.Component {
         }
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
-        this.detectTheEnd = this.detectTheEnd.bind(this);
+        // this.detectTheEnd = this.detectTheEnd.bind(this);
     }
 
     componentWillMount() {
@@ -30,32 +30,34 @@ class TableRow extends React.Component {
         this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
     }
 
-    componentDidUpdate() {
+    // componentDidUpdate() {
 
-        // this.refs.tableRow.style.backgroundColor = 'yellow';
+    //     // this.refs.tableRow.style.backgroundColor = 'yellow';
 
-        // let blueCircle = this.refs.tableRow;
+    //     // let blueCircle = this.refs.tableRow;
 
-        // blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
-        // blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
-        // blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
-        // blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
-        // blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
+    //     // blueCircle.addEventListener("transitionend", this.detectTheEnd, false);
+    //     // blueCircle.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
+    //     // blueCircle.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
+    //     // blueCircle.addEventListener("msTransitionEnd", this.detectTheEnd, false);
+    //     // blueCircle.addEventListener("oTransitionEnd", this.detectTheEnd, false);
 
 
 
-    }
+    // }
 
-    detectTheEnd(e) {
-        // console.log('Transition End');
-        // this.refs.tableRow.style.backgroundColor = 'white';
-    }
+    // detectTheEnd(e) {
+    //     // console.log('Transition End');
+    //     // this.refs.tableRow.style.backgroundColor = 'white';
+    // }
 
     handleRowClick(e) {
         e.preventDefault();
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
         this.props.dataUpdateHandler(this.props.indexVal, e.shiftKey); // Update the selection state in the data
+        if(this.props.isGroupedRow){
 
+        }
     }
 
 
@@ -65,7 +67,7 @@ class TableRow extends React.Component {
             <tr ref={"tableRow"}
                 className={styles.tableRow}
                 onClick={this.handleRowClick}
-                style={{backgroundColor : this.dynamicBackgroundColor}}>
+                style={{backgroundColor : this.props.isGroupedRow ? '#64A1B1' : this.dynamicBackgroundColor}}>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
@@ -83,22 +85,6 @@ class TableRow extends React.Component {
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
 
-                {/* <td className={styles.td} >{this.props.data.customer}</td>
-                <td className={styles.td} >{this.props.data.swapId}</td>
-                <td className={styles.td} >{this.props.data.interest}</td>
-                <td className={styles.td} >{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.yearsIn}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
-                <td className={styles.td}>{this.props.data.payCurrency}</td>
-                <td className={styles.td}>{this.props.data.yearsIn * 2}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td>
-                <td className={styles.td}>{this.props.data.payCurrency}</td>
-                <td className={styles.td}>{this.props.data.customer}</td>
-                <td className={styles.td}>{this.props.data.swapId}</td>
-                <td className={styles.td}>{this.props.data.interest}</td>
-                <td className={styles.td}>{this.props.data.swap_rate}</td>
-                <td className={styles.td}>{this.props.data.yearsIn}</td>
-                <td className={styles.td}>{this.props.data.payFixedRate}</td> */}
             </tr>
         )
     }
