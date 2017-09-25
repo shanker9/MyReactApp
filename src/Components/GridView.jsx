@@ -32,13 +32,6 @@ class GridView extends React.Component {
         let rowArray = [];
         let randToggle = false;
         mapData.forEach((item, key, mapObj) => {
-            // rowArray.push(<TableRow data={item.groupData}
-            //     key={key}
-            //     indexVal={item.groupData.swapId}
-            //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
-            //     selectState={false}
-            //     bucketData={item.bucketData} />);
-
             rowArray.push(<TableAggregatedRow data={item.groupData}
                 key={key}
                 indexVal={item.groupData.swapId}
@@ -46,17 +39,8 @@ class GridView extends React.Component {
                 selectState={false}
                 showBucketData={!randToggle}
                 bucketData={item.bucketData} />);
-
-            // rowArray.push(item.bucketData.map((value, k) =>
-            //     <TableRow
-            //         key={value.rowID}
-            //         data={value.data}
-            //         indexVal={value.data.swapId}
-            //         dataUpdateHandler={this.props.selectionDataUpdateHandler}
-            //         selectState={value.isSelected} />));
             randToggle = true;
-        }
-        );
+        });
         return rowArray;
     }
 

@@ -18,7 +18,7 @@ class TableRow extends React.Component {
     componentWillMount() {
         this.state.isSelected = this.props.selectState;
         // this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
-        this.dynamicBackgroundColor = 'white';
+        this.dynamicBackgroundColor = '#FCFCF5';
     }
 
     componentWillReceiveProps(nextProps) {
@@ -27,7 +27,7 @@ class TableRow extends React.Component {
 
     componentWillUpdate() {
         // this.state.shouldAnimate = true;
-        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
+        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FCFCF5';
     }
 
     // componentDidUpdate() {

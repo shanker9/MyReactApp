@@ -36,8 +36,8 @@ class App extends React.Component {
         this.previousScrollTop = 0;
         this.rowIndex = 0;
         this.rowHeight = 30;
-        this.lowerLimit = undefined;
-        this.upperLimit = undefined;
+        this.lowerLimit = 0;
+        this.upperLimit = 0;
         this.scrollableDivClientHeight = undefined;
         this.selectStart = undefined;
         this.selectEnd = undefined;
@@ -168,6 +168,12 @@ class App extends React.Component {
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
             values++;
         }
+        if(this.isGroupedView){
+            let grpObject = this.groupedData.get(this.valueKeyMap.get(message.data.customer));
+            let newData = JSON.parse(JSON.stringify(message.data));
+            let existingData = grpObject.bucketData.get(message.k);
+            grpObject.bucketData.set(message.k,{ "rowID": existingData.rowID, "data": newData, "isSelected": existingData.isSelected, "isUpdated": true });
+        }
     }
 
 
@@ -258,13 +264,13 @@ class App extends React.Component {
         // let columnKeyIterator = this.valueKeyMap.keys();
 
         this.valueKeyMap.forEach(function (item, key, mapObj) {
-            uniqueColumnValueBuckets.set(key, []);
+            uniqueColumnValueBuckets.set(key, new Map());
         });
         let groupKey, groupVal;
         this.dataMap.forEach((item, key, mapObj) => {
             groupKey = this.valueKeyMap.get(item.data.customer);
             groupVal = this.groupedData.get(groupKey).groupData == undefined ? this.groupedData.get(groupKey) : this.groupedData.get(groupKey).groupData;
-            uniqueColumnValueBuckets.get(item.data.customer).push(item)
+            uniqueColumnValueBuckets.get(item.data.customer).set(key,item)
             this.groupedData.set(groupKey, { "groupData": groupVal, "bucketData": uniqueColumnValueBuckets.get(item.data.customer) });
         })
         console.log(this.groupedData);
@@ -288,6 +294,11 @@ class App extends React.Component {
         this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), commandObject);
     }
 
+    toggleNormalView(){
+        this.isGroupedView = false;
+        this.triggerConditionalUIUpdate();
+    }
+
     render() {
         return (
             <div>
@@ -298,7 +309,8 @@ class App extends React.Component {
                     <label> | Total Records: {this.dataMap.size}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     <label onClick={this.formGroupedData.bind(this)}> | Grouped View </label>
-                    <label style={{ float: 'right' }}>Showing {this.lowerLimit}-{this.upperLimit} of {this.dataMap.size}</label>
+                    <label onClick={this.toggleNormalView.bind(this)}> | Normal View</label>
+                    <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit+ ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>
                     {/* <div className={styles.gridContainerDiv}>

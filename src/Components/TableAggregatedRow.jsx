@@ -10,7 +10,7 @@ class TableAggregatedRow extends React.Component {
         this.state = {
             isSelected: false,
             shouldAnimate: false,
-            showBucketData : false
+            showBucketData: false
         }
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
@@ -33,21 +33,31 @@ class TableAggregatedRow extends React.Component {
     }
 
     displayBucketData(bucketData) {
+        let result = [];
         if (this.state.showBucketData) {
-            return bucketData.map((value, k) =>
-                <TableRow
-                    key={value.rowID}
-                    data={value.data}
-                    indexVal={value.data.swapId}
-                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                    selectState={value.isSelected} />)
-        }else
-            return [];
+            // return bucketData.map((value, k) =>
+            // <TableRow
+            //     key={value.rowID}
+            //     data={value.data}
+            //     indexVal={value.data.swapId}
+            //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
+            //     selectState={value.isSelected} />)
+            bucketData.forEach((value, key, mapObj) => {
+                result.push(
+                    <TableRow
+                        key={value.rowID}
+                        data={value.data}
+                        indexVal={value.data.swapId}
+                        dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                        selectState={value.isSelected} />)
+            })
+        }
+        return result;
     }
 
     handleRowClick(e) {
         e.preventDefault();
-        this.setState({showBucketData : !this.state.showBucketData})
+        this.setState({ showBucketData: !this.state.showBucketData })
     }
 
 
@@ -59,7 +69,7 @@ class TableAggregatedRow extends React.Component {
                     className={styles.tableRow}
                     onClick={this.handleRowClick}
                     style={{ backgroundColor: '#64A1B1' }}>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={ '> ' + this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
+                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={'> ' + this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swap_rate}></TableCell>
