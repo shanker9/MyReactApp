@@ -11,6 +11,7 @@ class GridView extends React.Component {
         this.groupedView = this.groupedView.bind(this);
         this.normalview = this.normalview.bind(this);
         this.returnGroupedView = this.returnGroupedView.bind(this);
+        this.getBucketRows = this.getBucketRows.bind(this);
     }
 
     componentDidMount() {
@@ -44,13 +45,48 @@ class GridView extends React.Component {
         return rowArray;
     }
 
+    returnGroupedViewLazyLoaded(mapData) {
+        let rowArray = [];
+        mapData.forEach((item, key, mapObj) => {
+            rowArray.push(<TableAggregatedRow data={item.groupData}
+                key={key}
+                aggregatedRowKey={key}
+                indexVal={item.groupData.swapId}
+                dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                selectState={false}
+                bucketData={item.bucketData} 
+                updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}/>);
+            if (item.showBucketData) {
+                rowArray.push(this.getBucketRows(item.bucketData));
+            }
+        });
+        let startIndex = this.props.getViewableStartIndex();
+        let displayableRows = rowArray.slice(startIndex,startIndex+50);
+        return displayableRows;
+    }
+
+    getBucketRows(bucketData) {
+        let result= [];
+        bucketData.forEach((value, key, mapObj) => { 
+            result.push(
+                <TableRow
+                    key={value.rowID}
+                    data={value.data}
+                    indexVal={value.data.swapId}
+                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                    selectState={value.isSelected} />)
+        });
+        return result;
+    }
+
+
     groupedView() {
         return (
             <div>
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div>
-                            {this.returnGroupedView(this.props.groupedData)}
+                            {this.returnGroupedViewLazyLoaded(this.props.groupedData)}
                         </div>
                     </tbody>
                 </table>

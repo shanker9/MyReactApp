@@ -57,7 +57,8 @@ class TableAggregatedRow extends React.Component {
 
     handleRowClick(e) {
         e.preventDefault();
-        this.setState({ showBucketData: !this.state.showBucketData })
+        // this.setState({ showBucketData: !this.state.showBucketData })
+        this.props.updateAggregatedRowExpandStatus(this.props.aggregatedRowKey);
     }
 
 
@@ -68,7 +69,7 @@ class TableAggregatedRow extends React.Component {
                 <tr ref={"tableRow"}
                     className={styles.tableRow}
                     onClick={this.handleRowClick}
-                    style={{ backgroundColor: '#64A1B1' }}>
+                    style={{ backgroundColor: '#3F808F', color:'white' }}>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={'> ' + this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
@@ -85,7 +86,6 @@ class TableAggregatedRow extends React.Component {
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn * 3}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
-
                 </tr>
                 {this.displayBucketData(this.props.bucketData)}
             </div>

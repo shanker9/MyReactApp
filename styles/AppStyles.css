@@ -19,7 +19,6 @@
         border: 1px solid grey;
         font-size: 80%;
         font-weight: 300;
-        color: black;                
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
@@ -83,5 +82,5 @@
 
     @keyframes example {
         from {background-color: #8593A4;}
-        to {background-color: yellow;}
+        to {background-color: #3F808F;}
     }

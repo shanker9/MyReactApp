@@ -55,8 +55,10 @@ class TableView extends React.Component {
                             viewableData={this.props.viewableData}
                             topDivHeight={this.props.topDivHeight}
                             bottomDivHeight={this.props.bottomDivHeight}
-                            selectionDataUpdateHandler={this.props.updateSelected}
-                            dataUpdateStatus={this.props.rowDataUpdateStatus} />
+                            selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
+                            dataUpdateStatus={this.props.rowDataUpdateStatus}
+                            updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
+                            getViewableStartIndex={this.props.getViewableStartIndex} />
                     </div>
                 </div>
             </div>

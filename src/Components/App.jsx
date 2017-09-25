@@ -32,6 +32,8 @@ class App extends React.Component {
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
         this.handleDataPricingResults = this.handleDataPricingResults.bind(this);
         this.createGroupBuckets = this.createGroupBuckets.bind(this);
+        this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
+        this.getViewableStartIndex = this.getViewableStartIndex.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -168,11 +170,11 @@ class App extends React.Component {
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
             values++;
         }
-        if(this.isGroupedView){
+        if (this.isGroupedView) {
             let grpObject = this.groupedData.get(this.valueKeyMap.get(message.data.customer));
             let newData = JSON.parse(JSON.stringify(message.data));
             let existingData = grpObject.bucketData.get(message.k);
-            grpObject.bucketData.set(message.k,{ "rowID": existingData.rowID, "data": newData, "isSelected": existingData.isSelected, "isUpdated": true });
+            grpObject.bucketData.set(message.k, { "rowID": existingData.rowID, "data": newData, "isSelected": existingData.isSelected, "isUpdated": true });
         }
     }
 
@@ -204,6 +206,12 @@ class App extends React.Component {
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
         return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
 
+    }
+
+    getViewableStartIndex() {
+        let node = document.getElementById('scrollableTableDiv');
+        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
+        return approximateNumberOfRowsHidden;
     }
 
     sliceLoadableData(initialIndex, lastDisplayRow, map) {
@@ -253,7 +261,10 @@ class App extends React.Component {
             this.valueKeyMap.set(message.data.customer, message.k);
         } else {
             let val = this.groupedData.get(message.k);
-            val.groupData = JSON.parse(JSON.stringify(message.data));
+            let groupHeaderRow = JSON.parse(JSON.stringify(val.groupData));
+            groupHeaderRow.swap_rate = message.data.swap_rate;
+            groupHeaderRow.payFixedRate = message.data.payFixedRate;
+            val.groupData = groupHeaderRow;
         }
 
     }
@@ -270,8 +281,8 @@ class App extends React.Component {
         this.dataMap.forEach((item, key, mapObj) => {
             groupKey = this.valueKeyMap.get(item.data.customer);
             groupVal = this.groupedData.get(groupKey).groupData == undefined ? this.groupedData.get(groupKey) : this.groupedData.get(groupKey).groupData;
-            uniqueColumnValueBuckets.get(item.data.customer).set(key,item)
-            this.groupedData.set(groupKey, { "groupData": groupVal, "bucketData": uniqueColumnValueBuckets.get(item.data.customer) });
+            uniqueColumnValueBuckets.get(item.data.customer).set(key, item)
+            this.groupedData.set(groupKey, { "groupData": groupVal, "bucketData": uniqueColumnValueBuckets.get(item.data.customer), "showBucketData": false });
         })
         console.log(this.groupedData);
         this.isGroupedView = true;
@@ -280,6 +291,12 @@ class App extends React.Component {
 
     groupedDataSubscription(subId) {
         console.log('GROUPEDSUBSCRIPTION ID:', subId);
+    }
+
+    updateAggregatedRowExpandStatus(groupKey) {
+        let expandStatus = this.groupedData.get(groupKey).showBucketData;
+        this.groupedData.get(groupKey).showBucketData = !expandStatus;
+        this.triggerConditionalUIUpdate();
     }
 
     formGroupedData() {
@@ -294,7 +311,7 @@ class App extends React.Component {
         this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), commandObject);
     }
 
-    toggleNormalView(){
+    toggleNormalView() {
         this.isGroupedView = false;
         this.triggerConditionalUIUpdate();
     }
@@ -310,7 +327,7 @@ class App extends React.Component {
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     <label onClick={this.formGroupedData.bind(this)}> | Grouped View </label>
                     <label onClick={this.toggleNormalView.bind(this)}> | Normal View</label>
-                    <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit+ ' of ' + this.dataMap.size : ''}</label>
+                    <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>
                     {/* <div className={styles.gridContainerDiv}>
@@ -351,7 +368,9 @@ class App extends React.Component {
                         bottomDivHeight={this.bottomDivHeight}
                         selectionDataUpdateHandler={this.updateSelected}
                         dataUpdateStatus={this.rowDataUpdateStatus}
-                        handleScroll={this.handleScroll} />
+                        handleScroll={this.handleScroll}
+                        updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus} 
+                        getViewableStartIndex={this.getViewableStartIndex} />
                 </div>
             </div>
         );
