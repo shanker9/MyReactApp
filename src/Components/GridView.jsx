@@ -19,10 +19,6 @@ class GridView extends React.Component {
     }
 
     componentDidMount() {
-        // this.displayableRows = this.returnGroupedViewLazyLoaded(this.props.groupedData);
-        // if (this.props.isGroupedView) {
-        //     this.displayableRows = this.returnGroupedViewLazyLoaded(this.props.groupedData);
-        // }
     }
 
     componentWillReceiveProps(nextProps) {

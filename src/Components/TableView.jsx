@@ -1,5 +1,6 @@
 import React from 'react';
 import TableRow from './TableRow.jsx';
+import TableHeaderCell from './TableHeaderCell.jsx';
 import GridView from './GridView.jsx';
 import styles from '../../styles/AppStyles.css'
 
@@ -41,7 +42,10 @@ class TableView extends React.Component {
                         <thead className={styles.tableHead}>
                             <tr className={styles.tableRow}>
                                 {this.columns.map((item, i) =>
-                                    <th key={i} className={styles.th}>{item}</th>
+                                    <TableHeaderCell
+                                        key={i}
+                                        groupingHandler={this.props.groupingHandler}
+                                        cellData={item} />
                                 )}
                             </tr>
                         </thead>

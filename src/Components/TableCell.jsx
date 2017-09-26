@@ -6,10 +6,20 @@ class TableCell extends React.Component {
     constructor() {
         super();
         this.state = {
-            animateColor: '#B9AA56'
+            animateColor: '#EAF188'
         }
 
         this.detectTheEnd = this.detectTheEnd.bind(this);
+    }
+
+    componentDidMount() {
+        let tableCell = this.refs.tableCell;
+
+        tableCell.addEventListener("transitionend", this.detectTheEnd, false);
+        tableCell.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("msTransitionEnd", this.detectTheEnd, false);
+        tableCell.addEventListener("oTransitionEnd", this.detectTheEnd, false);
     }
 
     componentWillMount() {
@@ -21,9 +31,6 @@ class TableCell extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.cellData != nextProps.cellData) {
-            // console.log('propschanged');
-            // nextState.animateColor = parseInt(this.props.cellData.toString()) > parseInt(nextProps.cellData.toString()) ? '#D94C4C' : 'green';
-            // nextState.animateColor = 'yellow';
             return true;
         } else
             return false;
@@ -35,24 +42,11 @@ class TableCell extends React.Component {
     componentDidUpdate() {
 
         this.refs.tableCell.style.backgroundColor = this.state.animateColor;
-
-        let tableCell = this.refs.tableCell;
-
-        tableCell.addEventListener("transitionend", this.detectTheEnd, false);
-        tableCell.addEventListener("webkitTransitionEnd", this.detectTheEnd, false);
-        tableCell.addEventListener("mozTransitionEnd", this.detectTheEnd, false);
-        tableCell.addEventListener("msTransitionEnd", this.detectTheEnd, false);
-        tableCell.addEventListener("oTransitionEnd", this.detectTheEnd, false);
     }
 
     detectTheEnd(e) {
-        // console.log('Transition End');
-        // this.refs.tableCell.style.backgroundColor = this.props.parentBackgroundColor;
         this.refs.tableCell.style.backgroundColor = "";
     }
-
-
-
 
     render() {
 
@@ -65,10 +59,5 @@ class TableCell extends React.Component {
 
 }
 
-export const tableRowStyles = {
-    tableCell: {
-        textAlign: 'left'
-    }
-}
 
 export default TableCell;

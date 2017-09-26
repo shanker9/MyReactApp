@@ -7,7 +7,7 @@ var ampsClient = new Amps.Client('shankersClient');
 var i = 0;
 export default class AmpsData {
 
-    constructor(){
+    constructor() {
         this.ampsconnectObject = undefined;
     }
 
@@ -30,10 +30,10 @@ export default class AmpsData {
             })
     }
 
-    connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject) {
+    connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject, groupingColumnKey) {
         var subscriberId;
         let ampsCommandObject;
-        if(this.ampsconnectObject==undefined){
+        if (this.ampsconnectObject == undefined) {
             this.ampsconnectObject = ampsClient.connect(ampsServerUri);
         }
 
@@ -63,8 +63,17 @@ export default class AmpsData {
 
             }).then((subId) => {
                 console.log("Subscription ID: " + subId);
-                subscriberInfoCallback(subId);
+                if (groupingColumnKey == undefined) {
+                    subscriberInfoCallback(subId);
+                } else {
+                    subscriberInfoCallback(subId, groupingColumnKey);
+                }
             })
+    }
+
+    unsubscribe(subId) {
+        ampsClient.unsubscribe(subId)
+            .then(() => console.log('Unsubscribed the subscription with ID : ' + subId));
     }
 
     testData(callback) {

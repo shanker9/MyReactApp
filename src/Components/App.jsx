@@ -20,7 +20,8 @@ class App extends React.Component {
             lastRow: 0,
             loadedRows: 0,
             loadTime: 0,
-            currentSelectedRowIndex: undefined
+            currentSelectedRowIndex: undefined,
+            viewableStartIndex: 0
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
@@ -34,6 +35,7 @@ class App extends React.Component {
         this.createGroupBuckets = this.createGroupBuckets.bind(this);
         this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
         this.getViewableStartIndex = this.getViewableStartIndex.bind(this);
+        this.formGroupedData = this.formGroupedData.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -52,7 +54,8 @@ class App extends React.Component {
         this.sowGroupDataEnd = false;
         this.valueKeyMap = new Map();
         this.isGroupedView = false;
-        this.viewableStartIndex=0;
+        this.subscriptionData = new Map();
+        // this.viewableStartIndex=0;
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -116,19 +119,10 @@ class App extends React.Component {
 
     handleClick() {
         this.controller = new AmpsClientData();
-        // controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this));
-        // let commandObject = {
-        //     "command": "sow_and_subscribe",
-        //     "topic": "Price",
-        //     "filter": "/swapId >=0",
-        //     "orderBy": "/swapId",
-        //     "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
-        // }
-
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0",
+            "filter": "/swapId >=0 AND /swapId<=10000",
             "orderBy": "/swapId"
         }
 
@@ -147,8 +141,8 @@ class App extends React.Component {
         let messageStatus = this.handleDataPricingResults(message);
 
         if (messageStatus == 'group_end' || this.sowDataEnd == true) {
-            this.sowDataEnd = true;  
-            this.triggerConditionalUIUpdate();          
+            this.sowDataEnd = true;
+            this.triggerConditionalUIUpdate();
         }
     }
 
@@ -176,11 +170,14 @@ class App extends React.Component {
 
 
     triggerConditionalUIUpdate() {
-        if(this.isGroupedView){
-            this.viewableStartIndex = this.getViewableStartIndex();
+        let startIndex;
+        if (this.isGroupedView) {
+            startIndex = this.getViewableStartIndex();
+            this.setState({ viewableStartIndex: startIndex });
+        } else {
+            let loadableData = this.updateLoadData(this.dataMap);
+            this.setState({ viewableData: loadableData });
         }
-        let loadableData = this.updateLoadData(this.dataMap);
-        this.setState({ viewableData: loadableData });
     }
 
     /* Event Handler for scroll */
@@ -188,7 +185,7 @@ class App extends React.Component {
 
         let headerNode = document.getElementById('scrollableHeaderDiv');
         let tableNode = document.getElementById('scrollableTableDiv');
-
+        
         headerNode.scrollLeft = tableNode.scrollLeft;
 
         this.triggerConditionalUIUpdate();
@@ -206,7 +203,8 @@ class App extends React.Component {
     getViewableStartIndex() {
         let node = document.getElementById('scrollableTableDiv');
         let scrolledDistance = node.scrollTop;
-        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
+        // let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
+        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight);
         return approximateNumberOfRowsHidden;
     }
 
@@ -285,8 +283,9 @@ class App extends React.Component {
         this.triggerConditionalUIUpdate();
     }
 
-    groupedDataSubscription(subId) {
+    groupedDataSubscription(subId,groupingColumnKey) {
         console.log('GROUPEDSUBSCRIPTION ID:', subId);
+        this.subscriptionData.set(groupingColumnKey,subId);
     }
 
     updateAggregatedRowExpandStatus(groupKey) {
@@ -295,16 +294,50 @@ class App extends React.Component {
         this.triggerConditionalUIUpdate();
     }
 
-    formGroupedData() {
-        let commandObject = {
-            "command": "sow_and_subscribe",
-            "topic": "Price",
-            "filter": "/swapId >=0",
-            "orderBy": "/swapId",
-            "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+    formGroupedData(columnName) {
+        let commandObject, groupingColumnKey;
+        let subscriptionId = this.subscriptionData.get(columnName);
+        if(subscriptionId != undefined){
+            this.controller.unsubscribe(subscriptionId);
+            this.subscriptionData.delete(columnName);
+            this.toggleNormalView();
+            return;
         }
 
-        this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), commandObject);
+        switch (columnName) {
+            case 'Counter Party':
+                commandObject = {
+                    "command": "sow_and_subscribe",
+                    "topic": "Price",
+                    "filter": "/swapId >=0",
+                    "orderBy": "/swapId",
+                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+                }
+                groupingColumnKey = 'customer';
+                break;
+            case 'SwapId':
+                commandObject = {
+                    "command": "sow_and_subscribe",
+                    "topic": "Price",
+                    "filter": "/swapId >=0",
+                    "orderBy": "/swapId",
+                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/swapId]"
+                }
+                groupingColumnKey = 'swapId';
+                break;
+            default :
+                console.log('Grouping cannot be done with the selected column');
+                return;
+        }
+        // let commandObject = {
+        //     "command": "sow_and_subscribe",
+        //     "topic": "Price",
+        //     "filter": "/swapId >=0",
+        //     "orderBy": "/swapId",
+        //     "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+        // }
+
+        this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), commandObject, columnName);
     }
 
     toggleNormalView() {
@@ -335,7 +368,8 @@ class App extends React.Component {
                         dataUpdateStatus={this.rowDataUpdateStatus}
                         handleScroll={this.handleScroll}
                         updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus}
-                        viewableStartIndex={this.viewableStartIndex} />
+                        viewableStartIndex={this.state.viewableStartIndex}
+                        groupingHandler={this.formGroupedData} />
                 </div>
             </div>
         );

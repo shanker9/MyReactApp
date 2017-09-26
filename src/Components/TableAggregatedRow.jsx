@@ -17,21 +17,6 @@ class TableAggregatedRow extends React.Component {
         this.displayBucketData = this.displayBucketData.bind(this);
     }
 
-    componentWillMount() {
-        this.state.isSelected = this.props.selectState;
-        // this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
-        // this.dynamicBackgroundColor = 'white';
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.state.isSelected = nextProps.selectState;
-    }
-
-    componentWillUpdate() {
-        // this.state.shouldAnimate = true;
-        // this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
-    }
-
     displayBucketData(bucketData) {
         let result = [];
         if (this.state.showBucketData) {
@@ -69,7 +54,7 @@ class TableAggregatedRow extends React.Component {
                 <tr ref={"tableRow"}
                     className={styles.tableRow}
                     onClick={this.handleRowClick}
-                    style={{ backgroundColor: '#3F808F', color:'white' }}>
+                    style={{ backgroundColor: '#b8e3ef' }}>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={'> ' + this.props.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.swapId}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.interest}></TableCell>
@@ -87,7 +72,6 @@ class TableAggregatedRow extends React.Component {
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.yearsIn}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.props.data.payCurrency}></TableCell>
                 </tr>
-                {this.displayBucketData(this.props.bucketData)}
             </div>
         )
     }
