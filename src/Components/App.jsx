@@ -52,6 +52,7 @@ class App extends React.Component {
         this.sowGroupDataEnd = false;
         this.valueKeyMap = new Map();
         this.isGroupedView = false;
+        this.viewableStartIndex=0;
         // this.currentSelectedRowIndex = undefined;
     }
 
@@ -127,7 +128,7 @@ class App extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0 AND /swapId<=500",
+            "filter": "/swapId >=0 AND /swapId<=5000",
             "orderBy": "/swapId"
         }
 
@@ -180,6 +181,9 @@ class App extends React.Component {
 
 
     triggerConditionalUIUpdate() {
+        if(this.isGroupedView){
+            this.viewableStartIndex = this.getViewableStartIndex();
+        }
         let loadableData = this.updateLoadData(this.dataMap);
         this.setState({ viewableData: loadableData });
         this.sowDataEnd = true;
@@ -187,8 +191,6 @@ class App extends React.Component {
 
     /* Event Handler for scroll */
     handleScroll() {
-        if (this.isGroupedView)
-            return;
 
         let headerNode = document.getElementById('scrollableHeaderDiv');
         let tableNode = document.getElementById('scrollableTableDiv');
@@ -210,7 +212,7 @@ class App extends React.Component {
 
     getViewableStartIndex() {
         let node = document.getElementById('scrollableTableDiv');
-        let scrolledDistance = node.scrollTop;        
+        let scrolledDistance = node.scrollTop;
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
         return approximateNumberOfRowsHidden;
     }
@@ -331,37 +333,6 @@ class App extends React.Component {
                     <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>
-                    {/* <div className={styles.gridContainerDiv}>
-                        <div id="scrollableHeaderDiv" className={styles.headerDiv}>
-                            <table className={styles.table}>
-                                <thead className={styles.tableHead}>
-                                    <tr className={styles.tableRow}>
-                                        <th className={styles.th}>Counter Party</th>
-                                        <th className={styles.th}>SwapId</th>
-                                        <th className={styles.th}>Interest</th>
-                                        <th className={styles.th}>SwapRate</th>
-                                        <th className={styles.th}>YearsIn</th>
-                                        <th className={styles.th}>PayFixedRate</th>
-                                        <th className={styles.th}>PayCurrency</th>
-                                        <th className={styles.th}>YearsLeft</th>
-                                        <th className={styles.th}>NewInterest</th>
-                                        <th className={styles.th}>SecondaryCurrency</th>
-                                        <th className={styles.th}>Customer</th>
-                                        <th className={styles.th}>SwapId</th>
-                                        <th className={styles.th}>Interest</th>
-                                        <th className={styles.th}>YearsPay</th>
-                                        <th className={styles.th}>YearsIn</th>
-                                        <th className={styles.th}>FixedRate</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div>
-                            <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.handleScroll.bind(this)}>
-                                <TableView viewType="GroupedView" viewableData={this.state.viewableData} topDivHeight={this.topDivHeight} bottomDivHeight={this.bottomDivHeight} selectionDataUpdateHandler={this.updateSelected} dataUpdateStatus={this.rowDataUpdateStatus} />
-                            </div>
-                        </div>
-                    </div> */}
                     <TableView viewableData={this.state.viewableData}
                         isGroupedData={this.isGroupedView}
                         groupedData={this.groupedData}
@@ -370,8 +341,8 @@ class App extends React.Component {
                         selectionDataUpdateHandler={this.updateSelected}
                         dataUpdateStatus={this.rowDataUpdateStatus}
                         handleScroll={this.handleScroll}
-                        updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus} 
-                        getViewableStartIndex={this.getViewableStartIndex} />
+                        updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus}
+                        viewableStartIndex={this.viewableStartIndex} />
                 </div>
             </div>
         );

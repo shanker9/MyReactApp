@@ -34,7 +34,6 @@ class TableView extends React.Component {
     }
 
     render() {
-
         return (
             <div className={styles.gridContainerDiv}>
                 <div id="scrollableHeaderDiv" className={styles.headerDiv}>
@@ -48,21 +47,18 @@ class TableView extends React.Component {
                         </thead>
                     </table>
                 </div>
-                <div>
-                    <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.props.handleScroll}>
-                        <GridView isGroupedView= {this.props.isGroupedData}
-                            groupedData={this.props.groupedData}
-                            viewableData={this.props.viewableData}
-                            topDivHeight={this.props.topDivHeight}
-                            bottomDivHeight={this.props.bottomDivHeight}
-                            selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
-                            dataUpdateStatus={this.props.rowDataUpdateStatus}
-                            updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
-                            getViewableStartIndex={this.props.getViewableStartIndex} />
-                    </div>
+                <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.props.handleScroll}>
+                    <GridView isGroupedView={this.props.isGroupedData}
+                        groupedData={this.props.groupedData}
+                        viewableData={this.props.viewableData}
+                        topDivHeight={this.props.topDivHeight}
+                        bottomDivHeight={this.props.bottomDivHeight}
+                        selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
+                        dataUpdateStatus={this.props.rowDataUpdateStatus}
+                        updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
+                        viewableStartIndex={this.props.viewableStartIndex} />
                 </div>
             </div>
-
         );
     }
 }
