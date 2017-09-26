@@ -122,7 +122,7 @@ class App extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0 AND /swapId<=10000",
+            "filter": "/swapId >=0 AND /swapId<=500",
             "orderBy": "/swapId"
         }
 
@@ -140,6 +140,7 @@ class App extends React.Component {
     handleNewData(message) {
         let messageStatus = this.handleDataPricingResults(message);
 
+        console.log(this.props.children);
         if (messageStatus == 'group_end' || this.sowDataEnd == true) {
             this.sowDataEnd = true;
             this.triggerConditionalUIUpdate();
@@ -185,7 +186,7 @@ class App extends React.Component {
 
         let headerNode = document.getElementById('scrollableHeaderDiv');
         let tableNode = document.getElementById('scrollableTableDiv');
-        
+
         headerNode.scrollLeft = tableNode.scrollLeft;
 
         this.triggerConditionalUIUpdate();
@@ -250,15 +251,15 @@ class App extends React.Component {
             return;
         }
 
-        if (!this.sowGroupDataEnd) {
-            this.groupedData.set(message.k, message.data);
-            this.valueKeyMap.set(message.data.customer, message.k);
-        } else {
+        if (this.sowGroupDataEnd) {
             let val = this.groupedData.get(message.k);
             let groupHeaderRow = JSON.parse(JSON.stringify(val.groupData));
             groupHeaderRow.swap_rate = message.data.swap_rate;
             groupHeaderRow.payFixedRate = message.data.payFixedRate;
             val.groupData = groupHeaderRow;
+        } else {
+            this.groupedData.set(message.k, message.data);
+            this.valueKeyMap.set(message.data.customer, message.k);
         }
 
     }
@@ -283,9 +284,9 @@ class App extends React.Component {
         this.triggerConditionalUIUpdate();
     }
 
-    groupedDataSubscription(subId,groupingColumnKey) {
+    groupedDataSubscription(subId, groupingColumnKey) {
         console.log('GROUPEDSUBSCRIPTION ID:', subId);
-        this.subscriptionData.set(groupingColumnKey,subId);
+        this.subscriptionData.set(groupingColumnKey, subId);
     }
 
     updateAggregatedRowExpandStatus(groupKey) {
@@ -297,7 +298,7 @@ class App extends React.Component {
     formGroupedData(columnName) {
         let commandObject, groupingColumnKey;
         let subscriptionId = this.subscriptionData.get(columnName);
-        if(subscriptionId != undefined){
+        if (subscriptionId != undefined) {
             this.controller.unsubscribe(subscriptionId);
             this.subscriptionData.delete(columnName);
             this.toggleNormalView();
@@ -325,7 +326,7 @@ class App extends React.Component {
                 }
                 groupingColumnKey = 'swapId';
                 break;
-            default :
+            default:
                 console.log('Grouping cannot be done with the selected column');
                 return;
         }
@@ -360,6 +361,7 @@ class App extends React.Component {
                 </div>
                 <div>
                     <TableView viewableData={this.state.viewableData}
+                        ref='tableViewRef'
                         isGroupedData={this.isGroupedView}
                         groupedData={this.groupedData}
                         topDivHeight={this.topDivHeight}
