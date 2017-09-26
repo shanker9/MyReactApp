@@ -57,12 +57,14 @@ class GridView extends React.Component {
                 bucketData={item.bucketData} 
                 updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}/>);
             if (item.showBucketData) {
-                rowArray.push(this.getBucketRows(item.bucketData));
+                let res = this.getBucketRows(item.bucketData);
+                rowArray.push(...res);
             }
         });
         let startIndex = this.props.getViewableStartIndex();
         let displayableRows = rowArray.slice(startIndex,startIndex+50);
         return displayableRows;
+        // return rowArray;
     }
 
     getBucketRows(bucketData) {

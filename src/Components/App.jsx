@@ -210,6 +210,7 @@ class App extends React.Component {
 
     getViewableStartIndex() {
         let node = document.getElementById('scrollableTableDiv');
+        let scrolledDistance = node.scrollTop;        
         let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
         return approximateNumberOfRowsHidden;
     }
