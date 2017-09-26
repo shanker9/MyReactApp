@@ -4,7 +4,7 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
-var values = 0;
+var scrollUpdateDelay = true;
 class App extends React.Component {
 
     constructor() {
@@ -128,7 +128,7 @@ class App extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0 AND /swapId<=5000",
+            "filter": "/swapId >=0",
             "orderBy": "/swapId"
         }
 
@@ -147,7 +147,8 @@ class App extends React.Component {
         let messageStatus = this.handleDataPricingResults(message);
 
         if (messageStatus == 'group_end' || this.sowDataEnd == true) {
-            this.triggerConditionalUIUpdate();
+            this.sowDataEnd = true;  
+            this.triggerConditionalUIUpdate();          
         }
     }
 
@@ -159,23 +160,17 @@ class App extends React.Component {
         }
 
         let newData = message.data;
-        // console.log('NEWDATA',JSON.stringify(newData));
         let rowKey = message.k;
         let item = this.dataMap.get(rowKey);
         if (item == undefined) {
             this.dataMap.set(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
-            // if(values%100==0){
-            //     console.log("====================================================================");
-            // }
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-            values++;
         }
         if (this.isGroupedView) {
             let grpObject = this.groupedData.get(this.valueKeyMap.get(message.data.customer));
-            let newData = JSON.parse(JSON.stringify(message.data));
             let existingData = grpObject.bucketData.get(message.k);
-            grpObject.bucketData.set(message.k, { "rowID": existingData.rowID, "data": newData, "isSelected": existingData.isSelected, "isUpdated": true });
+            existingData.data = message.data;
         }
     }
 
@@ -186,7 +181,6 @@ class App extends React.Component {
         }
         let loadableData = this.updateLoadData(this.dataMap);
         this.setState({ viewableData: loadableData });
-        this.sowDataEnd = true;
     }
 
     /* Event Handler for scroll */
@@ -198,14 +192,13 @@ class App extends React.Component {
         headerNode.scrollLeft = tableNode.scrollLeft;
 
         this.triggerConditionalUIUpdate();
-
     }
 
     updateLoadData(map) {
         let node = document.getElementById('scrollableTableDiv');
         // console.log('ScrollTop Value: ' + node.scrollTop);
         let scrolledDistance = node.scrollTop;
-        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
+        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
         return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
 
     }
@@ -213,7 +206,7 @@ class App extends React.Component {
     getViewableStartIndex() {
         let node = document.getElementById('scrollableTableDiv');
         let scrolledDistance = node.scrollTop;
-        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);// NEED TO DO THIS -1 FROM CALCULATION ONCE HEADERROW GOES OUT OF SCROLLAREA
+        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
         return approximateNumberOfRowsHidden;
     }
 

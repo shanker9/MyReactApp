@@ -76,7 +76,7 @@ class GridView extends React.Component {
         });
         let startIndex = this.props.viewableStartIndex;
         let displayableRows = rowArray.slice(startIndex, startIndex + 50);
-        this.topDivHeight = 30 * startIndex;
+        this.topDivHeight = startIndex > 10 ? 30 * (startIndex-10) : 0;
         this.bottomDivHeight = (rowArray.length - (startIndex + displayableRows.length)) * 30;
         return displayableRows;
     }
