@@ -31,11 +31,11 @@ class App extends React.Component {
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
-        this.handleDataPricingResults = this.handleDataPricingResults.bind(this);
         this.createGroupBuckets = this.createGroupBuckets.bind(this);
         this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
         this.getViewableStartIndex = this.getViewableStartIndex.bind(this);
         this.formGroupedData = this.formGroupedData.bind(this);
+        this.rowUpdate = this.rowUpdate.bind(this);
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -122,7 +122,7 @@ class App extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0 AND /swapId<=500",
+            "filter": "/swapId >=0 AND /swapId<=5000",
             "orderBy": "/swapId"
         }
 
@@ -138,20 +138,13 @@ class App extends React.Component {
     /* New Data from AMPS will be handled here first */
 
     handleNewData(message) {
-        let messageStatus = this.handleDataPricingResults(message);
-
-        console.log(this.props.children);
-        if (messageStatus == 'group_end' || this.sowDataEnd == true) {
+        if (message.c == 'group_begin') {
+            console.log(message.c);
+            return;
+        } else if (message.c == 'group_end') {
             this.sowDataEnd = true;
             this.triggerConditionalUIUpdate();
-        }
-    }
-
-    handleDataPricingResults(message) {
-
-        if (message.c == 'group_begin' || message.c == 'group_end') {
-            console.log(message.c);
-            return message.c;
+            return;
         }
 
         let newData = message.data;
@@ -161,14 +154,18 @@ class App extends React.Component {
             this.dataMap.set(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+            this.rowUpdate(newData,'ref' + item.rowID);
         }
         if (this.isGroupedView) {
             let grpObject = this.groupedData.get(this.valueKeyMap.get(message.data.customer));
             let existingData = grpObject.bucketData.get(message.k);
             existingData.data = message.data;
+            // this.rowUpdate(rowKey);
         }
-    }
 
+        // if (this.sowDataEnd)
+        //     this.triggerConditionalUIUpdate();
+    }
 
     triggerConditionalUIUpdate() {
         let startIndex;
@@ -193,10 +190,12 @@ class App extends React.Component {
     }
 
     updateLoadData(map) {
-        let node = document.getElementById('scrollableTableDiv');
-        // console.log('ScrollTop Value: ' + node.scrollTop);
-        let scrolledDistance = node.scrollTop;
-        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
+        // let node = document.getElementById('scrollableTableDiv');
+        // // console.log('ScrollTop Value: ' + node.scrollTop);
+        // let scrolledDistance = node.scrollTop;
+        // let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
+
+        let approximateNumberOfRowsHidden = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.rowHeight)
         return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
 
     }
@@ -239,6 +238,8 @@ class App extends React.Component {
         return result;
     }
 
+    /*** GROUP DATA HANDLING ***/
+
     groupedDataHandle(message) {
 
         if (message.c == 'group_begin') {
@@ -257,6 +258,8 @@ class App extends React.Component {
             groupHeaderRow.swap_rate = message.data.swap_rate;
             groupHeaderRow.payFixedRate = message.data.payFixedRate;
             val.groupData = groupHeaderRow;
+            // this.triggerConditionalUIUpdate();
+            this.rowUpdate(val.groupData,'ref' + message.k);
         } else {
             this.groupedData.set(message.k, message.data);
             this.valueKeyMap.set(message.data.customer, message.k);
@@ -346,6 +349,17 @@ class App extends React.Component {
         this.triggerConditionalUIUpdate();
     }
 
+    rowUpdate(data,rowReference) {
+        // let newdata = this.dataMap.get(rowKey);
+        // let rowReference = 'ref' + newdata.rowID;
+        let rowElem = this.refs.tableViewRef.refs.gridViewRef.refs[rowReference];
+        if (rowElem != undefined) {
+            rowElem.triggerUpdate(data);
+        }
+    }
+
+
+
     render() {
         return (
             <div>
@@ -357,6 +371,7 @@ class App extends React.Component {
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     <label onClick={this.formGroupedData.bind(this)}> | Grouped View </label>
                     <label onClick={this.toggleNormalView.bind(this)}> | Normal View</label>
+                    {/* <label onClick={this.rowUpdate.bind(this)}> | rowupdate</label> */}
                     <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>

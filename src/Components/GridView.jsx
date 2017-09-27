@@ -18,6 +18,7 @@ class GridView extends React.Component {
         this.topDivHeight = 0;
         this.bottomDivHeight = 0;
         this.displayableRows = undefined;
+        this.displayableRowsData = [];
     }
 
     componentDidMount() {
@@ -25,7 +26,8 @@ class GridView extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.isGroupedView) {
-            this.displayableRows = this.returnGroupedViewLazyLoaded(nextProps.groupedData);
+            // this.displayableRows = this.returnGroupedViewLazyLoaded(nextProps.groupedData);
+            this.returnGroupedViewLazyLoaded(nextProps.groupedData);
         }
     }
 
@@ -42,18 +44,6 @@ class GridView extends React.Component {
         } else {
             return this.normalview();
         }
-    }
-
-    returngroupedData(mapData) {
-        let result = [];
-        mapData.forEach((item, key, mapObj) => {
-            result.push({ "key": key, "data": item, "isAggregatedRow": true });
-            if (item.showBucketData) {
-                let res = this.getBucketRowsLazyLoad(item.bucketData);
-                result.push(...res);
-            }
-        });
-        return result;
     }
 
     returnGroupedViewLazyLoaded(mapData) {
@@ -75,12 +65,35 @@ class GridView extends React.Component {
         // });
         rowArray = this.returngroupedData(mapData);
         let startIndex = this.props.viewableStartIndex;
-        let displayableRowsData = rowArray.slice(startIndex, startIndex + 50);
-        this.topDivHeight = startIndex > 10 ? 30 * (startIndex - 10) : 0;
-        this.bottomDivHeight = (rowArray.length - (startIndex + displayableRowsData.length)) * 30;
-        let groupedViewElements = this.getDisplayableRows(displayableRowsData);
-        return groupedViewElements;
+        this.displayableRowsData = rowArray.slice(startIndex, startIndex + 50);
+        // this.topDivHeight = startIndex > 10 ? 30 * (startIndex) : 0;
+        this.topDivHeight = startIndex*30;
+        this.bottomDivHeight = (rowArray.length - (startIndex + this.displayableRowsData.length)) * 30;
+        // let groupedViewElements = this.getDisplayableRows(this.displayableRowsData);
+        // return groupedViewElements;
     }
+
+    returngroupedData(mapData) {
+        let result = [];
+        mapData.forEach((item, key, mapObj) => {
+            result.push({ "key": key, "data": item, "isAggregatedRow": true });
+            if (item.showBucketData) {
+                let res = this.getBucketRowsLazyLoad(item.bucketData);
+                result.push(...res);
+            }
+        });
+        return result;
+    }
+
+    getBucketRowsLazyLoad(bucketData) {
+        let result = [];
+        bucketData.forEach((value, key, mapObj) => {
+            result.push({ "key": key, "data": value, "isAggregatedRow": false })
+        });
+        return result;
+    }
+
+
 
     getDisplayableRows(data) {
         return data.map((item, i) => {
@@ -96,6 +109,7 @@ class GridView extends React.Component {
             } else {
                 return (
                     <TableRow
+                        ref={'ref' + item.data.rowID}
                         key={item.data.rowID}
                         data={item.data.data}
                         indexVal={item.data.data.swapId}
@@ -120,13 +134,7 @@ class GridView extends React.Component {
         return result;
     }
 
-    getBucketRowsLazyLoad(bucketData) {
-        let result = [];
-        bucketData.forEach((value, key, mapObj) => {
-            result.push({ "key": key, "data": value, "isAggregatedRow": false })
-        });
-        return result;
-    }
+
 
 
     groupedView() {
@@ -136,7 +144,30 @@ class GridView extends React.Component {
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.topDivHeight }}></div>
                         <div>
-                            {this.displayableRows}
+                            {/* {this.displayableRows} */}
+                            {this.displayableRowsData.map((item, i) => {
+                                if (item.isAggregatedRow) {
+                                    return (<TableAggregatedRow data={item.data.groupData}
+                                        ref={'ref' + item.key}
+                                        key={item.key}
+                                        aggregatedRowKey={item.key}
+                                        indexVal={item.data.groupData.swapId}
+                                        dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                                        selectState={false}
+                                        bucketData={item.data.bucketData}
+                                        updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus} />)
+                                } else {
+                                    return (
+                                        <TableRow
+                                            ref={'ref' + item.data.rowID}
+                                            key={item.data.rowID}
+                                            data={item.data.data}
+                                            indexVal={item.data.data.swapId}
+                                            dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                                            selectState={item.data.isSelected} />)
+                                }
+
+                            })}
                         </div>
                         <div style={{ height: this.bottomDivHeight }}></div>
                     </tbody>
@@ -154,6 +185,7 @@ class GridView extends React.Component {
                         <div style={{ height: this.props.topDivHeight }}></div>
                         {this.props.viewableData.map((item, i) =>
                             <TableRow
+                                ref={'ref' + item.rowID}
                                 key={item.rowID}
                                 data={item.data}
                                 indexVal={item.data.swapId}
