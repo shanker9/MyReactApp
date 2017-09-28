@@ -154,7 +154,7 @@ class App extends React.Component {
             this.dataMap.set(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
             this.dataMap.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
-            this.rowUpdate(newData,'ref' + item.rowID);
+            this.rowUpdate(newData, 'ref' + item.rowID);
         }
         if (this.isGroupedView) {
             let grpObject = this.groupedData.get(this.valueKeyMap.get(message.data.customer));
@@ -244,11 +244,11 @@ class App extends React.Component {
 
         if (message.c == 'group_begin') {
             return;
-        }
-
-        if (message.c == 'group_end') {
+        } else if (message.c == 'group_end') {
             this.sowGroupDataEnd = true;
             this.createGroupBuckets();
+            this.isGroupedView = true;
+            this.triggerConditionalUIUpdate();
             return;
         }
 
@@ -259,12 +259,11 @@ class App extends React.Component {
             groupHeaderRow.payFixedRate = message.data.payFixedRate;
             val.groupData = groupHeaderRow;
             // this.triggerConditionalUIUpdate();
-            this.rowUpdate(val.groupData,'ref' + message.k);
+            this.rowUpdate(val.groupData, 'ref' + message.k);
         } else {
-            this.groupedData.set(message.k, message.data);
-            this.valueKeyMap.set(message.data.customer, message.k);
+                this.groupedData.set(message.k, message.data);
+                this.valueKeyMap.set(message.data.customer, message.k);
         }
-
     }
 
     createGroupBuckets() {
@@ -282,14 +281,12 @@ class App extends React.Component {
             uniqueColumnValueBuckets.get(item.data.customer).set(key, item)
             this.groupedData.set(groupKey, { "groupData": groupVal, "bucketData": uniqueColumnValueBuckets.get(item.data.customer), "showBucketData": false });
         })
-        console.log(this.groupedData);
-        this.isGroupedView = true;
-        this.triggerConditionalUIUpdate();
+
     }
 
-    groupedDataSubscription(subId, groupingColumnKey) {
+    groupedDataSubscription(subId, groupingColumnName) {
         console.log('GROUPEDSUBSCRIPTION ID:', subId);
-        this.subscriptionData.set(groupingColumnKey, subId);
+        this.subscriptionData.set(groupingColumnName, subId);
     }
 
     updateAggregatedRowExpandStatus(groupKey) {
@@ -346,10 +343,11 @@ class App extends React.Component {
 
     toggleNormalView() {
         this.isGroupedView = false;
+        this.sowGroupDataEnd = false;
         this.triggerConditionalUIUpdate();
     }
 
-    rowUpdate(data,rowReference) {
+    rowUpdate(data, rowReference) {
         // let newdata = this.dataMap.get(rowKey);
         // let rowReference = 'ref' + newdata.rowID;
         let rowElem = this.refs.tableViewRef.refs.gridViewRef.refs[rowReference];
