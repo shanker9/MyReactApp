@@ -27,7 +27,6 @@ class App extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
         this.updateLoadData = this.updateLoadData.bind(this);
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
-        this.updateSelected = this.updateSelected.bind(this);
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
         this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
@@ -59,6 +58,8 @@ class App extends React.Component {
         // this.currentSelectedRowIndex = undefined;
     }
 
+    /** START OF LIFE CYCLE METHODS */
+
     componentWillMount() {
         this.handleClick();
     }
@@ -67,56 +68,17 @@ class App extends React.Component {
         this.scrollableDivClientHeight = document.getElementById('scrollableTableDiv').clientHeight;
     }
 
+    /** END OF LIFE CYCLE METHODS */
+
+
+
     updateSubId(subId) {
         this.setState({ subscriberId: subId })
     }
 
-    updateSelected(index, isMultiSelect) {
-        let i, selectedStart, selectedEnd;
-
-        if (this.state.currentSelectedRowIndex !== undefined && isMultiSelect) {
-            if (this.state.currentSelectedRowIndex < index)
-                for (i = this.state.currentSelectedRowIndex; i <= index; i++) {
-                    this.tempArr[i].isSelected = true;
-                }
-            else
-                for (i = index; i <= this.state.currentSelectedRowIndex; i++) {
-                    this.tempArr[i].isSelected = true;
-                }
-        } else {
-
-            /* Deselecting the multiselected rows */
-            if (this.state.selectedData !== undefined) {
-                // this.state.data[this.state.currentSelectedRowIndex].isSelected = !this.state.data[this.state.currentSelectedRowIndex].isSelected;
-                // selectedStart = this.state.data.indexOf(this.state.selectedData[0]);
-                // selectedEnd = this.state.data.indexOf(this.state.selectedData[this.state.selectedData.length-1]);
-                if (this.state.selectedData.length == 1 && this.state.selectedData[0] == this.tempArr[index]) {
-
-                }
-                else {
-                    selectedStart = this.selectStart;
-                    selectedEnd = this.selectEnd;
-                    for (; selectedStart <= selectedEnd; selectedStart++) {
-                        this.tempArr[selectedStart].isSelected = false;
-                    }
-                }
-            }
-
-            this.tempArr[index].isSelected = !this.tempArr[index].isSelected;
-
-        }
-        this.state.selectedData = this.tempArr.filter((row) => { return row.isSelected == true });
-        this.selectStart = this.state.selectedData[0].rowID;
-        this.selectEnd = this.state.selectedData[this.state.selectedData.length - 1].rowID;
-        this.state.currentSelectedRowIndex = index;
-        // this.setState({ currentSelectedRowIndex: index }, () => { console.log('stateUpdated'); });
-        let loadableData = this.updateLoadData(this.tempArr);
-        this.setState({ viewableData: loadableData, currentSelectedRowIndex: index });
-
-    }
 
     handleClick() {
-        this.controller = new AppController();
+        this.controller = new AppController(this);
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
@@ -171,7 +133,7 @@ class App extends React.Component {
             startIndex = this.getViewableStartIndex();
             this.setState({ viewableStartIndex: startIndex });
         } else {
-            let loadableData = this.updateLoadData(this.dataMap);
+            let loadableData = this.sliceLoadableData(this.dataMap);
             this.setState({ viewableData: loadableData });
         }
     }
@@ -188,31 +150,21 @@ class App extends React.Component {
     }
 
     updateLoadData(map) {
-        // let node = document.getElementById('scrollableTableDiv');
-        // // console.log('ScrollTop Value: ' + node.scrollTop);
-        // let scrolledDistance = node.scrollTop;
-        // let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
-
         let approximateNumberOfRowsHidden = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.rowHeight)
         return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
-
     }
 
     getViewableStartIndex() {
-        let node = document.getElementById('scrollableTableDiv');
-        let scrolledDistance = node.scrollTop;
-        // let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight) == 0 ? 0 : Math.round(scrolledDistance / this.rowHeight);
-        let approximateNumberOfRowsHidden = Math.round(scrolledDistance / this.rowHeight);
-        return approximateNumberOfRowsHidden;
+        return Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.rowHeight);
     }
 
-    sliceLoadableData(initialIndex, lastDisplayRow, map) {
+    sliceLoadableData(map) {
+        let approximateNumberOfRowsHidden = this.getViewableStartIndex();
 
-
-        let loadableData = this.sliceHashmap(initialIndex, lastDisplayRow, map);
-        this.topDivHeight = initialIndex * this.rowHeight;
-        this.bottomDivHeight = (map.size - (initialIndex + loadableData.length)) * this.rowHeight;
-        this.lowerLimit = initialIndex + 1;
+        let loadableData = this.sliceHashmap(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden+50, map);
+        this.topDivHeight = approximateNumberOfRowsHidden * this.rowHeight;
+        this.bottomDivHeight = (map.size - (approximateNumberOfRowsHidden + loadableData.length)) * this.rowHeight;
+        this.lowerLimit = approximateNumberOfRowsHidden + 1;
         let displayableRecordCount = Math.floor((this.scrollableDivClientHeight - 1 * this.rowHeight) / this.rowHeight);
         let upperRowLimit = this.lowerLimit + displayableRecordCount;
         this.upperLimit = displayableRecordCount > loadableData.length ? loadableData.length : upperRowLimit;
@@ -220,13 +172,13 @@ class App extends React.Component {
         return loadableData;
     }
 
-    sliceHashmap(initialIndex, endIndex, map) {
+    sliceHashmap(startIndex, endIndex, map) {
 
         let iter = map.keys();
         let i = 0, result = [], availableEndIndex;
         availableEndIndex = endIndex > map.size ? map.size : endIndex;
 
-        for (; i < initialIndex; i++) {
+        for (; i < startIndex; i++) {
             iter.next();
         }
         for (; i < availableEndIndex; i++) {
@@ -361,13 +313,11 @@ class App extends React.Component {
             <div>
                 <div className={styles.container}>
                     <h1 className={styles.header}>Random Data from AMPS</h1>
-                    {/* <button className={styles.button} onClick={this.sortData.bind(this)}>Subscribe</button> */}
                     <label>  Subscriber Id : {this.state.subscriberId}</label>
                     <label> | Total Records: {this.dataMap.size}</label>
                     <label> | Loaded Records: {this.state.viewableData.length}</label>
                     <label onClick={this.formGroupedData.bind(this)}> | Grouped View </label>
                     <label onClick={this.toggleNormalView.bind(this)}> | Normal View</label>
-                    {/* <label onClick={this.rowUpdate.bind(this)}> | rowupdate</label> */}
                     <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>
