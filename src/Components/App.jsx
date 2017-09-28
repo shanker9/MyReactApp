@@ -1,5 +1,5 @@
 import React from 'react';
-import AmpsClientData from '../Amps/AmpsData.js';
+import AppController from '../Controllers/AppController.js';
 import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
@@ -64,9 +64,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        // this.state.lastRow = 30;
-        let tableNode = document.getElementById('scrollableTableDiv');
-        this.scrollableDivClientHeight = tableNode.clientHeight;
+        this.scrollableDivClientHeight = document.getElementById('scrollableTableDiv').clientHeight;
     }
 
     updateSubId(subId) {
@@ -118,7 +116,7 @@ class App extends React.Component {
     }
 
     handleClick() {
-        this.controller = new AmpsClientData();
+        this.controller = new AppController();
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
@@ -126,8 +124,8 @@ class App extends React.Component {
             "orderBy": "/swapId"
         }
 
-        this.controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this), commandObject);
-
+        // this.controller.connectAndSubscribe(this.handleNewData.bind(this), this.updateSubId.bind(this), commandObject);
+        this.controller.ampsSubscribe(commandObject,this.handleNewData.bind(this), this.updateSubId.bind(this));
     }
 
     rowDataUpdateStatus(index, updateStatus) {
@@ -338,7 +336,7 @@ class App extends React.Component {
         //     "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
         // }
 
-        this.controller.connectAndSubscribe(this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), commandObject, columnName);
+        this.controller.ampsSubscribe(commandObject, this.groupedDataHandle.bind(this), this.groupedDataSubscription.bind(this), columnName);
     }
 
     toggleNormalView() {
