@@ -10,11 +10,8 @@ class GridView extends React.Component {
         super();
         this.groupedView = this.groupedView.bind(this);
         this.normalview = this.normalview.bind(this);
-        // this.returnGroupedView = this.returnGroupedView.bind(this);
         this.returnGroupedViewLazyLoaded = this.returnGroupedViewLazyLoaded.bind(this);
-        this.getBucketRows = this.getBucketRows.bind(this);
         this.returngroupedData = this.returngroupedData.bind(this);
-        this.getDisplayableRows = this.getDisplayableRows.bind(this);
         this.topDivHeight = 0;
         this.bottomDivHeight = 0;
         this.displayableRows = undefined;
@@ -34,10 +31,6 @@ class GridView extends React.Component {
     componentDidUpdate() {
     }
 
-    getAggregatedRowRef(valueRef) {
-        return this.refs.valueRef;
-    }
-
     render() {
         if (this.props.isGroupedView) {
             return this.groupedView();
@@ -46,31 +39,13 @@ class GridView extends React.Component {
         }
     }
 
+    /*** calculating and setting displayableRowsData, topDivHeight, bottomDivHeight ***/
     returnGroupedViewLazyLoaded(mapData) {
-        let rowArray;
-        // mapData.forEach((item, key, mapObj) => {
-        // rowArray.push(<TableAggregatedRow data={item.groupData}
-        //     key={key}
-        //     ref={'ref' + key}
-        //     aggregatedRowKey={key}
-        //     indexVal={item.groupData.swapId}
-        //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
-        //     selectState={false}
-        //     bucketData={item.bucketData}
-        //     updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus} />);
-        //     if (item.showBucketData) {
-        //         let res = this.getBucketRows(item.bucketData);
-        //         rowArray.push(...res);
-        //     }
-        // });
-        rowArray = this.returngroupedData(mapData);
+        let rowArray = this.returngroupedData(mapData);
         let startIndex = this.props.viewableStartIndex;
         this.displayableRowsData = rowArray.slice(startIndex, startIndex + 50);
-        // this.topDivHeight = startIndex > 10 ? 30 * (startIndex) : 0;
         this.topDivHeight = startIndex*30;
         this.bottomDivHeight = (rowArray.length - (startIndex + this.displayableRowsData.length)) * 30;
-        // let groupedViewElements = this.getDisplayableRows(this.displayableRowsData);
-        // return groupedViewElements;
     }
 
     returngroupedData(mapData) {
@@ -78,64 +53,11 @@ class GridView extends React.Component {
         mapData.forEach((item, key, mapObj) => {
             result.push({ "key": key, "data": item, "isAggregatedRow": true });
             if (item.showBucketData) {
-                let res = this.getBucketRowsLazyLoad(item.bucketData);
-                result.push(...res);
+                item.bucketData.forEach((val, k, mapObj) => result.push({ "key":k, "data": val, "isAggregatedRow": false }));
             }
         });
         return result;
     }
-
-    getBucketRowsLazyLoad(bucketData) {
-        let result = [];
-        bucketData.forEach((value, key, mapObj) => {
-            result.push({ "key": key, "data": value, "isAggregatedRow": false })
-        });
-        return result;
-    }
-
-
-
-    getDisplayableRows(data) {
-        return data.map((item, i) => {
-            if (item.isAggregatedRow) {
-                return (<TableAggregatedRow data={item.data.groupData}
-                    key={item.key}
-                    aggregatedRowKey={item.key}
-                    indexVal={item.data.groupData.swapId}
-                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                    selectState={false}
-                    bucketData={item.data.bucketData}
-                    updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus} />)
-            } else {
-                return (
-                    <TableRow
-                        ref={'ref' + item.data.rowID}
-                        key={item.data.rowID}
-                        data={item.data.data}
-                        indexVal={item.data.data.swapId}
-                        dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                        selectState={item.data.isSelected} />)
-            }
-
-        })
-    }
-
-    getBucketRows(bucketData) {
-        let result = [];
-        bucketData.forEach((item, key, mapObj) => {
-            result.push(
-                <TableRow
-                    key={item.rowID}
-                    data={item.data}
-                    indexVal={item.data.swapId}
-                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                    selectState={item.isSelected} />)
-        });
-        return result;
-    }
-
-
-
 
     groupedView() {
         return (
@@ -144,7 +66,6 @@ class GridView extends React.Component {
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.topDivHeight }}></div>
                         <div>
-                            {/* {this.displayableRows} */}
                             {this.displayableRowsData.map((item, i) => {
                                 if (item.isAggregatedRow) {
                                     return (<TableAggregatedRow data={item.data.groupData}

@@ -25,7 +25,6 @@ class App extends React.Component {
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
-        this.updateLoadData = this.updateLoadData.bind(this);
         this.sliceLoadableData = this.sliceLoadableData.bind(this);
         this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
         this.sliceHashmap = this.sliceHashmap.bind(this);
@@ -61,7 +60,7 @@ class App extends React.Component {
     /** START OF LIFE CYCLE METHODS */
 
     componentWillMount() {
-        this.handleClick();
+        // this.handleClick();
     }
 
     componentDidMount() {
@@ -73,7 +72,7 @@ class App extends React.Component {
 
 
     updateSubId(subId) {
-        this.setState({ subscriberId: subId })
+        this.setState({ subscriberId: subId })  
     }
 
 
@@ -147,11 +146,6 @@ class App extends React.Component {
         headerNode.scrollLeft = tableNode.scrollLeft;
 
         this.triggerConditionalUIUpdate();
-    }
-
-    updateLoadData(map) {
-        let approximateNumberOfRowsHidden = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.rowHeight)
-        return this.sliceLoadableData(approximateNumberOfRowsHidden, approximateNumberOfRowsHidden + 50, map);
     }
 
     getViewableStartIndex() {
@@ -332,7 +326,8 @@ class App extends React.Component {
                         handleScroll={this.handleScroll}
                         updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus}
                         viewableStartIndex={this.state.viewableStartIndex}
-                        groupingHandler={this.formGroupedData} />
+                        groupingHandler={this.formGroupedData}
+                        rowHeight={this.rowHeight} />
                 </div>
             </div>
         );
