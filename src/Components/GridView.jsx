@@ -10,22 +10,9 @@ class GridView extends React.Component {
         super();
         this.groupedView = this.groupedView.bind(this);
         this.normalview = this.normalview.bind(this);
-        this.returnGroupedViewLazyLoaded = this.returnGroupedViewLazyLoaded.bind(this);
-        this.returngroupedData = this.returngroupedData.bind(this);
-        this.topDivHeight = 0;
-        this.bottomDivHeight = 0;
-        this.displayableRows = undefined;
-        this.displayableRowsData = [];
     }
 
     componentDidMount() {
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.isGroupedView) {
-            // this.displayableRows = this.returnGroupedViewLazyLoaded(nextProps.groupedData);
-            this.returnGroupedViewLazyLoaded(nextProps.groupedData);
-        }
     }
 
     componentDidUpdate() {
@@ -39,34 +26,14 @@ class GridView extends React.Component {
         }
     }
 
-    /*** calculating and setting displayableRowsData, topDivHeight, bottomDivHeight ***/
-    returnGroupedViewLazyLoaded(mapData) {
-        let rowArray = this.returngroupedData(mapData);
-        let startIndex = this.props.viewableStartIndex;
-        this.displayableRowsData = rowArray.slice(startIndex, startIndex + 50);
-        this.topDivHeight = startIndex*30;
-        this.bottomDivHeight = (rowArray.length - (startIndex + this.displayableRowsData.length)) * 30;
-    }
-
-    returngroupedData(mapData) {
-        let result = [];
-        mapData.forEach((item, key, mapObj) => {
-            result.push({ "key": key, "data": item, "isAggregatedRow": true });
-            if (item.showBucketData) {
-                item.bucketData.forEach((val, k, mapObj) => result.push({ "key":k, "data": val, "isAggregatedRow": false }));
-            }
-        });
-        return result;
-    }
-
     groupedView() {
         return (
             <div>
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
-                        <div style={{ height: this.topDivHeight }}></div>
+                        <div style={{ height: this.props.topDivHeight }}></div>
                         <div>
-                            {this.displayableRowsData.map((item, i) => {
+                            {this.props.viewableData.map((item, i) => {
                                 if (item.isAggregatedRow) {
                                     return (<TableAggregatedRow data={item.data.groupData}
                                         ref={'ref' + item.key}
@@ -87,10 +54,9 @@ class GridView extends React.Component {
                                             dataUpdateHandler={this.props.selectionDataUpdateHandler}
                                             selectState={item.data.isSelected} />)
                                 }
-
                             })}
                         </div>
-                        <div style={{ height: this.bottomDivHeight }}></div>
+                        <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>
             </div>

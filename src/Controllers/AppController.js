@@ -4,17 +4,20 @@ import AppDataModel from '../DataModel/AppDataModel.js';
 export default class TableController {
     constructor(componentRef) {
         this.uiRef = componentRef;
-        this.controller = new AmpsController();
+        this.ampsController = new AmpsController();
         this.isGroupedView = undefined;
         this.appDataModel = new AppDataModel();
+        this.groupingColumnKeyMap = undefined;
+        this.aggregatedRowsData = undefined;
+        this.subscriptionData = new Map();
     }
 
     ampsSubscribe(commandObject, sowDataHandler, subscriptionDataHandler, columnName) {
-        this.controller.connectAndSubscribe(sowDataHandler, subscriptionDataHandler, commandObject, columnName);
+        this.ampsController.connectAndSubscribe(sowDataHandler, subscriptionDataHandler, commandObject, columnName);
     }
 
     unsubscribe(subscriptionId) {
-        this.controller.unsubscribe(subscriptionId);
+        this.ampsController.unsubscribe(subscriptionId);
     }
 
     /*** DATA HANDLERS ***/
@@ -26,7 +29,7 @@ export default class TableController {
         } else if (message.c == 'group_end') {
             // this.sowDataEnd = true;
             console.log(message.c);
-            this.uiRef.updateDataGrid();
+            this.uiRef.loadDataGridWithDefaultView();
             return;
         }
 
@@ -40,7 +43,7 @@ export default class TableController {
             this.appDataModel.addorUpdateRowData(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
 
             if (this.isGroupedView) {
-                let grpObject = this.groupedData.get(this.valueKeyMap.get(newData.customer));
+                let grpObject = this.appDataModel.getDataFromGroupedData(this.groupingColumnKeyMap.get(newData.customer));
                 let existingData = grpObject.bucketData.get(rowKey);
                 existingData.data = newData;
             }
@@ -55,14 +58,68 @@ export default class TableController {
     }
 
     getDefaultViewData(startIndex, endIndex, rowHeight) {
-        let gridDataSource = this.appDataModel.getDataMapInRange(startIndex, endIndex);
+        let gridDataSource = this.appDataModel.getDataMapInRangeFromDefaultData(startIndex, endIndex);
         let topDivHeight = startIndex * rowHeight;
-        let bottomDivHeight = (this.appDataModel.getdefaultDataSourceSize() - (startIndex + gridDataSource.length)) * rowHeight;
+        let bottomDivHeight = (this.appDataModel.getdefaultDataViewSize() - (startIndex + gridDataSource.length)) * rowHeight;
         return { gridDataSource, topDivHeight, bottomDivHeight };
     }
 
 
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
-    
+    groupingSubscriptionDataHandler(message) {
+        if (message.c == 'group_begin') {
+            this.groupingColumnKeyMap = new Map();
+            this.aggregatedRowsData = new Map();
+            return;
+        } else if (message.c == 'group_end') {
+            this.sowGroupDataEnd = true;
+            this.appDataModel.createGroupBuckets(this.groupingColumnKeyMap, this.aggregatedRowsData);
+            this.isGroupedView = true;
+            this.uiRef.loadDataGridWithGroupedView();
+            return;
+        }
+
+        if (this.sowGroupDataEnd) {
+            let val = this.appDataModel.getDataFromGroupedData(message.k);
+            let groupHeaderRow = JSON.parse(JSON.stringify(val.groupData));
+            groupHeaderRow.swap_rate = message.data.swap_rate;
+            groupHeaderRow.payFixedRate = message.data.payFixedRate;
+            val.groupData = groupHeaderRow;
+            // this.triggerConditionalUIUpdate();
+            this.uiRef.rowUpdate(val.groupData, 'ref' + message.k);
+        } else {
+            this.aggregatedRowsData.set(message.k, message.data);
+            this.groupingColumnKeyMap.set(message.data.customer, message.k);
+        }
+    }
+
+    groupingSubscriptionDetailsHandler(subscriptionId, groupByColumn) {
+        this.subscriptionData.set(groupByColumn, subscriptionId);
+        console.log('GROUPING SUBSCRIPTION SUCCESSFUL, ID:', subscriptionId);
+    }
+
+    isSubscriptionExists(groupByColumn) {
+        let subscriptionId = this.subscriptionData.get(groupByColumn);
+        if (subscriptionId != undefined) {
+            // this.unsubscribe(subscriptionId);
+            // this.subscriptionData.delete(groupByColumn);
+            return true;
+        }
+        return false;
+    }
+
+    getGroupedViewData(startIndex, endIndex, rowHeight) {
+        let gridDataSource = this.appDataModel.getDataMapInRangeFromGroupedData(startIndex, endIndex);
+        let topDivHeight = startIndex * rowHeight;
+        let bottomDivHeight = (this.appDataModel.getGroupedDataViewSize() - (startIndex + gridDataSource.length)) * rowHeight;
+        return { gridDataSource, topDivHeight, bottomDivHeight };
+    }
+
+    updateGroupExpansionStatus(groupKey) {
+        let expandStatus = this.appDataModel.getDataFromGroupedData(groupKey).showBucketData;
+        this.appDataModel.getDataFromGroupedData(groupKey).showBucketData = !expandStatus;
+        this.appDataModel.setGroupedViewData();
+        this.uiRef.updateDataGridWithGroupedView();
+    }
 }

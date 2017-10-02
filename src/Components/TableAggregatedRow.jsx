@@ -54,7 +54,6 @@ class TableAggregatedRow extends React.Component {
     render() {
 
         return (
-            <div>
                 <tr ref={"tableRow"}
                     className={styles.tableRow}
                     onClick={this.handleRowClick}
@@ -76,7 +75,6 @@ class TableAggregatedRow extends React.Component {
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn}></TableCell>
                     <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
                 </tr>
-            </div>
         )
     }
 

@@ -12,7 +12,8 @@ class TableView extends React.Component {
         this.state = {
             gridDataSource: [],
             topDivHeight: 0,
-            bottomDivHeight: 0
+            bottomDivHeight: 0,
+            isGroupedView: false
         }
         this.controller = undefined;
         this.columns = [
@@ -84,9 +85,14 @@ class TableView extends React.Component {
 
 
         /** Event Handlers */
-        this.updateDataGrid = this.updateDataGrid.bind(this);
+        this.updateDataGrid = this.updateDataGridWithDefaultView.bind(this);
+        this.updateDataGridWithGroupedView = this.updateDataGridWithGroupedView.bind(this);
+        this.loadDataGridWithGroupedView = this.loadDataGridWithGroupedView.bind(this);
         this.rowUpdate = this.rowUpdate.bind(this);
         this.scrollEventHandler = this.scrollEventHandler.bind(this);
+        this.makeDefaultSubscription = this.makeDefaultSubscription.bind(this);
+        this.makeGroupSubscription = this.makeGroupSubscription.bind(this);
+        this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
     }
 
     componentWillMount() {
@@ -119,13 +125,50 @@ class TableView extends React.Component {
         let headerNode = document.getElementById('scrollableHeaderDiv');
         let tableNode = document.getElementById('scrollableTableDiv');
         headerNode.scrollLeft = tableNode.scrollLeft;
-        this.updateDataGrid();
+        if(this.state.isGroupedView){
+            this.updateDataGridWithGroupedView();
+        }else{
+            this.updateDataGridWithDefaultView();            
+        }
     }
 
-    updateDataGrid() {
+    loadDataGridWithDefaultView(){
+        let startIndex = 0;
+        let endIndex = startIndex + 50;
+        document.getElementById('scrollableTableDiv').scrollTop = 0;
+        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView);
+        this.setState({
+            gridDataSource: gridDataSource,
+            topDivHeight: topDivHeight,
+            bottomDivHeight: bottomDivHeight,
+            isGroupedView: false
+        });
+    }
+
+    updateDataGridWithDefaultView() {
         let startIndex = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.props.rowHeight);
         let endIndex = startIndex + 50;
-        this.setState(this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight));
+        this.setState(this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
+    }
+
+    loadDataGridWithGroupedView() {
+        let startIndex = 0;
+        let endIndex = startIndex + 50;
+        document.getElementById('scrollableTableDiv').scrollTop = 0;
+        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView);
+        this.setState({
+            gridDataSource: gridDataSource,
+            topDivHeight: topDivHeight,
+            bottomDivHeight: bottomDivHeight,
+            isGroupedView: true
+        });
+    }
+
+
+    updateDataGridWithGroupedView() {
+        let startIndex = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.props.rowHeight);
+        let endIndex = startIndex + 50;
+        this.setState(this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
     }
 
     rowUpdate(data, rowReference) {
@@ -133,6 +176,51 @@ class TableView extends React.Component {
         if (rowElem != undefined) {
             rowElem.triggerUpdate(data);
         }
+    }
+
+    makeGroupSubscription(columnName) {
+        let commandObject, groupingColumnKey;
+        if(this.controller.isSubscriptionExists(columnName)){
+            if(this.state.isGroupedView){
+                this.loadDataGridWithDefaultView();
+                return;                
+            }else{
+                this.loadDataGridWithGroupedView();
+                return;
+            }
+        }
+
+        switch (columnName) {
+            case 'Counter Party':
+                commandObject = {
+                    "command": "sow_and_subscribe",
+                    "topic": "Price",
+                    "filter": "/swapId >=0",
+                    "orderBy": "/swapId",
+                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+                }
+                groupingColumnKey = 'customer';
+                break;
+            case 'SwapId':
+                commandObject = {
+                    "command": "sow_and_subscribe",
+                    "topic": "Price",
+                    "filter": "/swapId >=0",
+                    "orderBy": "/swapId",
+                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/swapId]"
+                }
+                groupingColumnKey = 'swapId';
+                break;
+            default:
+                console.log('Grouping cannot be done with the selected column');
+                return;
+        }
+
+        this.controller.ampsSubscribe(commandObject, this.controller.groupingSubscriptionDataHandler.bind(this.controller), this.controller.groupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+    }
+
+    updateAggregatedRowExpandStatus(groupKey) {
+        this.controller.updateGroupExpansionStatus(groupKey);
     }
 
     render() {
@@ -145,7 +233,7 @@ class TableView extends React.Component {
                                 {this.columns.map((item, i) =>
                                     <TableHeaderCell
                                         key={i}
-                                        groupingHandler={this.props.groupingHandler}
+                                        groupingHandler={this.makeGroupSubscription}
                                         cellData={item.columnvalue} />
                                 )}
                             </tr>
@@ -153,16 +241,14 @@ class TableView extends React.Component {
                     </table>
                 </div>
                 <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.scrollEventHandler}>
-                    <GridView isGroupedView={this.props.isGroupedData}
+                    <GridView isGroupedView={this.state.isGroupedView}
                         ref='gridViewRef'
-                        groupedData={this.props.groupedData}
                         viewableData={this.state.gridDataSource}
                         topDivHeight={this.state.topDivHeight}
                         bottomDivHeight={this.state.bottomDivHeight}
                         selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
                         dataUpdateStatus={this.props.rowDataUpdateStatus}
-                        updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
-                        viewableStartIndex={this.props.viewableStartIndex} />
+                        updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus} />
                 </div>
             </div>
         );
