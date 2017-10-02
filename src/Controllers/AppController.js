@@ -25,6 +25,7 @@ export default class TableController {
             return;
         } else if (message.c == 'group_end') {
             // this.sowDataEnd = true;
+            console.log(message.c);
             this.uiRef.updateDataGrid();
             return;
         }
