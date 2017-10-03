@@ -22,6 +22,10 @@ class TableView extends React.Component {
                 columnvalue: "Counter Party"
             },
             {
+                columnkey: "receiveindex",
+                columnvalue: "Receive Index"
+            },            
+            {
                 columnkey: "swapid",
                 columnvalue: "Swap Id"
             },
@@ -132,6 +136,7 @@ class TableView extends React.Component {
         }
     }
 
+    /** SINGLE VIEW METHODS**/
     loadDataGridWithDefaultView(){
         let startIndex = 0;
         let endIndex = startIndex + 50;
@@ -151,6 +156,9 @@ class TableView extends React.Component {
         this.setState(this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
     }
 
+
+    /** GROUPED VIEW METHODS  **/
+
     loadDataGridWithGroupedView() {
         let startIndex = 0;
         let endIndex = startIndex + 50;
@@ -163,7 +171,6 @@ class TableView extends React.Component {
             isGroupedView: true
         });
     }
-
 
     updateDataGridWithGroupedView() {
         let startIndex = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.props.rowHeight);
@@ -197,7 +204,7 @@ class TableView extends React.Component {
                     "topic": "Price",
                     "filter": "/swapId >=0",
                     "orderBy": "/swapId",
-                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
                 }
                 groupingColumnKey = 'customer';
                 break;
@@ -207,7 +214,7 @@ class TableView extends React.Component {
                     "topic": "Price",
                     "filter": "/swapId >=0",
                     "orderBy": "/swapId",
-                    "options": "projection=[/customer,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/swapId]"
+                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/swapId]"
                 }
                 groupingColumnKey = 'swapId';
                 break;
@@ -221,6 +228,19 @@ class TableView extends React.Component {
 
     updateAggregatedRowExpandStatus(groupKey) {
         this.controller.updateGroupExpansionStatus(groupKey);
+    }
+
+    subscribeForMultiLevelGrouping(){
+        
+        let commandObject = {
+                    "command": "sow_and_subscribe",
+                    "topic": "Price",
+                    "filter": "/swapId >=0",
+                    "orderBy": "/customer",
+                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
+                }
+        let columnName = 'multiColumn';
+        this.controller.ampsSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
     }
 
     render() {

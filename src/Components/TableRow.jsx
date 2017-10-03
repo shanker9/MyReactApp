@@ -73,6 +73,7 @@ class TableRow extends React.Component {
                 onClick={this.handleRowClick}
                 style={{backgroundColor : this.props.isGroupedRow ? '#144C5A' : this.dynamicBackgroundColor}}>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.receiveIndex}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swapId}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swap_rate}></TableCell>

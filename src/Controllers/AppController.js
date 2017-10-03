@@ -10,6 +10,7 @@ export default class TableController {
         this.groupingColumnKeyMap = undefined;
         this.aggregatedRowsData = undefined;
         this.subscriptionData = new Map();
+        this.multiLevelData = [];
     }
 
     ampsSubscribe(commandObject, sowDataHandler, subscriptionDataHandler, columnName) {
@@ -38,7 +39,7 @@ export default class TableController {
         let item = this.appDataModel.getDataFromDefaultData(rowKey);
 
         if (item == undefined) {
-            this.appDataModel.addorUpdateRowData(rowKey, { "rowID": newData.swapId - 1, "data": newData, "isSelected": false, "isUpdated": false });
+            this.appDataModel.addorUpdateRowData(rowKey, { "rowID": rowKey, "data": newData, "isSelected": false, "isUpdated": false });
         } else {
             this.appDataModel.addorUpdateRowData(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
 
@@ -102,8 +103,6 @@ export default class TableController {
     isSubscriptionExists(groupByColumn) {
         let subscriptionId = this.subscriptionData.get(groupByColumn);
         if (subscriptionId != undefined) {
-            // this.unsubscribe(subscriptionId);
-            // this.subscriptionData.delete(groupByColumn);
             return true;
         }
         return false;
@@ -122,4 +121,18 @@ export default class TableController {
         this.appDataModel.setGroupedViewData();
         this.uiRef.updateDataGridWithGroupedView();
     }
+
+    /** GROUP SUBSCRIPTION DATAHANDLER **/
+
+    multiGroupingDataHandler(message) {
+        this.multiLevelData.push(message.data);
+        if (message.c == 'group_end') {
+            this.multiLevelData.map((item,i)=>console.log(item));
+        }
+    }
+
+    multiGroupingSubscriptionDetailsHandler(subscriptionId) {
+        console.log('subID :', subscriptionId);
+    }
 }
+
