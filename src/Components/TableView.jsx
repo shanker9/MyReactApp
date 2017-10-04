@@ -110,6 +110,22 @@ class TableView extends React.Component {
     componentDidUpdate() {
     }
 
+
+
+    /*** EventHandler for scrolling of Tabledata ***/
+    scrollEventHandler() {
+        let headerNode = document.getElementById('scrollableHeaderDiv');
+        let tableNode = document.getElementById('scrollableTableDiv');
+        headerNode.scrollLeft = tableNode.scrollLeft;
+        if(this.state.isGroupedView){
+            this.updateDataGridWithGroupedView();
+        }else{
+            this.updateDataGridWithDefaultView();            
+        }
+    }
+
+    /** NON-GROUPING METHODS**/
+
     makeDefaultSubscription() {
         this.controller = new TableController(this);
         let commandObject = {
@@ -124,19 +140,6 @@ class TableView extends React.Component {
             this.controller.defaultSubscriptionDetailsHandler.bind(this.controller));
     }
 
-    /*** EventHandler for scrolling of Tabledata ***/
-    scrollEventHandler() {
-        let headerNode = document.getElementById('scrollableHeaderDiv');
-        let tableNode = document.getElementById('scrollableTableDiv');
-        headerNode.scrollLeft = tableNode.scrollLeft;
-        if(this.state.isGroupedView){
-            this.updateDataGridWithGroupedView();
-        }else{
-            this.updateDataGridWithDefaultView();            
-        }
-    }
-
-    /** SINGLE VIEW METHODS**/
     loadDataGridWithDefaultView(){
         let startIndex = 0;
         let endIndex = startIndex + 50;
@@ -157,33 +160,7 @@ class TableView extends React.Component {
     }
 
 
-    /** GROUPED VIEW METHODS  **/
-
-    loadDataGridWithGroupedView() {
-        let startIndex = 0;
-        let endIndex = startIndex + 50;
-        document.getElementById('scrollableTableDiv').scrollTop = 0;
-        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView);
-        this.setState({
-            gridDataSource: gridDataSource,
-            topDivHeight: topDivHeight,
-            bottomDivHeight: bottomDivHeight,
-            isGroupedView: true
-        });
-    }
-
-    updateDataGridWithGroupedView() {
-        let startIndex = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.props.rowHeight);
-        let endIndex = startIndex + 50;
-        this.setState(this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
-    }
-
-    rowUpdate(data, rowReference) {
-        let rowElem = this.refs.gridViewRef.refs[rowReference];
-        if (rowElem != undefined) {
-            rowElem.triggerUpdate(data);
-        }
-    }
+    /** GROUPING METHODS  **/
 
     makeGroupSubscription(columnName) {
         let commandObject, groupingColumnKey;
@@ -224,6 +201,33 @@ class TableView extends React.Component {
         }
 
         this.controller.ampsGroupSubscribe(commandObject, this.controller.groupingSubscriptionDataHandler.bind(this.controller), this.controller.groupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+    }
+
+    loadDataGridWithGroupedView() {
+        let startIndex = 0;
+        let endIndex = startIndex + 50;
+        document.getElementById('scrollableTableDiv').scrollTop = 0;
+        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView);
+        this.setState({
+            gridDataSource: gridDataSource,
+            topDivHeight: topDivHeight,
+            bottomDivHeight: bottomDivHeight,
+            isGroupedView: true
+        });
+    }
+
+    updateDataGridWithGroupedView() {
+        let startIndex = Math.round(document.getElementById('scrollableTableDiv').scrollTop / this.props.rowHeight);
+        let endIndex = startIndex + 50;
+        this.setState(this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
+    }
+
+    /** ROW DATA UI UPDATE HANDLER **/
+    rowUpdate(data, rowReference) {
+        let rowElem = this.refs.gridViewRef.refs[rowReference];
+        if (rowElem != undefined) {
+            rowElem.triggerUpdate(data);
+        }
     }
 
     updateAggregatedRowExpandStatus(groupKey) {

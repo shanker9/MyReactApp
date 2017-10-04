@@ -13,6 +13,8 @@ export default class TableController {
         this.groupingColumnsByLevel = [];
         this.multiLevelData = new Map();
         this.valueKeyMapSecondLevel = new Map();
+        this.multiGroupingDataMap = new Map();
+        this.groupedData = undefined
     }
 
     ampsSubscribe(commandObject, sowDataHandler, subscriptionDataHandler, columnName) {
@@ -132,43 +134,64 @@ export default class TableController {
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
     multiGroupingDataHandler(message) {
-        let multiGroupingDataMap;
         if (message.data != undefined) {
-            this.multiLevelData.set(message.k,message.data);
+            this.multiLevelData.set(message.k, message.data);
             let level1Column = message.data.customer, level2Column = message.data.receiveIndex;
             let groupingKey;
-            groupingKey = this.groupingColumnsByLevel.map((item,k)=>message.data[item]);
+            groupingKey = this.groupingColumnsByLevel.map((item, k) => message.data[item]);
             this.valueKeyMapSecondLevel.set(groupingKey.join('-'), message.k);
         }
         if (message.c == 'group_end') {
-            // this.multiLevelData.map((item, i) => console.log(item));
-            multiGroupingDataMap = new Map();
-            this.appDataModel.getGroupedData().forEach((value,key)=>{
-                let groupingResultMap = this.getGroupBuckets(value.bucketData,this.groupingColumnsByLevel.slice(-1));
-                let bucketDataMap = new Map();
-                groupingResultMap.forEach((val,kk)=>{
-                    let secondLevelGroupKey = this.valueKeyMapSecondLevel.get(
-                        this.groupingColumnsByLevel.slice(0,this.groupingColumnsByLevel.length-1).map((item,k)=>value.groupData[item]).concat(kk).join('-'));
-                    bucketDataMap.set(secondLevelGroupKey,{groupData:this.multiLevelData.get(secondLevelGroupKey),bucketData:val});
-                })
-                multiGroupingDataMap.set(key,{groupData:value.groupData,bucketData:bucketDataMap});
-                
-            })
+            if(this.groupedData==undefined){
+                this.groupedData = this.appDataModel.getGroupedData();
+            }
+            let resultMap = this.recursiveFunction(this.groupedData,this.groupingColumnsByLevel.slice(-1));
+            this.appDataModel.setMultiLevelGroupedViewData(resultMap);
+            let result = this.appDataModel.getDataMapInRangeFromMultiGroupedData(0);
+            this.uiRef.loadDataGridWithMultiGroupedView(result);
+
         }
-        console.log(JSON.stringify(multiGroupingDataMap));
+        console.log(JSON.stringify(resultMap));
+    }
+
+    recursiveFunction(groupedData,columnKey){
+        groupedData.forEach((value, key) => {
+            if (value.isBuckedDataAggregated) {
+                this.recursiveFunction(value.bucketData,columnKey);
+            }else{
+                /** groupedData With UniqueColumn as keys */
+                let groupingResultMap = this.getGroupBuckets(value.bucketData, columnKey);
+                if(groupingResultMap.size==1){
+                    return;
+                }
+                /** Converting groupedData keys from UniqueColumnKeys to SOWKeys */
+                let bucketDataMap = new Map();
+                groupingResultMap.forEach((val, kk) => {
+                    let secondLevelGroupKey = this.valueKeyMapSecondLevel.get(
+                        this.groupingColumnsByLevel.slice(0, this.groupingColumnsByLevel.length - 1).map((item, k) => value.groupData[item]).concat(kk).join('-'));
+                    bucketDataMap.set(secondLevelGroupKey, { groupData: this.multiLevelData.get(secondLevelGroupKey), bucketData: val, showBucketData : false, isBuckedDataAggregated : false });
+                })
+                value.bucketData = bucketDataMap;
+                value.isBuckedDataAggregated = true;
+                /** Adding the modified groupedData as new bucketData to the parentRow */
+                // this.multiGroupingDataMap.set(key, { groupData: value.groupData, bucketData: bucketDataMap, showBucketData : false, isBuckedDataAggregated : true });
+
+            }
+        })
+        return groupedData;
     }
 
     getGroupBuckets(dataMap, groupByColumnKey) {
         let resultMap = new Map();
         let resultMapIterationData;
-        dataMap.forEach((item,key)=>{
+        dataMap.forEach((item, key) => {
             resultMapIterationData = resultMap.get(item.data[groupByColumnKey]);
-            if(resultMapIterationData==undefined){
+            if (resultMapIterationData == undefined) {
                 let bucketData = new Map();
-                bucketData.set(key,item);
-                resultMap.set(item.data[groupByColumnKey],bucketData);
-            }else{
-                resultMapIterationData.set(key,item);
+                bucketData.set(key, item);
+                resultMap.set(item.data[groupByColumnKey], bucketData);
+            } else {
+                resultMapIterationData.set(key, item);
             }
         })
         return resultMap;
