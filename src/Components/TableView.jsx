@@ -18,15 +18,15 @@ class TableView extends React.Component {
         this.controller = undefined;
         this.columns = [
             {
-                columnkey: "counterparty",
+                columnkey: "customer",
                 columnvalue: "Counter Party"
             },
             {
-                columnkey: "receiveindex",
+                columnkey: "receiveIndex",
                 columnvalue: "Receive Index"
             },            
             {
-                columnkey: "swapid",
+                columnkey: "swapId",
                 columnvalue: "Swap Id"
             },
             {
@@ -34,31 +34,31 @@ class TableView extends React.Component {
                 columnvalue: "Interest"
             },
             {
-                columnkey: "swaprate",
+                columnkey: "swap_rate",
                 columnvalue: "Swap Rate"
             },
             {
-                columnkey: "yearsin",
+                columnkey: "yearsIn",
                 columnvalue: "Years In"
             },
             {
-                columnkey: "payfixedrate",
+                columnkey: "payFixedRate",
                 columnvalue: "Pay FixedRate"
             },
             {
-                columnkey: "paycurrency",
+                columnkey: "payCurrency",
                 columnvalue: "Pay Currency"
             },
             {
-                columnkey: "yearsleft",
+                columnkey: "yearsIn",
                 columnvalue: "Years Left"
             },
             {
-                columnkey: "newinterest",
+                columnkey: "interest",
                 columnvalue: "New Interest"
             },
             {
-                columnkey: "secondarycurrency",
+                columnkey: "payCurrency",
                 columnvalue: "Secondary Currency"
             },
             {
@@ -66,7 +66,7 @@ class TableView extends React.Component {
                 columnvalue: "Customer"
             },
             {
-                columnkey: "swapid",
+                columnkey: "swapId",
                 columnvalue: "Swap Id2"
             },
             {
@@ -74,15 +74,15 @@ class TableView extends React.Component {
                 columnvalue: "Interest"
             },
             {
-                columnkey: "yearspay",
+                columnkey: "yearsIn",
                 columnvalue: "Years Pay"
             },
             {
-                columnkey: "yearsin",
+                columnkey: "yearsIn",
                 columnvalue: "Years In"
             },
             {
-                columnkey: "paycurrency",
+                columnkey: "payCurrency",
                 columnvalue: "Pay Currency"
             }
         ];
@@ -198,7 +198,7 @@ class TableView extends React.Component {
         }
 
         switch (columnName) {
-            case 'Counter Party':
+            case 'customer':
                 commandObject = {
                     "command": "sow_and_subscribe",
                     "topic": "Price",
@@ -208,13 +208,13 @@ class TableView extends React.Component {
                 }
                 groupingColumnKey = 'customer';
                 break;
-            case 'SwapId':
+            case 'receiveIndex':
                 commandObject = {
                     "command": "sow_and_subscribe",
                     "topic": "Price",
                     "filter": "/swapId >=0",
                     "orderBy": "/swapId",
-                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/swapId]"
+                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/receiveIndex]"
                 }
                 groupingColumnKey = 'swapId';
                 break;
@@ -223,7 +223,7 @@ class TableView extends React.Component {
                 return;
         }
 
-        this.controller.ampsSubscribe(commandObject, this.controller.groupingSubscriptionDataHandler.bind(this.controller), this.controller.groupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+        this.controller.ampsGroupSubscribe(commandObject, this.controller.groupingSubscriptionDataHandler.bind(this.controller), this.controller.groupingSubscriptionDetailsHandler.bind(this.controller), columnName);
     }
 
     updateAggregatedRowExpandStatus(groupKey) {
@@ -239,8 +239,8 @@ class TableView extends React.Component {
                     "orderBy": "/customer",
                     "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
                 }
-        let columnName = 'multiColumn';
-        this.controller.ampsSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+        let columnName = 'receiveIndex';
+        this.controller.ampsGroupSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
     }
 
     render() {
@@ -254,6 +254,7 @@ class TableView extends React.Component {
                                     <TableHeaderCell
                                         key={i}
                                         groupingHandler={this.makeGroupSubscription}
+                                        cellKey={item.columnkey}
                                         cellData={item.columnvalue} />
                                 )}
                             </tr>

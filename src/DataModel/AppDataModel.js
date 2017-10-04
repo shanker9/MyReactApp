@@ -32,6 +32,10 @@ export default class AppDataModel {
         return this.dataMap.size;
     }
 
+    getDataMap(){
+        return this.dataMap;
+    }
+
     /*** GROUPING METHODS ***/
     createGroupBuckets(valueKeyMap,aggregatedRowsData) {
         let resultMap = new Map();
@@ -77,6 +81,10 @@ export default class AppDataModel {
 
     getGroupedDataViewSize(){
         return this.groupedViewData.length;
+    }
+
+    getGroupedData(){
+        return this.groupedData;
     }
 
 }
