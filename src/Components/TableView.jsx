@@ -131,7 +131,7 @@ class TableView extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": "Price",
-            "filter": "/swapId >=0 AND /swapId<=5000",
+            "filter": "/swapId>0",
             "orderBy": "/swapId"
         }
 
@@ -142,7 +142,7 @@ class TableView extends React.Component {
         let startIndex = 0;
         let endIndex = startIndex + 50;
         document.getElementById('scrollableTableDiv').scrollTop = 0;
-        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView);
+        let {gridDataSource,topDivHeight,bottomDivHeight} = this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight);
         this.setState({
             gridDataSource: gridDataSource,
             topDivHeight: topDivHeight,
@@ -191,14 +191,14 @@ class TableView extends React.Component {
                     "orderBy": "/swapId",
                     "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/receiveIndex]"
                 }
-                groupingColumnKey = 'swapId';
+                groupingColumnKey = 'receiveIndex';
                 break;
             default:
                 console.log('Grouping cannot be done with the selected column');
                 return;
         }
 
-        this.controller.ampsGroupSubscribe(commandObject, this.controller.groupingSubscriptionDataHandler.bind(this.controller), this.controller.groupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+        this.controller.ampsGroupSubscribe(commandObject, columnName);
     }
 
     loadDataGridWithGroupedView() {
