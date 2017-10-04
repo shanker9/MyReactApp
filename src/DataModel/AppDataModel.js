@@ -1,11 +1,29 @@
 import AmpsController from '../Amps/AmpsData.js';
 
-export default class AppDataModel {
+var AppDataModelSingleton = (function(){
+    var instance;
+    return {
+        getInstance : function(){
+            if(instance!=undefined){
+                return instance;
+            }else{
+                instance = new AppDataModel();
+                return instance;
+            }
+        }
+    }
+})();
+
+class AppDataModel {
     constructor() {
         this.dataMap = new Map();
-        this.groupedData = new Map();
+        this.groupedData = undefined;
         this.multiLevelGroupedData = undefined;
         this.groupedViewData = undefined;
+    }
+
+    getAppDataModelInstance(){
+
     }
 
     addorUpdateRowData(rowkey, rowdata) {
@@ -62,7 +80,7 @@ export default class AppDataModel {
         this.setGroupedViewData();
     }
 
-    setGroupedViewData() {
+    settGroupedViewData() {
         let result = [];
         this.groupedData.forEach((item, key, mapObj) => {
             result.push({ "key": key, "data": item, "isAggregatedRow": true });
@@ -89,8 +107,20 @@ export default class AppDataModel {
         return this.groupedViewData.length;
     }
 
+    setGroupedData(groupedData){
+        this.groupedData = groupedData;
+    }
+
     getGroupedData() {
         return this.groupedData;
+    }
+
+    setGroupedViewData(groupedViewData){
+        this.groupedViewData = groupedViewData;
+    }
+
+    getGroupedViewData(){
+        return this.groupedViewData;
     }
 
     /** MULTI-LEVEL GROUPING METHODS**/
@@ -103,17 +133,18 @@ export default class AppDataModel {
         this.multiLevelGroupedData = groupedMap;
     }
 
-    setMultiLevelGroupedViewData(multiLevelGroupedData) {
+    getMultiLevelGroupedViewData(multiLevelGroupedData) {
         let result = [];
         multiLevelGroupedData.forEach((item, key) => {
             result.push({ "key": key, "data": item, "isAggregatedRow": true });
             if (item.isBuckedDataAggregated) {
-                result.concat(this.setMultiLevelGroupedViewData(item.bucketData));
+                result.concat(this.getMultiLevelGroupedViewData(item.bucketData));
             } else if (item.showBucketData) {
                 item.bucketData.forEach((val, k) => { result.push({ "key": k, "data": val, "isAggregatedRow": false }) });
             }
         });
-        this.multiLevelGroupedData = result;
+        // this.multiLevelGroupedData = result;
+        return result;
     }
 
     getDataMapInRangeFromMultiGroupedViewData(startIndex, endIndex) {
@@ -121,3 +152,5 @@ export default class AppDataModel {
     }
 
 }
+
+export default AppDataModelSingleton;

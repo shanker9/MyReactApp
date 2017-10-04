@@ -1,5 +1,5 @@
 import React from 'react';
-import TableController from '../Controllers/AppController.js';
+import TableController from '../Controllers/TableController.js';
 import TableRow from './TableRow.jsx';
 import TableHeaderCell from './TableHeaderCell.jsx';
 import GridView from './GridView.jsx';
@@ -135,9 +135,7 @@ class TableView extends React.Component {
             "orderBy": "/swapId"
         }
 
-        this.controller.ampsSubscribe(commandObject,
-            this.controller.defaultSubscriptionDataHandler.bind(this.controller),
-            this.controller.defaultSubscriptionDetailsHandler.bind(this.controller));
+        this.controller.ampsSubscribe(commandObject);
     }
 
     loadDataGridWithDefaultView(){

@@ -1,5 +1,5 @@
 import React from 'react';
-import AppController from '../Controllers/AppController.js';
+import AppController from '../Controllers/TableController.js';
 import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
