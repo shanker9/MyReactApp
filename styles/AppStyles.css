@@ -1,20 +1,13 @@
     .container {
         align-items : center;
         padding: 2px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     .header {
         font-size: 15px;
         color: #c00000;
     }
-    .button {
-        flex: 1;
-        flex-direction: row;
-        height: 2em;
-        margin-bottom: 1em;
-        margin-right: 1em;
-        background-color: #F3EEEE
-    }
+
     .td {
         border: 1px solid grey;
         font-size: 80%;
@@ -52,12 +45,22 @@
         /* box-sizing: border-box;         */
     }
 
-    .tableDiv::-webkit-scrollbar * {
-        background:transparent;
+    .button {
+        background-color: #A72D2D;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 10px;
+        padding: 5px;
+        font-weight: 300;
+        cursor: pointer;
+        margin-left: 10px;
+        float: right;
     }
 
-    .tableDiv::-webkit-scrollbar * {
-        width:40px;
+    .label {
+        font-size: 14px;
     }
 
     .table {

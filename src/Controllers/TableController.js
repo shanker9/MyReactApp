@@ -20,6 +20,7 @@ export default class TableController {
 
         this.subscriptionControllersMap = new Map();
         this.columnSubscriptionMapper = new Map();
+        this.setGroupingColumnKeyMapper = undefined;
     }
     
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
@@ -30,12 +31,16 @@ export default class TableController {
                                                 commandObject, columnName);
     }
 
-    unsubscribe(subscriptionId) {
-        this.ampsController.unsubscribe(subscriptionId);
+    unsubscribe(subscriptionId,successCallback,subscriptionColumnReference) {
+        this.ampsController.unsubscribe(subscriptionId,successCallback,subscriptionColumnReference);
     }
 
     updateUIWithDefaultViewData(){
         this.uiRef.loadDataGridWithDefaultView();
+    }
+
+    updateUIRowWithData(newData, rowReference){
+        this.uiRef.rowUpdate(newData,rowReference);
     }
 
     getDefaultViewData(startIndex, endIndex, rowHeight) {
@@ -43,6 +48,15 @@ export default class TableController {
         let topDivHeight = startIndex * rowHeight;
         let bottomDivHeight = (this.appDataModel.getdefaultDataViewSize() - (startIndex + gridDataSource.length)) * rowHeight;
         return { gridDataSource, topDivHeight, bottomDivHeight };
+    }
+
+    updateRowDataInGroupedData(message){
+        let columnKeyMapper = this.appDataModel.getGroupColumnKeyMapper();
+        let columnValue = this.groupingColumnsByLevel.map((val,k)=>message.data[val]).join('-');
+        let groupKey = columnKeyMapper.get(columnValue);
+        let groupData = this.appDataModel.getDataFromGroupedData(groupKey);
+        let existingData = groupData.bucketData.get(message.k);
+        existingData.data = message.data;
     }
 
     /** GROUP SUBSCRIPTION DATAHANDLER **/
@@ -56,12 +70,16 @@ export default class TableController {
                                                 commandObject, columnName);
     }
 
-    addColumnSubscriptionMapper(columnName,subscriptionId){
+    addColumnSubscriptionMapper(subscriptionId,columnName){
         this.columnSubscriptionMapper.set(columnName,subscriptionId);
     }
 
     updateUIWithGroupedViewData(){
         this.uiRef.loadDataGridWithGroupedView();
+    }
+
+    setGroupingColumnKeyMap(groupingColumnKeyMapper){
+        this.setGroupingColumnKeyMapper = groupingColumnKeyMapper;
     }
 
     isSubscriptionExists(groupByColumn) {
@@ -75,125 +93,42 @@ export default class TableController {
     getGroupedViewData(startIndex, endIndex, rowHeight) {
         let gridDataSource = this.appDataModel.getDataMapInRangeFromGroupedData(startIndex, endIndex);
         let topDivHeight = startIndex * rowHeight;
-        let bottomDivHeight = (this.appDataModel.getGroupedDataViewSize() - (startIndex + gridDataSource.length)) * rowHeight;
+        let bottomDivHeight = (this.appDataModel.getGroupedViewDataSize() - (startIndex + gridDataSource.length)) * rowHeight;
         return { gridDataSource, topDivHeight, bottomDivHeight };
     }
 
     updateGroupExpansionStatus(groupKey) {
         let expandStatus = this.appDataModel.getDataFromGroupedData(groupKey).showBucketData;
         this.appDataModel.getDataFromGroupedData(groupKey).showBucketData = !expandStatus;
-        let updatedGroupedViewData = this.getGroupedDataAsViewableArray(this.appDataModel.getGroupedData());
-        this.appDataModel.setGroupedViewData(updatedGroupedViewData);
+
+        let groupedViewData = this.appDataModel.createGroupedViewedData(this.appDataModel.getGroupedData());
+        this.appDataModel.setGroupedViewData(groupedViewData);
         this.uiRef.updateDataGridWithGroupedView();
     }
 
-    getGroupedDataAsViewableArray(groupedData) {
-        let result = [];
-        groupedData.forEach((item, key) => {
-            result.push({ "key": key, "data": item, "isAggregatedRow": true });
-            if (item.isBuckedDataAggregated) {
-                result.concat(this.getGroupedDataAsViewableArray(item.bucketData));
-            } else if (item.showBucketData) {
-                item.bucketData.forEach((val, k) => { result.push({ "key": k, "data": val, "isAggregatedRow": false }) });
-            }
-        });
-        return result;
-    }
+    /** Clearing Grouping subscriptions */
 
-    /** GROUP SUBSCRIPTION DATAHANDLER **/
-
-    createFirstLevelGrouping(valueKeyMap, aggregatedRowsData, dataMap) {
-        let resultMap = new Map();
-        let uniqueColumnValueBuckets = new Map();
-        // let columnKeyIterator = this.valueKeyMap.keys();
-
-        valueKeyMap.forEach(function (item, key, mapObj) {
-            uniqueColumnValueBuckets.set(key, new Map());
-        });
-        let groupKey, groupVal;
-        dataMap.forEach((item, key, mapObj) => {
-            groupKey = valueKeyMap.get(item.data.customer);
-            groupVal = aggregatedRowsData.get(groupKey).groupData == undefined ? aggregatedRowsData.get(groupKey) : aggregatedRowsData.get(groupKey).groupData;
-            uniqueColumnValueBuckets.get(item.data.customer).set(key, item)
-            aggregatedRowsData.set(groupKey, {
-                "groupData": groupVal,
-                "bucketData": uniqueColumnValueBuckets.get(item.data.customer),
-                "showBucketData": false,
-                "isBuckedDataAggregated": false
-            });
-        })
-        return aggregatedRowsData;
-        // this.setGroupedViewData();
-    }
-
-
-    /** MULTI GROUPING DATAHANDLERS **/
-    multiGroupingDataHandler(message) {
-        if (message.data != undefined) {
-            this.multiLevelData.set(message.k, message.data);
-            let level1Column = message.data.customer, level2Column = message.data.receiveIndex;
-            let groupingKey;
-            groupingKey = this.groupingColumnsByLevel.map((item, k) => message.data[item]);
-            this.valueKeyMapSecondLevel.set(groupingKey.join('-'), message.k);
+    clearGroupSubscriptions(){
+        if(this.columnSubscriptionMapper.size==0){
+            return;
         }
-        if (message.c == 'group_end') {
-            if (this.groupedData == undefined) {
-                this.groupedData = this.appDataModel.getGroupedData();
-            }
-            let resultMap = this.recursiveFunction(this.groupedData, this.groupingColumnsByLevel.slice(-1));
-            this.appDataModel.getMultiLevelGroupedViewData(resultMap);
-            let result = this.appDataModel.getDataMapInRangeFromMultiGroupedData(0);
-            this.uiRef.loadDataGridWithMultiGroupedView(result);
+        this.columnSubscriptionMapper.forEach((value,key)=>{
+           this.unsubscribe(value, (subId,columnRef)=>this.columnSubscriptionMapper.delete(columnRef),key);
+        });
+        this.clearArray(this.groupingColumnsByLevel);
+        this.appDataModel.getGroupedData().clear();
+        this.appDataModel.setGroupedData(undefined);
+        this.appDataModel.getGroupColumnKeyMapper().clear();
+        this.appDataModel.setGroupColumnKeyMapper(undefined);
+        this.clearArray(this.appDataModel.getGroupedViewData());
+        this.appDataModel.setGroupedViewData(undefined);
+        this.uiRef.loadDataGridWithDefaultView();
+    }
 
+    clearArray(array){
+        while(array.length>0){
+            array.pop();
         }
-        console.log(JSON.stringify(resultMap));
-    }
-
-    recursiveFunction(groupedData, columnKey) {
-        groupedData.forEach((value, key) => {
-            if (value.isBuckedDataAggregated) {
-                this.recursiveFunction(value.bucketData, columnKey);
-            } else {
-                /** groupedData With UniqueColumn as keys */
-                let groupingResultMap = this.getGroupBuckets(value.bucketData, columnKey);
-                if (groupingResultMap.size == 1) {
-                    return;
-                }
-                /** Converting groupedData keys from UniqueColumnKeys to SOWKeys */
-                let bucketDataMap = new Map();
-                groupingResultMap.forEach((val, kk) => {
-                    let secondLevelGroupKey = this.valueKeyMapSecondLevel.get(
-                        this.groupingColumnsByLevel.slice(0, this.groupingColumnsByLevel.length - 1).map((item, k) => value.groupData[item]).concat(kk).join('-'));
-                    bucketDataMap.set(secondLevelGroupKey, { groupData: this.multiLevelData.get(secondLevelGroupKey), bucketData: val, showBucketData: false, isBuckedDataAggregated: false });
-                })
-                value.bucketData = bucketDataMap;
-                value.isBuckedDataAggregated = true;
-                /** Adding the modified groupedData as new bucketData to the parentRow */
-                // this.multiGroupingDataMap.set(key, { groupData: value.groupData, bucketData: bucketDataMap, showBucketData : false, isBuckedDataAggregated : true });
-
-            }
-        })
-        return groupedData;
-    }
-
-    getGroupBuckets(dataMap, groupByColumnKey) {
-        let resultMap = new Map();
-        let resultMapIterationData;
-        dataMap.forEach((item, key) => {
-            resultMapIterationData = resultMap.get(item.data[groupByColumnKey]);
-            if (resultMapIterationData == undefined) {
-                let bucketData = new Map();
-                bucketData.set(key, item);
-                resultMap.set(item.data[groupByColumnKey], bucketData);
-            } else {
-                resultMapIterationData.set(key, item);
-            }
-        })
-        return resultMap;
-    }
-
-    multiGroupingSubscriptionDetailsHandler(subscriptionId) {
-        console.log('subID :', subscriptionId);
     }
 }
 

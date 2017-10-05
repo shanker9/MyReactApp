@@ -28,12 +28,14 @@ export default class SubscriptionController {
         } else {
             this.appDataModel.addorUpdateRowData(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
 
-            if (this.isGroupedView) {
-                let grpObject = this.appDataModel.getDataFromGroupedData(this.groupingColumnKeyMap.get(newData.customer));
-                let existingData = grpObject.bucketData.get(rowKey);
-                existingData.data = newData;
+            if (this.appDataModel.getGroupedData()!=undefined) {
+                
+                // let grpObject = this.appDataModel.getDataFromGroupedData(this.groupingColumnKeyMap.get(newData.customer));
+                // let existingData = grpObject.bucketData.get(rowKey);
+                // existingData.data = newData;
+                this.parentControllerRef.updateRowDataInGroupedData(message);
             }
-            this.uiRef.rowUpdate(newData, 'ref' + item.rowID);
+            this.parentControllerRef.updateUIRowWithData(newData, 'ref' + item.rowID);
         }
     }
 

@@ -70,9 +70,12 @@ export default class AmpsData {
             })
     }
 
-    unsubscribe(subId) {
+    unsubscribe(subId,successCallback,subscriptionColumnReference) {
         ampsClient.unsubscribe(subId)
-            .then(() => console.log('Unsubscribed the subscription with ID : ' + subId));
+            .then(() => {
+                console.log('Unsubscribed the subscription with ID : ' + subId);
+                successCallback(subId,subscriptionColumnReference);
+            });
     }
 
     testData(callback) {

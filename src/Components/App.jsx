@@ -15,7 +15,7 @@ class App extends React.Component {
             sortedData: [],
             viewableData: [],
             selectedData: undefined,
-            subscriberId: '',
+            subscriberId: ' ',
             totalRecords: 0,
             lastRow: 0,
             loadedRows: 0,
@@ -53,6 +53,7 @@ class App extends React.Component {
         this.valueKeyMap = new Map();
         this.isGroupedView = false;
         this.subscriptionData = new Map();
+        this.subscribedTopic = 'Price';
         // this.viewableStartIndex=0;
         // this.currentSelectedRowIndex = undefined;
     }
@@ -75,7 +76,8 @@ class App extends React.Component {
     }
 
     subscribeForMultiLevelGrouping(){
-        this.refs.tableViewRef.subscribeForMultiLevelGrouping();
+        // this.refs.tableViewRef.subscribeForMultiLevelGrouping();
+        this.refs.tableViewRef.clearGrouping();
     }
 
     render() {
@@ -83,25 +85,14 @@ class App extends React.Component {
             <div>
                 <div className={styles.container}>
                     <h1 className={styles.header}>Random Data from AMPS</h1>
-                    <label>  Subscriber Id : {this.state.subscriberId}</label>
-                    <label> | Total Records: {this.dataMap.size}</label>
-                    <label> | Loaded Records: {this.state.viewableData.length}</label>
-                    <label onClick={this.subscribeForMultiLevelGrouping.bind(this)}> | multiGroup View </label>
+                    <label className={styles.label}>  SUBSCRIPTION TOPIC : {this.subscribedTopic}</label>
+                    <button className={styles.button} onClick={this.subscribeForMultiLevelGrouping.bind(this)}>CLEAR GROUPING</button>
                     <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
                 </div>
                 <div>
                     <TableView viewableData={this.state.viewableData}
                         ref='tableViewRef'
-                        isGroupedData={this.isGroupedView}
-                        groupedData={this.groupedData}
-                        topDivHeight={this.topDivHeight}
-                        bottomDivHeight={this.bottomDivHeight}
-                        selectionDataUpdateHandler={this.updateSelected}
-                        dataUpdateStatus={this.rowDataUpdateStatus}
-                        handleScroll={this.handleScroll}
-                        updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus}
-                        viewableStartIndex={this.state.viewableStartIndex}
-                        groupingHandler={this.formGroupedData}
+                        subscribedTopic={this.subscribedTopic}
                         rowHeight={this.rowHeight} />
                 </div>
             </div>

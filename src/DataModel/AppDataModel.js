@@ -18,21 +18,17 @@ class AppDataModel {
     constructor() {
         this.dataMap = new Map();
         this.groupedData = undefined;
-        this.multiLevelGroupedData = undefined;
+        this.groupColumnKeyMapper = undefined;
         this.groupedViewData = undefined;
     }
 
-    getAppDataModelInstance(){
+    /** dataMap methods */
 
-    }
+    getDataMap() {return this.dataMap;}
 
-    addorUpdateRowData(rowkey, rowdata) {
-        this.dataMap.set(rowkey, rowdata);
-    }
+    addorUpdateRowData(rowkey, rowdata) {this.dataMap.set(rowkey, rowdata);}
 
-    getDataFromDefaultData(rowkey) {
-        return this.dataMap.get(rowkey);
-    }
+    getDataFromDefaultData(rowkey) {return this.dataMap.get(rowkey);}
 
     getDataMapInRangeFromDefaultData(startIndex, endIndex) {
         let iter = this.dataMap.keys();
@@ -47,98 +43,51 @@ class AppDataModel {
         return result;
     }
 
-    getdefaultDataViewSize() {
-        return this.dataMap.size;
-    }
+    getdefaultDataViewSize() {return this.dataMap.size;}
 
-    getDataMap() {
-        return this.dataMap;
-    }
+    /** groupedData methods */
 
-    /*** GROUPING METHODS ***/
-    createGroupBuckets(valueKeyMap, aggregatedRowsData) {
-        let resultMap = new Map();
-        let uniqueColumnValueBuckets = new Map();
-        // let columnKeyIterator = this.valueKeyMap.keys();
+    getGroupedData() {return this.groupedData;}
 
-        valueKeyMap.forEach(function (item, key, mapObj) {
-            uniqueColumnValueBuckets.set(key, new Map());
-        });
-        let groupKey, groupVal;
-        this.dataMap.forEach((item, key, mapObj) => {
-            groupKey = valueKeyMap.get(item.data.customer);
-            groupVal = aggregatedRowsData.get(groupKey).groupData == undefined ? aggregatedRowsData.get(groupKey) : aggregatedRowsData.get(groupKey).groupData;
-            uniqueColumnValueBuckets.get(item.data.customer).set(key, item)
-            aggregatedRowsData.set(groupKey, {
-                "groupData": groupVal,
-                "bucketData": uniqueColumnValueBuckets.get(item.data.customer),
-                "showBucketData": false,
-                "isBuckedDataAggregated": false
-            });
-        })
-        this.groupedData = aggregatedRowsData;
-        this.setGroupedViewData();
-    }
+    setGroupedData(groupedData){this.groupedData = groupedData;}
 
-    settGroupedViewData() {
-        let result = [];
-        this.groupedData.forEach((item, key, mapObj) => {
-            result.push({ "key": key, "data": item, "isAggregatedRow": true });
-            if (item.showBucketData) {
-                item.bucketData.forEach((val, k, mapObj) => result.push({ "key": k, "data": val, "isAggregatedRow": false }));
-            }
-        });
-        this.groupedViewData = result;
-    }
+    getDataFromGroupedData(groupKey) {return this.groupedData.get(groupKey);}
 
-    getDataFromGroupedData(groupKey) {
-        return this.groupedData.get(groupKey);
-    }
+    setDataInGroupedData(groupRowkey, groupRowData) {this.groupedData.set(groupRowkey, groupRowData);}
 
-    getDataMapInRangeFromGroupedData(startIndex, endIndex) {
-        return this.groupedViewData.slice(startIndex, endIndex);
-    }
+    getDataMapInRangeFromGroupedData(startIndex,endIndex) {return this.groupedViewData.slice(startIndex, endIndex);}
 
-    addorUpdateGroupedData(rowkey, rowdata) {
-        this.dataMap.set(rowkey, rowdata);
-    }
+    /** groupedViewData methods */
 
-    getGroupedDataViewSize() {
-        return this.groupedViewData.length;
-    }
+    getGroupedViewData(){return this.groupedViewData;}
 
-    setGroupedData(groupedData){
-        this.groupedData = groupedData;
-    }
+    setGroupedViewData(groupedViewData){this.groupedViewData = groupedViewData;}
 
-    getGroupedData() {
-        return this.groupedData;
-    }
+    getGroupedViewDataSize() {return this.groupedViewData.length;}
 
-    setGroupedViewData(groupedViewData){
-        this.groupedViewData = groupedViewData;
-    }
-
-    getGroupedViewData(){
-        return this.groupedViewData;
-    }
+    
+    /** groupColumnKeyMapper methods */
+    
+    getGroupColumnKeyMapper(){return this.groupColumnKeyMapper;}
+    
+    setGroupColumnKeyMapper(groupColumnKeyMapper){this.groupColumnKeyMapper = groupColumnKeyMapper;}
 
     /** MULTI-LEVEL GROUPING METHODS**/
 
-    getMultiLevelGroupedData() {
-        return this.multiLevelGroupedData;
-    }
+    // getMultiLevelGroupedData() {
+    //     return this.multiLevelGroupedData;
+    // }
 
-    setMultiLevelGroupedData(groupedMap) {
-        this.multiLevelGroupedData = groupedMap;
-    }
+    // setMultiLevelGroupedData(groupedMap) {
+    //     this.multiLevelGroupedData = groupedMap;
+    // }
 
-    getMultiLevelGroupedViewData(multiLevelGroupedData) {
+    createGroupedViewedData(multiLevelGroupedData) {
         let result = [];
         multiLevelGroupedData.forEach((item, key) => {
             result.push({ "key": key, "data": item, "isAggregatedRow": true });
             if (item.isBuckedDataAggregated) {
-                result.concat(this.getMultiLevelGroupedViewData(item.bucketData));
+                result.concat(this.createGroupedViewedData(item.bucketData));
             } else if (item.showBucketData) {
                 item.bucketData.forEach((val, k) => { result.push({ "key": k, "data": val, "isAggregatedRow": false }) });
             }
@@ -147,9 +96,6 @@ class AppDataModel {
         return result;
     }
 
-    getDataMapInRangeFromMultiGroupedViewData(startIndex, endIndex) {
-        return this.multiLevelGroupedData.slice(startIndex, endIndex);
-    }
 
 }
 

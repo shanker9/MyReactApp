@@ -87,6 +87,7 @@ class TableView extends React.Component {
             }
         ];
 
+        this.subscriptionTopic = this.props.subscribedTopic;
 
         /** Event Handlers */
         this.updateDataGrid = this.updateDataGridWithDefaultView.bind(this);
@@ -111,7 +112,6 @@ class TableView extends React.Component {
     }
 
 
-
     /*** EventHandler for scrolling of Tabledata ***/
     scrollEventHandler() {
         let headerNode = document.getElementById('scrollableHeaderDiv');
@@ -130,7 +130,7 @@ class TableView extends React.Component {
         this.controller = new TableController(this);
         let commandObject = {
             "command": "sow_and_subscribe",
-            "topic": "Price",
+            "topic": this.subscriptionTopic,
             "filter": "/swapId>0",
             "orderBy": "/swapId"
         }
@@ -176,7 +176,7 @@ class TableView extends React.Component {
             case 'customer':
                 commandObject = {
                     "command": "sow_and_subscribe",
-                    "topic": "Price",
+                    "topic": this.subscriptionTopic,
                     "filter": "/swapId >=0",
                     "orderBy": "/customer",
                     "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
@@ -186,9 +186,9 @@ class TableView extends React.Component {
             case 'receiveIndex':
                 commandObject = {
                     "command": "sow_and_subscribe",
-                    "topic": "Price",
+                    "topic": this.subscriptionTopic,
                     "filter": "/swapId >=0",
-                    "orderBy": "/swapId",
+                    "orderBy": "/customer",
                     "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
                 }
                 groupingColumnKey = 'receiveIndex';
@@ -220,6 +220,7 @@ class TableView extends React.Component {
         this.setState(this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
     }
 
+
     /** ROW DATA UI UPDATE HANDLER **/
     rowUpdate(data, rowReference) {
         let rowElem = this.refs.gridViewRef.refs[rowReference];
@@ -243,6 +244,10 @@ class TableView extends React.Component {
                 }
         let columnName = 'receiveIndex';
         this.controller.ampsGroupSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+    }
+
+    clearGrouping(){
+        this.controller.clearGroupSubscriptions();
     }
 
     render() {
