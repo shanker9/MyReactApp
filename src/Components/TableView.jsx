@@ -178,7 +178,7 @@ class TableView extends React.Component {
                     "command": "sow_and_subscribe",
                     "topic": "Price",
                     "filter": "/swapId >=0",
-                    "orderBy": "/swapId",
+                    "orderBy": "/customer",
                     "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
                 }
                 groupingColumnKey = 'customer';
@@ -189,7 +189,7 @@ class TableView extends React.Component {
                     "topic": "Price",
                     "filter": "/swapId >=0",
                     "orderBy": "/swapId",
-                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/receiveIndex]"
+                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
                 }
                 groupingColumnKey = 'receiveIndex';
                 break;

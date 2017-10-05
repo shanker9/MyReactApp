@@ -48,8 +48,9 @@ export default class TableController {
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
     ampsGroupSubscribe(commandObject, columnName) {
-        let subController = new GroupSubscriptionController(this,columnName,commandObject);
         this.groupingColumnsByLevel.push(columnName);
+        let subController = new GroupSubscriptionController(this,this.groupingColumnsByLevel,commandObject);
+        
         this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
                                                 subController.groupingSubscriptionDetailsHandler.bind(subController),
                                                 commandObject, columnName);

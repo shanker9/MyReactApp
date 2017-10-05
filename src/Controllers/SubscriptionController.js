@@ -2,8 +2,8 @@ import AmpsController from '../Amps/AmpsData.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 
 export default class SubscriptionController {
-    constructor(componentRef) {
-        this.parentControllerRef = componentRef;
+    constructor(controllerRef) {
+        this.parentControllerRef = controllerRef;
         this.ampsController = new AmpsController();
         this.appDataModel = AppDataModelSingleton.getInstance();
     }
