@@ -31,9 +31,18 @@ export default class AmpsData {
 
     connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject, groupingColumnKey) {
         var subscriberId;
-        let ampsCommandObject;
+        let ampsCommandObject, tryCount=0;
         if (this.ampsconnectObject == undefined) {
-            this.ampsconnectObject = ampsClient.connect(ampsServerUri);
+            try {
+                this.ampsconnectObject = ampsClient.connect(ampsServerUri);
+            }catch(e){
+                if(tryCount==5){
+                    console.log('multiple connnection timeouts');
+                }else{
+                    tryCount++;
+                    this.ampsconnectObject = ampsClient.connect(ampsServerUri);
+                }
+            }
         }
 
         this.ampsconnectObject
@@ -70,11 +79,11 @@ export default class AmpsData {
             })
     }
 
-    unsubscribe(subId,successCallback,subscriptionColumnReference) {
+    unsubscribe(subId, successCallback, subscriptionColumnReference) {
         ampsClient.unsubscribe(subId)
             .then(() => {
                 console.log('Unsubscribed the subscription with ID : ' + subId);
-                successCallback(subId,subscriptionColumnReference);
+                successCallback(subId, subscriptionColumnReference);
             });
     }
 
