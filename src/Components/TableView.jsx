@@ -101,11 +101,11 @@ class TableView extends React.Component {
     }
 
     componentWillMount() {
-        this.makeDefaultSubscription();
+        
     }
 
     componentDidMount() {
-
+        this.makeDefaultSubscription();
     }
 
     componentDidUpdate() {
