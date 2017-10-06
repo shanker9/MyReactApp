@@ -22,25 +22,25 @@ export default class TableController {
         this.columnSubscriptionMapper = new Map();
         this.setGroupingColumnKeyMapper = undefined;
     }
-    
+
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
     ampsSubscribe(commandObject, columnName) {
         let subController = new SubscriptionController(this);
         this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
-                                                subController.defaultSubscriptionDetailsHandler.bind(subController),
-                                                commandObject, columnName);
+            subController.defaultSubscriptionDetailsHandler.bind(subController),
+            commandObject, columnName);
     }
 
-    unsubscribe(subscriptionId,successCallback,subscriptionColumnReference) {
-        this.ampsController.unsubscribe(subscriptionId,successCallback,subscriptionColumnReference);
+    unsubscribe(subscriptionId, successCallback, subscriptionColumnReference) {
+        this.ampsController.unsubscribe(subscriptionId, successCallback, subscriptionColumnReference);
     }
 
-    updateUIWithDefaultViewData(){
+    updateUIWithDefaultViewData() {
         this.uiRef.loadDataGridWithDefaultView();
     }
 
-    updateUIRowWithData(newData, rowReference){
-        this.uiRef.rowUpdate(newData,rowReference);
+    updateUIRowWithData(newData, rowReference) {
+        this.uiRef.rowUpdate(newData, rowReference);
     }
 
     getDefaultViewData(startIndex, endIndex, rowHeight) {
@@ -50,9 +50,9 @@ export default class TableController {
         return { gridDataSource, topDivHeight, bottomDivHeight };
     }
 
-    updateRowDataInGroupedData(message){
+    updateRowDataInGroupedData(message) {
         let columnKeyMapper = this.appDataModel.getGroupColumnKeyMapper();
-        let columnValue = this.groupingColumnsByLevel.map((val,k)=>message.data[val]).join('-');
+        let columnValue = this.groupingColumnsByLevel.map((val, k) => message.data[val]).join('-');
         let groupKey = columnKeyMapper.get(columnValue);
         let groupData = this.appDataModel.getDataFromGroupedData(groupKey);
         let existingData = groupData.bucketData.get(message.k);
@@ -61,29 +61,69 @@ export default class TableController {
 
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
-    ampsGroupSubscribe(commandObject, columnName) {
-        this.groupingColumnsByLevel.push(columnName);
-        let subController = new GroupSubscriptionController(this,this.groupingColumnsByLevel,commandObject);
-        
+    groupDataByColumnKey(columnName) {
+        let subId = this.columnSubscriptionMapper.get(columnName);
+        // if (subId != undefined) {
+            this.clearGroupSubscriptions();
+            
+            // this.clearGroupSubscription(subId, columnName);
+            let index = this.groupingColumnsByLevel.indexOf(columnName);
+            if(index!=-1){
+                let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
+                this.groupingColumnsByLevel = newGroupingColumnsOrderArray;
+            }else{
+                this.groupingColumnsByLevel.push(columnName);
+            }
+
+            this.groupingColumnsByLevel.length != 0 ? 
+                this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0]) 
+                : this.updateUIWithDefaultViewData();
+        // } else {
+            // this.clearGroupSubscriptions();
+            // this.clearArray(this.groupingColumnsByLevel);
+            // this.groupingColumnsByLevel.push(columnName);            
+            // this.ampsGroupSubscribe(columnName);
+        // }
+    }
+
+    ampsGroupSubscribe(columnName) {
+        let commandObject = this.formCommandObjectForGroupSubscription(columnName);
+        let subController = new GroupSubscriptionController(this, this.groupingColumnsByLevel, commandObject);
+
         this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
-                                                subController.groupingSubscriptionDetailsHandler.bind(subController),
-                                                commandObject, columnName);
+            subController.groupingSubscriptionDetailsHandler.bind(subController),
+            commandObject, columnName);
     }
 
-    addColumnSubscriptionMapper(subscriptionId,columnName){
-        this.columnSubscriptionMapper.set(columnName,subscriptionId);
+    formCommandObjectForGroupSubscription(columnName) {
+        let command = 'sow_and_subscribe';
+        let topic = 'Price';
+        let filter = '/swapId >=0';
+        let orderBy = '/' + this.groupingColumnsByLevel[0];
+
+        let groupingObject = this.groupingColumnsByLevel.map((item, i) => '/' + item).join(',');
+
+        let options = 'projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],'
+            + 'grouping=[' + groupingObject + ']';
+
+        let commandObject = { command, topic, filter, orderBy, options };
+        return commandObject;
     }
 
-    updateUIWithGroupedViewData(){
+    addColumnSubscriptionMapper(subscriptionId, columnName) {
+        this.columnSubscriptionMapper.set(columnName, subscriptionId);
+    }
+
+    updateUIWithGroupedViewData() {
         this.uiRef.loadDataGridWithGroupedView();
     }
 
-    setGroupingColumnKeyMap(groupingColumnKeyMapper){
+    setGroupingColumnKeyMap(groupingColumnKeyMapper) {
         this.setGroupingColumnKeyMapper = groupingColumnKeyMapper;
     }
 
     isSubscriptionExists(groupByColumn) {
-        let subscriptionId = this.subscriptionData.get(groupByColumn);
+        let subscriptionId = this.columnSubscriptionMapper.get(groupByColumn);
         if (subscriptionId != undefined) {
             return true;
         }
@@ -108,25 +148,37 @@ export default class TableController {
 
     /** Clearing Grouping subscriptions */
 
-    clearGroupSubscriptions(){
-        if(this.columnSubscriptionMapper.size==0){
+    clearGroupSubscriptions() {
+        if (this.columnSubscriptionMapper.size == 0) {
             return;
         }
-        this.columnSubscriptionMapper.forEach((value,key)=>{
-           this.unsubscribe(value, (subId,columnRef)=>this.columnSubscriptionMapper.delete(columnRef),key);
+        this.columnSubscriptionMapper.forEach((value, key) => {
+            this.unsubscribe(value, (subId, columnRef) => this.columnSubscriptionMapper.delete(columnRef), key);
         });
-        this.clearArray(this.groupingColumnsByLevel);
         this.appDataModel.getGroupedData().clear();
         this.appDataModel.setGroupedData(undefined);
         this.appDataModel.getGroupColumnKeyMapper().clear();
         this.appDataModel.setGroupColumnKeyMapper(undefined);
         this.clearArray(this.appDataModel.getGroupedViewData());
         this.appDataModel.setGroupedViewData(undefined);
-        this.uiRef.loadDataGridWithDefaultView();
     }
 
-    clearArray(array){
-        while(array.length>0){
+    clearGroupSubscription(subscriptionId, groupingColumnKey) {
+        this.unsubscribe(subscriptionId, (subId, columnRef) => this.columnSubscriptionMapper.delete(columnRef), groupingColumnKey);
+
+        this.appDataModel.getGroupedData().clear();
+        this.appDataModel.setGroupedData(undefined);
+
+        this.appDataModel.getGroupColumnKeyMapper().clear();
+        this.appDataModel.setGroupColumnKeyMapper(undefined);
+
+        this.clearArray(this.appDataModel.getGroupedViewData());
+        this.appDataModel.setGroupedViewData(undefined);
+
+    }
+
+    clearArray(array) {
+        while (array.length > 0) {
             array.pop();
         }
     }

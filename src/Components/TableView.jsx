@@ -131,7 +131,7 @@ class TableView extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
-            "filter": "/swapId>0",
+            "filter": "/swapId>0 AND /swapId<=500",
             "orderBy": "/swapId"
         }
 
@@ -161,44 +161,44 @@ class TableView extends React.Component {
     /** GROUPING METHODS  **/
 
     makeGroupSubscription(columnName) {
-        let commandObject, groupingColumnKey;
-        if(this.controller.isSubscriptionExists(columnName)){
-            if(this.state.isGroupedView){
-                this.loadDataGridWithDefaultView();
-                return;                
-            }else{
-                this.loadDataGridWithGroupedView();
-                return;
-            }
-        }
+        // let commandObject, groupingColumnKey;
+        // if(this.controller.isSubscriptionExists(columnName)){
+        //     if(this.state.isGroupedView){
+        //         this.loadDataGridWithDefaultView();
+        //         return;                
+        //     }else{
+        //         this.loadDataGridWithGroupedView();
+        //         return;
+        //     }
+        // }
 
-        switch (columnName) {
-            case 'customer':
-                commandObject = {
-                    "command": "sow_and_subscribe",
-                    "topic": this.subscriptionTopic,
-                    "filter": "/swapId >=0",
-                    "orderBy": "/customer",
-                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
-                }
-                groupingColumnKey = 'customer';
-                break;
-            case 'receiveIndex':
-                commandObject = {
-                    "command": "sow_and_subscribe",
-                    "topic": this.subscriptionTopic,
-                    "filter": "/swapId >=0",
-                    "orderBy": "/customer",
-                    "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
-                }
-                groupingColumnKey = 'receiveIndex';
-                break;
-            default:
-                console.log('Grouping cannot be done with the selected column');
-                return;
-        }
+        // switch (columnName) {
+        //     case 'customer':
+        //         commandObject = {
+        //             "command": "sow_and_subscribe",
+        //             "topic": this.subscriptionTopic,
+        //             "filter": "/swapId >=0",
+        //             "orderBy": "/customer",
+        //             "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
+        //         }
+        //         groupingColumnKey = 'customer';
+        //         break;
+        //     case 'receiveIndex':
+        //         commandObject = {
+        //             "command": "sow_and_subscribe",
+        //             "topic": this.subscriptionTopic,
+        //             "filter": "/swapId >=0",
+        //             "orderBy": "/customer",
+        //             "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
+        //         }
+        //         groupingColumnKey = 'receiveIndex';
+        //         break;
+        //     default:
+        //         console.log('Grouping cannot be done with the selected column');
+        //         return;
+        // }
 
-        this.controller.ampsGroupSubscribe(commandObject, columnName);
+        this.controller.groupDataByColumnKey(columnName);
     }
 
     loadDataGridWithGroupedView() {
@@ -248,6 +248,8 @@ class TableView extends React.Component {
 
     clearGrouping(){
         this.controller.clearGroupSubscriptions();
+        this.controller.clearArray(this.controller.groupingColumnsByLevel);
+        this.loadDataGridWithDefaultView();
     }
 
     render() {
