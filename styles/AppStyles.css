@@ -45,6 +45,7 @@
 
     th:hover {
         background-color: rgb(206, 77, 77);
+        cursor: move;
     }
 
 
@@ -71,6 +72,10 @@
     .tableGridRow {
         border-collapse: collapse;
         min-height: 20px;
+    }
+
+    tr:hover {
+        cursor: default;
     }
 
     .td {
