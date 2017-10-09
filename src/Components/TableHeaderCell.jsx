@@ -15,10 +15,21 @@ class TableHeaderCell extends React.Component {
             this.props.groupingHandler(this.props.cellKey, this.state.isSelected);
     }
 
+    dragStart(event){
+        console.log('Dragged Element: ',event.target);
+        const cellId = this.props.cellKey;
+        const isSelected = this.state.isSelected;
+        event.dataTransfer.setData("groupingColumnData",JSON.stringify({cellId:cellId,isSelected:isSelected}));
+    }
+
     render() {
 
         return (
-            <th className={styles.th} onClick={this.columnClickHandler}>{this.props.cellData}</th>
+            <th id={this.props.cellKey}
+                className={styles.th} 
+                onClick={this.columnClickHandler}
+                onDragStart={this.dragStart.bind(this)}
+                draggable="true">{this.props.cellData}</th>
         )
     }
 

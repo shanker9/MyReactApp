@@ -176,43 +176,6 @@ class TableView extends React.Component {
     /** GROUPING METHODS  **/
 
     makeGroupSubscription(columnName) {
-        // let commandObject, groupingColumnKey;
-        // if(this.controller.isSubscriptionExists(columnName)){
-        //     if(this.state.isGroupedView){
-        //         this.loadDataGridWithDefaultView();
-        //         return;                
-        //     }else{
-        //         this.loadDataGridWithGroupedView();
-        //         return;
-        //     }
-        // }
-
-        // switch (columnName) {
-        //     case 'customer':
-        //         commandObject = {
-        //             "command": "sow_and_subscribe",
-        //             "topic": this.subscriptionTopic,
-        //             "filter": "/swapId >=0",
-        //             "orderBy": "/customer",
-        //             "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer]"
-        //         }
-        //         groupingColumnKey = 'customer';
-        //         break;
-        //     case 'receiveIndex':
-        //         commandObject = {
-        //             "command": "sow_and_subscribe",
-        //             "topic": this.subscriptionTopic,
-        //             "filter": "/swapId >=0",
-        //             "orderBy": "/customer",
-        //             "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
-        //         }
-        //         groupingColumnKey = 'receiveIndex';
-        //         break;
-        //     default:
-        //         console.log('Grouping cannot be done with the selected column');
-        //         return;
-        // }
-
         this.controller.groupDataByColumnKey(columnName);
     }
 
@@ -266,6 +229,28 @@ class TableView extends React.Component {
         this.controller.clearGroupSubscriptions();
         this.controller.clearArray(this.controller.groupingColumnsByLevel);
         this.loadDataGridWithDefaultView();
+        let columnDragToBar = this.refs.dragToBar;
+        while (columnDragToBar.firstChild) {
+            columnDragToBar.removeChild(columnDragToBar.firstChild);
+        }
+        columnDragToBar.appendChild(document.createTextNode("DRAG COLUMNS HERE TO START GROUPING"));
+    }
+
+    onColumnDrop(event) {
+        let columnData = JSON.parse(event.dataTransfer.getData("groupingColumnData"));
+        let columnIndexInGroupedList = this.controller.getGroupingColumnsArray().indexOf(columnData.cellId);
+
+        if (columnIndexInGroupedList == -1) {
+            if(this.controller.getGroupingColumnsArray().length==0){
+                this.refs.dragToBar.removeChild(this.refs.dragToBar.firstChild);
+            }
+            let clonedColumnElement = document.getElementById(columnData.cellId).cloneNode(true);
+            clonedColumnElement.style.color = "#1E0B06";
+            clonedColumnElement.style.backgroundColor = "yellow";
+            clonedColumnElement.style.height = this.refs.dragToBar.offsetHeight + "px";
+            this.refs.dragToBar.appendChild(clonedColumnElement);
+            this.makeGroupSubscription(columnData.cellId);
+        }
     }
 
     render() {
@@ -274,8 +259,11 @@ class TableView extends React.Component {
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscribedTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />
-                <div className={styles.dragtobar}>
-
+                <div ref="dragToBar"
+                    className={styles.dragtobar}
+                    onDragOver={event => event.preventDefault()}
+                    onDrop={this.onColumnDrop.bind(this)}>
+                    DRAG COLUMNS HERE TO START GROUPING
                 </div>
                 <div className={styles.gridContainerDiv}>
                     <div id="scrollableHeaderDiv" className={styles.headerDiv}>

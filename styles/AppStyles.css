@@ -1,6 +1,6 @@
     .container {
         width: 70%;
-        background-color: greenyellow;
+        /* background-color: greenyellow; */
     }
     
     .blotterinfocontainer {
@@ -10,8 +10,11 @@
     }
 
     .dragtobar{
-        background-color: red;
-        height: 30px;
+        background-color: rgb(180, 172, 172);
+        border: 1.5px dotted black;
+        height: 27px;
+        text-align: center;
+        vertical-align: center;
     }
 
     .gridContainerDiv {
@@ -41,15 +44,16 @@
     }
 
     th:hover {
-        background-color: #CE4D4D;
+        background-color: rgb(206, 77, 77);
     }
 
 
     .th {
         border: 1px solid black;
-        font-size: 90%;
+        font-size: 14px;
         font-weight: 300;
-        text-align: center;
+        /* text-align: center; */
+        vertical-align: middle;
         padding: 1px;
         min-width: 120px;
         box-sizing: border-box;
@@ -66,6 +70,7 @@
 
     .tableGridRow {
         border-collapse: collapse;
+        min-height: 20px;
     }
 
     .td {
@@ -74,7 +79,7 @@
         text-align: center;
         font-size: 80%;
         font-weight: 300;
-        padding: 1px;
+        padding: 2px;
         min-width: 120px;
         box-sizing: border-box;
         -webkit-transition: background-color 2s;

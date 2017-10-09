@@ -69,7 +69,7 @@ class TableRow extends React.Component {
 
         return (
             <tr ref={"tableRow"}
-                className={styles.tableRow}
+                className={styles.tableGridRow}
                 onClick={this.handleRowClick}
                 style={{backgroundColor : this.props.isGroupedRow ? '#144C5A' : this.dynamicBackgroundColor}}>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.customer} childStyle={{textAlign : 'left',paddingLeft : '10px'}}></TableCell>

@@ -78,8 +78,12 @@ export default class TableController {
             }
 
             this.groupingColumnsByLevel.length != 0 ? 
-                this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0]) 
+                this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0])
                 : this.updateUIWithDefaultViewData();
+    }
+
+    getGroupingColumnsArray(columnName){
+        return this.groupingColumnsByLevel;
     }
 
     ampsGroupSubscribe(columnName) {
