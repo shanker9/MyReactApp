@@ -132,7 +132,7 @@ class TableView extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
-            "filter": "/swapId>0",
+            "filter": "/swapId>0 AND /swapId<500",
             "orderBy": "/swapId"
         }
 

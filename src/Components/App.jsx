@@ -9,64 +9,13 @@ class App extends React.Component {
 
     constructor() {
         super();
-
         this.state = {
-            data: [],
-            sortedData: [],
-            viewableData: [],
-            selectedData: undefined,
-            subscriberId: ' ',
-            totalRecords: 0,
-            lastRow: 0,
-            loadedRows: 0,
-            loadTime: 0,
-            currentSelectedRowIndex: undefined,
-            viewableStartIndex: 0
+            rowHeight: 20,
+            subscribedTopic: 'Price'
         }
-
-        this.addScrollOffset = true;
-        this.previousScrollTop = 0;
-        this.rowIndex = 0;
-        this.rowHeight = 30;
-        this.lowerLimit = 0;
-        this.upperLimit = 0;
-        this.scrollableDivClientHeight = undefined;
-        this.selectStart = undefined;
-        this.selectEnd = undefined;
-        this.isSorted = true;
-        this.tempArr = [];
-        this.dataMap = new Map();
-        this.sowDataEnd = false;
-        this.controller = undefined;
-        this.groupedData = new Map();
-        this.sowGroupDataEnd = false;
-        this.valueKeyMap = new Map();
-        this.isGroupedView = false;
-        this.subscriptionData = new Map();
-        this.subscribedTopic = 'Price';
-        // this.viewableStartIndex=0;
-        // this.currentSelectedRowIndex = undefined;
     }
 
-    /** START OF LIFE CYCLE METHODS */
-
-    // componentWillMount() {
-    //     // this.handleClick();
-    // }
-
-    // componentDidMount() {
-    //     this.scrollableDivClientHeight = document.getElementById('scrollableTableDiv').clientHeight;
-    // }
-
-    // /** END OF LIFE CYCLE METHODS */
-
-    // rowDataUpdateStatus(index, updateStatus) {
-    //     this.tempArr[index].isUpdated = updateStatus;
-    //     this.setState({ data: this.state.data });
-    // }
-
-    clearGrouping(){
-        // this.refs.tableViewRef.subscribeForMultiLevelGrouping();
+    clearGrouping() {
         this.refs.tableViewRef.clearGrouping();
     }
 
@@ -74,10 +23,9 @@ class App extends React.Component {
         return (
             <div>
                 <div>
-                    <TableView viewableData={this.state.viewableData}
-                        ref='tableViewRef'
-                        subscribedTopic={this.subscribedTopic}
-                        rowHeight={this.rowHeight} />
+                    <TableView ref='tableViewRef'
+                        subscribedTopic={this.state.subscribedTopic}
+                        rowHeight={this.state.rowHeight} />
                 </div>
             </div>
         );

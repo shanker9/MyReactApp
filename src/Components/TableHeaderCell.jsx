@@ -12,9 +12,7 @@ class TableHeaderCell extends React.Component {
     }
 
     columnClickHandler() {
-        // this.setState({ isSelected: !this.state.isSelected }).then(() => {
             this.props.groupingHandler(this.props.cellKey, this.state.isSelected);
-        // })
     }
 
     render() {
