@@ -274,6 +274,9 @@ class TableView extends React.Component {
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscribedTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />
+                <div className={styles.dragtobar}>
+
+                </div>
                 <div className={styles.gridContainerDiv}>
                     <div id="scrollableHeaderDiv" className={styles.headerDiv}>
                         <table className={styles.table}>

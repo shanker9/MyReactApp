@@ -1,11 +1,17 @@
     .container {
         width: 70%;
+        background-color: greenyellow;
     }
     
     .blotterinfocontainer {
         align-items : center;
         padding: 2px;
         margin-bottom: 10px;
+    }
+
+    .dragtobar{
+        background-color: red;
+        height: 30px;
     }
 
     .gridContainerDiv {
