@@ -23,17 +23,7 @@ class App extends React.Component {
             currentSelectedRowIndex: undefined,
             viewableStartIndex: 0
         }
-        // this.handleClick = this.handleClick.bind(this);
-        // this.handleScroll = this.handleScroll.bind(this);
-        // this.sliceLoadableData = this.sliceLoadableData.bind(this);
-        // this.rowDataUpdateStatus = this.rowDataUpdateStatus.bind(this);
-        // this.sliceHashmap = this.sliceHashmap.bind(this);
-        // this.triggerConditionalUIUpdate = this.triggerConditionalUIUpdate.bind(this);
-        // this.createGroupBuckets = this.createGroupBuckets.bind(this);
-        // this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
-        // this.getViewableStartIndex = this.getViewableStartIndex.bind(this);
-        // this.formGroupedData = this.formGroupedData.bind(this);
-        // this.rowUpdate = this.rowUpdate.bind(this);
+
         this.addScrollOffset = true;
         this.previousScrollTop = 0;
         this.rowIndex = 0;
@@ -60,22 +50,22 @@ class App extends React.Component {
 
     /** START OF LIFE CYCLE METHODS */
 
-    componentWillMount() {
-        // this.handleClick();
-    }
+    // componentWillMount() {
+    //     // this.handleClick();
+    // }
 
-    componentDidMount() {
-        this.scrollableDivClientHeight = document.getElementById('scrollableTableDiv').clientHeight;
-    }
+    // componentDidMount() {
+    //     this.scrollableDivClientHeight = document.getElementById('scrollableTableDiv').clientHeight;
+    // }
 
-    /** END OF LIFE CYCLE METHODS */
+    // /** END OF LIFE CYCLE METHODS */
 
-    rowDataUpdateStatus(index, updateStatus) {
-        this.tempArr[index].isUpdated = updateStatus;
-        this.setState({ data: this.state.data });
-    }
+    // rowDataUpdateStatus(index, updateStatus) {
+    //     this.tempArr[index].isUpdated = updateStatus;
+    //     this.setState({ data: this.state.data });
+    // }
 
-    subscribeForMultiLevelGrouping(){
+    clearGrouping(){
         // this.refs.tableViewRef.subscribeForMultiLevelGrouping();
         this.refs.tableViewRef.clearGrouping();
     }
@@ -83,12 +73,6 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <div className={styles.container}>
-                    <h1 className={styles.header}>Random Data from AMPS</h1>
-                    <label className={styles.label}>  SUBSCRIPTION TOPIC : {this.subscribedTopic}</label>
-                    <button className={styles.button} onClick={this.subscribeForMultiLevelGrouping.bind(this)}>CLEAR GROUPING</button>
-                    <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.lowerLimit + '-' + this.upperLimit + ' of ' + this.dataMap.size : ''}</label>
-                </div>
                 <div>
                     <TableView viewableData={this.state.viewableData}
                         ref='tableViewRef'

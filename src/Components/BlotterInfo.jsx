@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styles from '../../styles/AppStyles.css'
 
-class BlotterInfo extends Component() {
-    constructor(props) {
-        super(props);
+class BlotterInfo extends React.Component {
+    constructor() {
+        super();
         this.state = {
             lowerLimit : 0,
             upperLimit : 0,
-            dataMapsize : 0
+            dataMapsize : 0,
+            isGroupedView : false
         }
     }
 
@@ -19,16 +20,20 @@ class BlotterInfo extends Component() {
         })
     }
 
+    updateGroupedViewStateTo(isGroupedView){
+        this.setState({isGroupedView:isGroupedView});
+    }
+
     render() {
         return (
             <div className={styles.container}>
                 <h1 className={styles.header}>Random Data from AMPS</h1>
                 <label className={styles.label}>  SUBSCRIPTION TOPIC : {this.props.subscribedTopic}</label>
                 <button className={styles.button} onClick={this.props.clearGrouping}>CLEAR GROUPING</button>
-                <label style={{ float: 'right' }}>{!this.isGroupedView ? 'Showing ' + this.state.lowerLimit + '-' + this.state.upperLimit + ' of ' + this.state.dataMapsize : ''}</label>
+                <label style={{ float: 'right' }}>{!this.state.isGroupedView ? 'Showing ' + this.state.lowerLimit + '-' + this.state.upperLimit + ' of ' + this.state.dataMapsize : ''}</label>
             </div>
         );
     }
 }
 
-export default BlotterInfo
+export default BlotterInfo;

@@ -43,7 +43,7 @@ class AppDataModel {
         return result;
     }
 
-    // getdefaultDataViewSize() {return this.dataMap.size;}
+    getdefaultDataViewSize() {return this.dataMap.size;}
 
     /** groupedData methods */
 
