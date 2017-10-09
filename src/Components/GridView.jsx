@@ -70,15 +70,17 @@ class GridView extends React.Component {
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.props.topDivHeight }}></div>
-                        {this.props.viewableData.map((item, i) =>
-                            <TableRow
-                                ref={'ref' + item.rowID}
-                                key={item.rowID}
-                                data={item.data}
-                                indexVal={item.data.swapId}
-                                dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                selectState={item.isSelected} />
-                        )}
+                        <div>
+                            {this.props.viewableData.map((item, i) =>
+                                <TableRow
+                                    ref={'ref' + item.rowID}
+                                    key={item.rowID}
+                                    data={item.data}
+                                    indexVal={item.data.swapId}
+                                    dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                                    selectState={item.isSelected} />
+                            )}
+                        </div>
                         <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>

@@ -270,7 +270,7 @@ class TableView extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={styles.container}>
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscribedTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />
@@ -278,7 +278,7 @@ class TableView extends React.Component {
                     <div id="scrollableHeaderDiv" className={styles.headerDiv}>
                         <table className={styles.table}>
                             <thead className={styles.tableHead}>
-                                <tr className={styles.tableRow}>
+                                <tr className={styles.tableHeaderRow}>
                                     {this.columns.map((item, i) =>
                                         <TableHeaderCell
                                             key={i}

@@ -1,4 +1,8 @@
     .container {
+        width: 70%;
+    }
+    
+    .blotterinfocontainer {
         align-items : center;
         padding: 2px;
         margin-bottom: 10px;
@@ -24,10 +28,16 @@
         border-collapse: collapse;
     }
 
-    .tableRow{
+    .tableHeaderRow{
         height: 20px;
-        text-align: center;        
+        text-align: center;
+        cursor: pointer;        
     }
+
+    th:hover {
+        background-color: #CE4D4D;
+    }
+
 
     .th {
         border: 1px solid black;
@@ -43,13 +53,19 @@
 
     
     .tableDiv {
-        height: 30em;
+        height: 22em;
         overflow-y: scroll;
         overflow-x: auto;
     }
 
+    .tableGridRow {
+        border-collapse: collapse;
+    }
+
     .td {
         border: 1px solid grey;
+        border-bottom: 0px;
+        text-align: center;
         font-size: 80%;
         font-weight: 300;
         padding: 1px;
