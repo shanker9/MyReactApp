@@ -59,14 +59,16 @@ export default class TableController {
         existingData.data = message.data;
     }
 
+    getDatamapSize(){
+        return this.appDataModel.getDataMap().size;
+    }
+
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
     groupDataByColumnKey(columnName) {
         let subId = this.columnSubscriptionMapper.get(columnName);
-        // if (subId != undefined) {
             this.clearGroupSubscriptions();
             
-            // this.clearGroupSubscription(subId, columnName);
             let index = this.groupingColumnsByLevel.indexOf(columnName);
             if(index!=-1){
                 let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
@@ -78,12 +80,6 @@ export default class TableController {
             this.groupingColumnsByLevel.length != 0 ? 
                 this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0]) 
                 : this.updateUIWithDefaultViewData();
-        // } else {
-            // this.clearGroupSubscriptions();
-            // this.clearArray(this.groupingColumnsByLevel);
-            // this.groupingColumnsByLevel.push(columnName);            
-            // this.ampsGroupSubscribe(columnName);
-        // }
     }
 
     ampsGroupSubscribe(columnName) {
