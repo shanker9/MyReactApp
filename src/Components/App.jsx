@@ -4,6 +4,7 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
+import Graph from './Graph.jsx';
 var scrollUpdateDelay = true;
 class App extends React.Component {
 
@@ -15,8 +16,8 @@ class App extends React.Component {
         }
     }
 
-    clearGrouping() {
-        this.refs.tableViewRef.clearGrouping();
+    divDropped(ev){
+        console.log(ev.target);
     }
 
     render() {
@@ -27,7 +28,13 @@ class App extends React.Component {
                         subscribedTopic={this.state.subscribedTopic}
                         rowHeight={this.state.rowHeight} />
                 </div>
+                <div className={styles.graphcontainer}
+                    onDragOver={event => event.preventDefault()}
+                    onDrop={this.divDropped.bind(this)}>
+                    <Graph />
+                </div>
             </div>
+
         );
 
     }

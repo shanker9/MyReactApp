@@ -1,5 +1,5 @@
-    .container {
-        width: 70%;
+    .tablecontainer {
+        /* width: 70%; */
         /* background-color: greenyellow; */
     }
     
@@ -10,11 +10,12 @@
     }
 
     .dragtobar{
-        background-color: rgb(180, 172, 172);
+        background-color: rgb(216, 207, 207);
         border: 1.5px dotted black;
         height: 27px;
         text-align: center;
-        vertical-align: center;
+        vertical-align: middle;
+        font-size: 14px;
     }
 
     .gridContainerDiv {
@@ -60,7 +61,6 @@
         box-sizing: border-box;
         color: #E7E2E2;        
     }
-
 
     
     .tableDiv {
@@ -113,4 +113,26 @@
 
     .label {
         font-size: 14px;
+    }
+
+
+    /* Graph */
+
+    .graphcontainer{
+        height:300px;
+        background-color: #E7DEDE;
+    }
+
+    .draggableDiv{
+        height:30px;
+        width:120px;
+        background-color:#C7B049;
+        border: 1px outset #98A8B8;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .draggableDiv > div {
+        vertical-align: middle;
     }
