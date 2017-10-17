@@ -101,10 +101,10 @@ export default class TableController {
         let filter = '/swapId >=0';
         let orderBy = '/' + this.groupingColumnsByLevel[0];
 
-        let groupingObject = this.groupingColumnsByLevel.map((item, i) => '/' + item).join(',');
+        let groupingObject = this.groupingColumnsByLevel.map((item, i) => `/${item}`).join(',');
 
         let options = 'projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],'
-            + 'grouping=[' + groupingObject + ']';
+            + `grouping=[${groupingObject}]`;
 
         let commandObject = { command, topic, filter, orderBy, options };
         return commandObject;

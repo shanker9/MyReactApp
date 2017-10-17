@@ -1,5 +1,5 @@
     .tablecontainer {
-        /* width: 70%; */
+        width: 70%;
         /* background-color: greenyellow; */
     }
     
@@ -64,7 +64,7 @@
 
     
     .tableDiv {
-        height: 22em;
+        height: 20em;
         overflow-y: scroll;
         overflow-x: auto;
     }
@@ -120,19 +120,32 @@
 
     .graphcontainer{
         height:300px;
-        background-color: #E7DEDE;
+        background-color: #FCFCFC;
+        padding-top: 100px;
     }
 
     .draggableDiv{
         height:30px;
         width:120px;
-        background-color:#C7B049;
-        border: 1px outset #98A8B8;
+        background-color:#768CA5;
+        border: 1px solid #98A8B8;
         border-radius: 10px;
         cursor: pointer;
         text-align: center;
+        /* z-index: 1; */
     }
 
     .draggableDiv > div {
         vertical-align: middle;
+        /* z-index: -1; */
+        pointer-events: none;
     }
+
+    .graphcontainer>div {
+        font: 10px sans-serif;
+        background-color: steelblue;
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+      }

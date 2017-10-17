@@ -23,12 +23,12 @@ class Graph extends Component {
     }
 
     moveAt(target, pageX, pageY) {
-        if(target.nodeType==3)
-            return;
+        // if(target.nodeType==3)
+        //     return;
         target.style.left = pageX - target.offsetWidth / 2 + 'px';
         target.style.top = pageY - target.offsetHeight / 2 + 'px';
 
-        target.childNodes.forEach((item,i)=>{this.moveAt(item,pageX,pageY)});
+        // target.childNodes.forEach((item,i)=>{this.moveAt(item,pageX,pageY)});
     }
 
     mouseUp(ev) {
