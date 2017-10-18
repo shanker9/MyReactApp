@@ -7,11 +7,12 @@
         align-items : center;
         padding: 2px;
         margin-bottom: 10px;
+        /* border: 0.5px solid grey; */
     }
 
     .dragtobar{
-        background-color: rgb(216, 207, 207);
-        border: 1.5px dotted black;
+        background-color: rgb(255, 255, 255);
+        border: 0.5px dotted black;
         height: 27px;
         text-align: center;
         vertical-align: middle;
@@ -115,37 +116,40 @@
         font-size: 14px;
     }
 
+    .gridAndChartContainer {
+        display: -webkit-flex;
+        display: flex;
+        border: 1px solid black;
+    }
+
+    .chartContainer{
+        min-width: 30%;
+        background-color: #FAFFFA;
+        border: 1px solid #51748B;
+    }
 
     /* Graph */
 
-    .graphcontainer{
-        height:300px;
-        background-color: #FCFCFC;
-        padding-top: 100px;
+    .graphAndObjectBrowserContainer{
+        display: -webkit-flex;
+        display: flex;
+        /* -webkit-flex-direction: row;
+        flex-direction: row; */
+        height: 20em;
+        /* width: 100%; */
     }
 
-    .draggableDiv{
-        height:30px;
-        width:120px;
-        background-color:#768CA5;
-        border: 1px solid #98A8B8;
-        border-radius: 10px;
-        cursor: pointer;
-        text-align: center;
-        /* z-index: 1; */
+
+    .graphContainer{
+        width: 70%;
+        background-color: #777570;
+        border: 1px solid black;
     }
 
-    .draggableDiv > div {
-        vertical-align: middle;
-        /* z-index: -1; */
-        pointer-events: none;
+    .objectBrowserContainer{
+        min-width: 30%;
+        background-color: #FAFFFA;
+        border: 1px solid #51748B;
+        overflow-y: scroll;
     }
 
-    .graphcontainer>div {
-        font: 10px sans-serif;
-        background-color: steelblue;
-        text-align: right;
-        padding: 3px;
-        margin: 1px;
-        color: white;
-      }

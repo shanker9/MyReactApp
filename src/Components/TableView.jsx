@@ -255,7 +255,7 @@ class TableView extends React.Component {
 
     render() {
         return (
-            <div className={styles.tablecontainer}>
+            <div>
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscribedTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />

@@ -27,7 +27,7 @@ class BlotterInfo extends React.Component {
     render() {
         return (
             <div className={styles.blotterinfocontainer}>
-                <h1 className={styles.header}>Random Data from AMPS</h1>
+                {/* <h1 className={styles.header}>Random Data from AMPS</h1> */}
                 <label className={styles.label}>  SUBSCRIPTION TOPIC : {this.props.subscribedTopic}</label>
                 <button className={styles.button} onClick={this.props.clearGrouping}>CLEAR GROUPING</button>
                 <label style={{ float: 'right' }}>{!this.state.isGroupedView ? 'Showing ' + this.state.lowerLimit + '-' + this.state.upperLimit + ' of ' + this.state.dataMapsize : ''}</label>
