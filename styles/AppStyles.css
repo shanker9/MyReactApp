@@ -58,7 +58,7 @@
         /* text-align: center; */
         vertical-align: middle;
         padding: 1px;
-        min-width: 120px;
+        min-width: 200px;
         box-sizing: border-box;
         color: #E7E2E2;        
     }
@@ -86,7 +86,7 @@
         font-size: 80%;
         font-weight: 300;
         padding: 2px;
-        min-width: 120px;
+        min-width: 200px;
         box-sizing: border-box;
         -webkit-transition: background-color 2s;
         -moz-transition: background-color 2s;

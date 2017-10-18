@@ -19,72 +19,96 @@ class TableView extends React.Component {
         this.controller = undefined;
         this.columns = [
             {
-                columnkey: "customer",
-                columnvalue: "Counter Party"
+                columnkey: "lastUpdate",
+                columnvalue: "lastUpdate"
             },
             {
-                columnkey: "receiveIndex",
-                columnvalue: "Receive Index"
+                columnkey: "receivePrice",
+                columnvalue: "receivePrice"
             },
             {
-                columnkey: "swapId",
-                columnvalue: "Swap Id"
+                columnkey: "id",
+                columnvalue: "id"
             },
             {
-                columnkey: "interest",
-                columnvalue: "Interest"
+                columnkey: "price",
+                columnvalue: "price"
             },
             {
-                columnkey: "swap_rate",
-                columnvalue: "Swap Rate"
+                columnkey: "payPrice",
+                columnvalue: "payPrice"
             },
             {
-                columnkey: "yearsIn",
-                columnvalue: "Years In"
+                columnkey: "name",
+                columnvalue: "name"
+            },
+            {
+                columnkey: "volatility",
+                columnvalue: "volatility"
+            },
+            {
+                columnkey: "payCurrency",
+                columnvalue: "payCurrency"
+            },
+            {
+                columnkey: "payDiscountCurve",
+                columnvalue: "payDiscountCurve"
             },
             {
                 columnkey: "payFixedRate",
-                columnvalue: "Pay FixedRate"
+                columnvalue: "payFixedRate"
             },
             {
-                columnkey: "payCurrency",
-                columnvalue: "Pay Currency"
+                columnkey: "maturityDate",
+                columnvalue: "maturityDate"
             },
             {
-                columnkey: "yearsIn",
-                columnvalue: "Years Left"
+                columnkey: "payNotional",
+                columnvalue: "payNotional"
             },
             {
-                columnkey: "interest",
-                columnvalue: "New Interest"
+                columnkey: "receiveDiscountCurve",
+                columnvalue: "receiveDiscountCurve"
             },
             {
-                columnkey: "payCurrency",
-                columnvalue: "Secondary Currency"
+                columnkey: "receiveNotional",
+                columnvalue: "receiveNotional"
             },
             {
-                columnkey: "customer",
-                columnvalue: "Customer"
+                columnkey: "receiveIndex",
+                columnvalue: "receiveIndex"
             },
             {
-                columnkey: "swapId",
-                columnvalue: "Swap Id2"
+                columnkey: "receiveCurrency",
+                columnvalue: "receiveCurrency"
             },
             {
-                columnkey: "interest",
-                columnvalue: "Interest"
+                columnkey: "receiveSpread",
+                columnvalue: "receiveSpread"
             },
             {
-                columnkey: "yearsIn",
-                columnvalue: "Years Pay"
+                columnkey: "counterparty",
+                columnvalue: "receiveCurrency"
             },
             {
-                columnkey: "yearsIn",
-                columnvalue: "Years In"
+                columnkey: "amerEuro",
+                columnvalue: "amerEuro"
             },
             {
-                columnkey: "payCurrency",
-                columnvalue: "Pay Currency"
+                columnkey: "putCall",
+                columnvalue: "putCall"
+            },
+            {
+                columnkey: "contractSize",
+                columnvalue: "contractSize"
+            },
+            {
+                columnkey: "strike",
+                columnvalue: "strike"
+            },
+            {
+                columnkey: "underlier",
+                columnvalue: "underlier"
             }
         ];
 
@@ -132,8 +156,8 @@ class TableView extends React.Component {
         let commandObject = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
-            "filter": "/swapId>0 AND /swapId<500",
-            "orderBy": "/swapId"
+            // "filter": "/swapId>0 AND /swapId<500",
+            "orderBy": "/name"
         }
 
         this.controller.ampsSubscribe(commandObject);
@@ -241,7 +265,7 @@ class TableView extends React.Component {
         let columnIndexInGroupedList = this.controller.getGroupingColumnsArray().indexOf(columnData.cellId);
 
         if (columnIndexInGroupedList == -1) {
-            if(this.controller.getGroupingColumnsArray().length==0){
+            if (this.controller.getGroupingColumnsArray().length == 0) {
                 this.refs.dragToBar.removeChild(this.refs.dragToBar.firstChild);
             }
             let clonedColumnElement = document.getElementById(columnData.cellId).cloneNode(true);
