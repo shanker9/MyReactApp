@@ -24,9 +24,16 @@ export default class TableController {
     }
 
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
-    ampsSubscribe(commandObject, columnName) {
+    ampsSubscribe1(commandObject, columnName) {
         let subController = new SubscriptionController(this);
-        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
+        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler1.bind(subController),
+            subController.defaultSubscriptionDetailsHandler.bind(subController),
+            commandObject, columnName);
+    }
+
+    ampsSubscribe2(commandObject, columnName) {
+        let subController = new SubscriptionController(this);
+        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler2.bind(subController),
             subController.defaultSubscriptionDetailsHandler.bind(subController),
             commandObject, columnName);
     }

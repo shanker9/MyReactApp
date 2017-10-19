@@ -153,14 +153,21 @@ class TableView extends React.Component {
 
     makeDefaultSubscription() {
         this.controller = new TableController(this);
-        let commandObject = {
+        let commandObject1 = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
-            // "filter": "/swapId>0 AND /swapId<500",
             "orderBy": "/name"
         }
 
-        this.controller.ampsSubscribe(commandObject);
+        this.controller.ampsSubscribe1(commandObject1);
+
+        let commandObject2 = {
+            "command": "sow_and_subscribe",
+            "topic": "PricingResults",
+            "orderBy": "/name"
+        }
+        this.controller.ampsSubscribe2(commandObject2);
+        
     }
 
     loadDataGridWithDefaultView() {
