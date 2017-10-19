@@ -1,6 +1,5 @@
 import AmpsController from '../Amps/AmpsData.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
-import BinDataFetchSubscriber from './BinDataFetchSubscriber.js';
 
 export default class GroupSubscriptionController {
     constructor(controllerRef, groupingColumnsArray, commandObject) {
