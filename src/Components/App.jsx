@@ -4,7 +4,7 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
-import MyComponent from './D3React.jsx';
+import D3React from './D3React.jsx';
 import AmpsController from '../Amps/AmpsData.js';
 
 
@@ -51,7 +51,6 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <button style={{width:'120px',height:'30px'}} onClick={this.groupSubscription.bind(this)}>GroupSub</button>
                 <div className={styles.gridAndChartContainer}>
                     <div className={styles.tablecontainer}>
                         <TableView ref='tableViewRef'
@@ -64,7 +63,7 @@ class App extends React.Component {
                     </div>
                 </div>
                 <div className={styles.graphAndObjectBrowserContainer}>
-                    <MyComponent />
+                    <D3React />
 
                     <div className={styles.objectBrowserContainer}>
                         Space for object browser

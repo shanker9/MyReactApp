@@ -18,6 +18,14 @@ const myTreeData = [
                         name: 'Level 3: AB',
                     },
                 ],
+
+                sourceData: {
+                    attributes: {
+                        keyA: 'val A',
+                        keyB: 'val B',
+                        keyC: 'val C',
+                    }
+                }
             },
             {
                 name: 'Level 2: B',
@@ -84,7 +92,7 @@ class MyComponent extends React.Component {
         this.state = {
             backgroundColor: '#51748B',
             toggle: false,
-            translateGraphOrigin : { x: 320, y: 100 }
+            translateGraphOrigin: { x: 320, y: 100 }
         }
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this);
@@ -96,10 +104,10 @@ class MyComponent extends React.Component {
         // const svg = d3.select('.rd3t-svg');
         // const g = d3.select('.rd3t-g');
         const treeWrapper = document.getElementById("treeWrapper");
-        const x = treeWrapper.clientWidth *0.4,
-            y = treeWrapper.clientHeight *0.2;
+        const x = treeWrapper.clientWidth * 0.4,
+            y = treeWrapper.clientHeight * 0.2;
 
-        this.setState({translateGraphOrigin:{x,y}})
+        this.setState({ translateGraphOrigin: { x, y } })
         // let newx = this.state.translateGraphOrigin.x+100,
         //     newy = this.state.translateGraphOrigin.y,
         //     newTranslateOrigin = {x:newx,y:newy};
@@ -128,8 +136,8 @@ class MyComponent extends React.Component {
                     pathFunc="straight"
                     onClick={this.nodeClickHandler}
                     depthFactor={60}
-                    textLayout= {textlayout}
-                    translate={this.state.translateGraphOrigin}/>
+                    textLayout={textlayout}
+                    translate={this.state.translateGraphOrigin} />
             </div>
         );
     }

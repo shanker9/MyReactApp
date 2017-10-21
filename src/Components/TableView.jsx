@@ -43,6 +43,10 @@ class TableView extends React.Component {
                 columnvalue: "name"
             },
             {
+                columnkey: "counterparty",
+                columnvalue: "counterparty"
+            },
+            {
                 columnkey: "volatility",
                 columnvalue: "volatility"
             },
@@ -85,10 +89,6 @@ class TableView extends React.Component {
             {
                 columnkey: "receiveSpread",
                 columnvalue: "receiveSpread"
-            },
-            {
-                columnkey: "counterparty",
-                columnvalue: "counterparty"
             },
             {
                 columnkey: "amerEuro",

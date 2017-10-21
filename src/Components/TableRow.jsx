@@ -54,15 +54,17 @@ class TableRow extends React.Component {
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.lastUpdate == undefined ? '' : dataValues.lastUpdate.dtVal.str}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.receivePrice==undefined?'':dataValues.receivePrice.dblVal}></TableCell>
+                    cellData={dataValues.receivePrice == undefined ? '' : dataValues.receivePrice.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.id == undefined ? '' : dataValues.id.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.price==undefined?'':dataValues.price.dblVal}></TableCell>
+                    cellData={dataValues.price == undefined ? '' : dataValues.price.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.payPrice==undefined?'':dataValues.payPrice.dblVal}></TableCell>
+                    cellData={dataValues.payPrice == undefined ? '' : dataValues.payPrice.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataKey == undefined ? '' : dataKey.name}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
+                    cellData={dataValues.counterparty == undefined ? '' : dataValues.counterparty.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.volatility == undefined ? '' : dataValues.volatility.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
@@ -85,8 +87,6 @@ class TableRow extends React.Component {
                     cellData={dataValues.receiveCurrency == undefined ? '' : dataValues.receiveCurrency.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.receiveSpread == undefined ? '' : dataValues.receiveSpread.dblVal}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.counterparty == undefined ? '' : dataValues.counterparty.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.amerEuro == undefined ? '' : dataValues.amerEuro.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
