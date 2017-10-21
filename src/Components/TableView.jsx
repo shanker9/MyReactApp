@@ -88,7 +88,7 @@ class TableView extends React.Component {
             },
             {
                 columnkey: "counterparty",
-                columnvalue: "receiveCurrency"
+                columnvalue: "counterparty"
             },
             {
                 columnkey: "amerEuro",
@@ -112,7 +112,7 @@ class TableView extends React.Component {
             }
         ];
 
-        this.subscriptionTopic = this.props.subscribedTopic;
+        this.subscriptionTopic = this.props.subscriptionTopic;
 
         /** Event Handlers */
         this.updateDataGrid = this.updateDataGridWithDefaultView.bind(this);
@@ -152,7 +152,7 @@ class TableView extends React.Component {
     /** NON-GROUPING METHODS**/
 
     makeDefaultSubscription() {
-        this.controller = new TableController(this);
+        this.controller = new TableController(this,this.subscriptionTopic);
         let commandObject1 = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
@@ -160,14 +160,7 @@ class TableView extends React.Component {
         }
 
         this.controller.ampsSubscribe1(commandObject1);
-
-        let commandObject2 = {
-            "command": "sow_and_subscribe",
-            "topic": "PricingResults",
-            "orderBy": "/name"
-        }
-        this.controller.ampsSubscribe2(commandObject2);
-        
+       
     }
 
     loadDataGridWithDefaultView() {
@@ -318,6 +311,7 @@ class TableView extends React.Component {
                             viewableData={this.state.gridDataSource}
                             topDivHeight={this.state.topDivHeight}
                             bottomDivHeight={this.state.bottomDivHeight}
+                            columnKeyValues={this.columns}
                             selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
                             dataUpdateStatus={this.props.rowDataUpdateStatus}
                             updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus} />

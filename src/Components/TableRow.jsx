@@ -52,7 +52,7 @@ class TableRow extends React.Component {
                 onClick={this.handleRowClick}
                 style={{ backgroundColor: this.props.isGroupedRow ? '#144C5A' : this.dynamicBackgroundColor }}>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.lastUpdate == undefined ? '' : dataValues.lastUpdate.dtVal.formattedDate}></TableCell>
+                    cellData={dataValues.lastUpdate == undefined ? '' : dataValues.lastUpdate.dtVal.str}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.receivePrice==undefined?'':dataValues.receivePrice.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
@@ -72,7 +72,7 @@ class TableRow extends React.Component {
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.payFixedRate == undefined ? '' : dataValues.payFixedRate.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.maturityDate == undefined ? '' : dataValues.maturityDate.dtVal.formattedDate}></TableCell>
+                    cellData={dataValues.maturityDate == undefined ? '' : dataValues.maturityDate.dtVal.str}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.payNotional == undefined ? '' : dataValues.payNotional.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}

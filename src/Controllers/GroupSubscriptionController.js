@@ -37,14 +37,35 @@ export default class GroupSubscriptionController {
         if (this.sowGroupDataEnd) {
             let val = this.appDataModel.getDataFromGroupedData(message.k);
             let groupHeaderRow = JSON.parse(JSON.stringify(val.groupData));
-            groupHeaderRow.swap_rate = message.data.swap_rate;
-            groupHeaderRow.payFixedRate = message.data.payFixedRate;
+
+            // Only updating 
+
+            this.mergeJsonObjects(groupHeaderRow,message.data);
             val.groupData = groupHeaderRow;
             this.parentControllerRef.updateUIRowWithData(val.groupData, 'ref' + message.k);
         } else {
             this.aggregatedRowsData.set(message.k, message.data);
-            this.groupingColumnKeyMap.set(this.groupingColumnArray.map((val,k)=>message.data[val]).join('-'), message.k);
+            this.groupingColumnKeyMap.set(this.groupingColumnArray.map((val,k)=>this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],message.data)).join('-'), message.k);
         }
+    }
+
+    getJsonValAtPath(path,jsonObject){
+        let pathComponents = path.split('/').slice(1), tempJson = jsonObject, temp;
+        for(let i=0; i<pathComponents.length;i++){
+            temp = tempJson[pathComponents[i]];
+            if(temp==undefined){
+                return null;
+            }
+            tempJson = temp;
+        }
+        return tempJson;
+    }
+
+    mergeJsonObjects(json1, json2) {
+        for (var key in json2) {
+            json1[key] = json2[key];
+        }
+        return json1;
     }
 
     groupingSubscriptionDetailsHandler(subscriptionId, groupByColumn) {
@@ -68,7 +89,7 @@ export default class GroupSubscriptionController {
     getGroupBuckets(dataMap, groupingColumnArray) {
         let resultMap = new Map();
         dataMap.forEach((item, key) => {
-            let groupingKey = groupingColumnArray.map((val,k)=>item.data[val]).join('-');
+            let groupingKey = groupingColumnArray.map((val,k)=>this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],item.data)).join('-');
             let resultMapIterationData = resultMap.get(this.groupingColumnKeyMap.get(groupingKey));
             if (resultMapIterationData == undefined) {
                 let bucketData = new Map();

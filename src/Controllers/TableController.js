@@ -4,21 +4,22 @@ import SubscriptionController from './SubscriptionController.js';
 import GroupSubscriptionController from './GroupSubscriptionController.js';
 
 export default class TableController {
-    constructor(componentRef) {
+    constructor(componentRef,subscriptionTopic) {
         this.uiRef = componentRef;
+        this.subscriptionTopic = subscriptionTopic;
         this.ampsController = new AmpsController();
-        this.isGroupedView = undefined;
+        // this.isGroupedView = undefined;
         this.appDataModel = AppDataModelSingleton.getInstance();
-        this.groupingColumnKeyMap = undefined;
-        this.aggregatedRowsData = undefined;
-        this.subscriptionData = new Map();
+        // this.groupingColumnKeyMap = undefined;
+        // this.aggregatedRowsData = undefined;
+        // this.subscriptionData = new Map();
         this.groupingColumnsByLevel = [];
-        this.multiLevelData = new Map();
-        this.valueKeyMapSecondLevel = new Map();
-        this.multiGroupingDataMap = new Map();
-        this.groupedData = undefined;
+        // this.multiLevelData = new Map();
+        // this.valueKeyMapSecondLevel = new Map();
+        // this.multiGroupingDataMap = new Map();
+        // this.groupedData = undefined;
 
-        this.subscriptionControllersMap = new Map();
+        // this.subscriptionControllersMap = new Map();
         this.columnSubscriptionMapper = new Map();
         this.setGroupingColumnKeyMapper = undefined;
     }
@@ -27,13 +28,6 @@ export default class TableController {
     ampsSubscribe1(commandObject, columnName) {
         let subController = new SubscriptionController(this);
         this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler1.bind(subController),
-            subController.defaultSubscriptionDetailsHandler.bind(subController),
-            commandObject, columnName);
-    }
-
-    ampsSubscribe2(commandObject, columnName) {
-        let subController = new SubscriptionController(this);
-        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler2.bind(subController),
             subController.defaultSubscriptionDetailsHandler.bind(subController),
             commandObject, columnName);
     }
@@ -59,12 +53,25 @@ export default class TableController {
 
     updateRowDataInGroupedData(message) {
         let columnKeyMapper = this.appDataModel.getGroupColumnKeyMapper();
-        let columnValue = this.groupingColumnsByLevel.map((val, k) => message.data[val]).join('-');
+        let columnValue = this.groupingColumnsByLevel.map((val, k) => this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],message.data)).join('-');
         let groupKey = columnKeyMapper.get(columnValue);
         let groupData = this.appDataModel.getDataFromGroupedData(groupKey);
         let existingData = groupData.bucketData.get(message.k);
         existingData.data = message.data;
     }
+
+    getJsonValAtPath(path,jsonObject){
+        let pathComponents = path.split('/').slice(1), tempJson = jsonObject, temp;
+        for(let i=0; i<pathComponents.length;i++){
+            temp = tempJson[pathComponents[i]];
+            if(temp==undefined){
+                return null;
+            }
+            tempJson = temp;
+        }
+        return tempJson;
+    }
+
 
     getDatamapSize(){
         return this.appDataModel.getDataMap().size;
@@ -104,17 +111,27 @@ export default class TableController {
 
     formCommandObjectForGroupSubscription(columnName) {
         let command = 'sow_and_subscribe';
-        let topic = 'Price';
-        let filter = '/swapId >=0';
-        let orderBy = '/' + this.groupingColumnsByLevel[0];
+        let topic = this.subscriptionTopic;
+        // let filter = '/swapId >=0';
+        // let orderBy = '/' + this.groupingColumnsByLevel[0];
 
-        let groupingObject = this.groupingColumnsByLevel.map((item, i) => `/${item}`).join(',');
+        let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
 
-        let options = 'projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],'
-            + `grouping=[${groupingObject}]`;
+        // let projectionString = this.uiRef.columns.map((item)=>{return this.getJSONPathForColumnKey(item.columnkey)}).join(',');
 
-        let commandObject = { command, topic, filter, orderBy, options };
+        // let options = 'projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],'
+        //     + `grouping=[${groupingObject}]`;
+
+        let projectionString = "/values/values/lastUpdate/dtVal/str,SUM(/values/values/receivePrice/dblVal) AS /values/values/SUMReceiveprice/dblVal,/values/values/id/strVal,/values/values/price/dblVal,/values/values/payPrice/dblVal,/key/name,/values/values/volatility/dblVal,/values/values/payCurrency/strVal,/values/values/payDiscountCurve/strVal,/values/values/payFixedRate/dblVal,/values/values/maturityDate/dtVal/str,/values/values/payNotional/dblVal,/values/values/receiveDiscountCurve/strVal,/values/values/receiveNotional/dblVal,/values/values/receiveIndex/strVal,/values/values/receiveCurrency/strVal,/values/values/receiveSpread/dblVal,/values/values/counterparty/strVal,/values/values/amerEuro/strVal,/values/values/putCall/strVal,/values/values/contractSize/strVal,/values/values/strike/dblVal,/values/values/underlier/strVal";
+
+        let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
+
+        let commandObject = { command, topic, options };
         return commandObject;
+    }
+
+    getJSONPathForColumnKey(key){
+        return this.appDataModel.dataKeysJsonpathMapper[key];
     }
 
     addColumnSubscriptionMapper(subscriptionId, columnName) {

@@ -43,7 +43,8 @@ class GridView extends React.Component {
                                         dataUpdateHandler={this.props.selectionDataUpdateHandler}
                                         selectState={false}
                                         bucketData={item.data.bucketData}
-                                        updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus} />)
+                                        updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
+                                        columnKeyValues={this.props.columnKeyValues} />)
                                 } else {
                                     return (
                                         <TableRow
@@ -52,7 +53,8 @@ class GridView extends React.Component {
                                             data={item.data.data}
                                             indexVal={item.data.data.swapId}
                                             dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                            selectState={item.data.isSelected} />)
+                                            selectState={item.data.isSelected}
+                                            columnKeyValues={this.props.columnKeyValues} />)
                                 }
                             })}
                         </div>
@@ -78,7 +80,8 @@ class GridView extends React.Component {
                                     data={item.data}
                                     indexVal={item.data.swapId}
                                     dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                    selectState={item.isSelected} />
+                                    selectState={item.isSelected}
+                                    columnKeyValues={this.props.columnKeyValues} />
                             )}
                         </div>
                         <div style={{ height: this.props.bottomDivHeight }}></div>

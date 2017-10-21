@@ -1,7 +1,8 @@
 import React from 'react';
 import TableCell from './TableCell.jsx';
-import TableRow from './TableRow.jsx'
-import styles from '../../styles/AppStyles.css'
+import TableRow from './TableRow.jsx';
+import styles from '../../styles/AppStyles.css';
+import RowController from '../Controllers/RowController.js';
 
 class TableAggregatedRow extends React.Component {
 
@@ -11,8 +12,12 @@ class TableAggregatedRow extends React.Component {
             isSelected: false,
             shouldAnimate: false,
             showBucketData: false,
-            data : props.data
+            data: props.data,
+            columnOrder: this.props.columnKeyValues
         }
+
+        this.controller = new RowController();
+
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
         this.displayBucketData = this.displayBucketData.bind(this);
@@ -47,35 +52,44 @@ class TableAggregatedRow extends React.Component {
         this.props.updateAggregatedRowExpandStatus(this.props.aggregatedRowKey);
     }
 
-    triggerUpdate(newdata){
-        this.setState({data: newdata})
+    triggerUpdate(newdata) {
+        this.setState({ data: newdata })
     }
 
     render() {
-
         return (
-                <tr ref={"tableRow"}
-                    className={styles.tableRow}
-                    onClick={this.handleRowClick}
-                    style={{ backgroundColor: '#b8e3ef' }}>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={'> ' + this.state.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.receiveIndex}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swapId}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swap_rate}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payFixedRate}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn * 2}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest * 2}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swapId}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn * 3}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn}></TableCell>
-                    <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
-                </tr>
+            <tr ref={"tableRow"}
+                className={styles.tableRow}
+                onClick={this.handleRowClick}
+                style={{ backgroundColor: '#b8e3ef' }}>
+
+                {
+                    this.state.columnOrder.map((item, i) => {
+                        return (
+                            <TableCell key={i} parentBackgroundColor={this.dynamicBackgroundColor}
+                                cellData={this.controller.getCellValueUsingColumnKeyFromData(item.columnkey, this.state.data)}></TableCell>
+                        );
+                    })
+                }
+
+                {/* <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={'> ' + this.state.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.receiveIndex}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swapId}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swap_rate}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payFixedRate}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn * 2}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest * 2}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.customer} childStyle={{ textAlign: 'left', paddingLeft: '10px' }}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.swapId}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.interest}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn * 3}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.yearsIn}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor} cellData={this.state.data.payCurrency}></TableCell> */}
+            </tr>
         )
     }
 

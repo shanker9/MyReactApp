@@ -15,18 +15,18 @@ export default class SubscriptionController {
             return;
         } else if (message.c == 'group_end') {
             console.log(message.c);
-            // this.parentControllerRef.updateUIWithDefaultViewData();
+            this.parentControllerRef.updateUIWithDefaultViewData();
             return;
         }
 
         let newData = message.data;
         let val = newData.values.values;
-        // let rowKey = newData.values.values.id.strVal;
-        let rowKey = newData.key.name;
+        let rowKey = message.k;
+        // let rowKey = newData.key.name;
         let item = this.appDataModel.getDataFromDefaultData(rowKey);
 
-        newData.values.values.lastUpdate.dtVal.formattedDate = this.dateFormatter(newData.values.values.lastUpdate.dtVal.value);
-        newData.values.values.maturityDate.dtVal.formattedDate = this.dateFormatter(newData.values.values.maturityDate.dtVal.value);
+        // newData.values.values.lastUpdate.dtVal.formattedDate = this.dateFormatter(newData.values.values.lastUpdate.dtVal.value);
+        // newData.values.values.maturityDate.dtVal.formattedDate = this.dateFormatter(newData.values.values.maturityDate.dtVal.value);
 
         if (item == undefined) {
             this.appDataModel.addorUpdateRowData(rowKey, { "rowID": rowKey, "data": newData, "isSelected": false, "isUpdated": false });
