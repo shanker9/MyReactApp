@@ -4,7 +4,9 @@ import * as d3 from 'd3';
 import styles from '../../styles/AppStyles.css'
 
 
-const myTreeData = [
+const myTreeData = [{
+    name : "Root",
+    children: [
     {
         name: 'Top Level',
         children: [
@@ -32,6 +34,14 @@ const myTreeData = [
                 children: [
                     {
                         name: 'Level 3: BA',
+                        children: [
+                            {
+                                name: 'Level 4: BAA',
+                            },
+                            {
+                                name: 'Level 4: BAB',
+                            },
+                        ]
                     },
                     {
                         name: 'Level 3: BB',
@@ -42,13 +52,66 @@ const myTreeData = [
                             {
                                 name: 'Level 4: BBB',
                             },
+
+                        ],
+                    },
+                ],
+            },
+        ]
+    },
+    {
+        name: 'second Level',
+        children: [
+            {
+                name: 'Level 2: A',
+                children: [
+                    {
+                        name: 'Level 3: AA',
+                    },
+                    {
+                        name: 'Level 3: AB',
+                    },
+                ],
+
+                sourceData: {
+                    attributes: {
+                        keyA: 'val A',
+                        keyB: 'val B',
+                        keyC: 'val C',
+                    }
+                }
+            },
+            {
+                name: 'Level 2: B',
+                children: [
+                    {
+                        name: 'Level 3: BA',
+                        children: [
+                            {
+                                name: 'Level 4: BAA',
+                            },
+                            {
+                                name: 'Level 4: BAB',
+                            },
+                        ]
+                    },
+                    {
+                        name: 'Level 3: BB',
+                        children: [
+                            {
+                                name: 'Level 4: BBA',
+                            },
+                            {
+                                name: 'Level 4: BBB',
+                            },
+
                         ],
                     },
                 ],
             },
         ]
     }
-];
+]}];
 
 const svgSquare = {
     shape: 'rect',
@@ -85,7 +148,7 @@ const styl = {
     },
 }
 
-class MyComponent extends React.Component {
+class TreeGraph extends React.Component {
 
     constructor() {
         super();
@@ -143,4 +206,4 @@ class MyComponent extends React.Component {
     }
 }
 
-export default MyComponent
+export default TreeGraph

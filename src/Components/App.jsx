@@ -4,9 +4,10 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
-import D3React from './D3React.jsx';
+import TreeGraph from './TreeGraph.jsx';
 import AmpsController from '../Amps/AmpsData.js';
-
+import DagreD3 from './dagreD3.jsx';
+import ObjectBrowser from './ObjectBrowser.jsx';
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
@@ -15,37 +16,16 @@ class App extends React.Component {
         super();
         this.state = {
             rowHeight: 20,
-            subscriptionTopic: 'ProductAll2'
+            subscriptionTopic: 'ProductAll2',
+            vertexData : undefined
         }
     }
 
     componentDidMount() {
     }
 
-    groupSubscription(){
-        let command = 'sow_and_subscribe';
-        let topic = 'ProductAll2';
-        // let filter = '/swapId >=0';
-
-        let groupingObject = '/values/values/counterparty/strVal';
-
-        let options = `projection=[/values/values/counterparty/strVal,/key/name],grouping=[${groupingObject}]`;
-
-        let commandObject = { command, topic, options };
-
-        let ampsController = new AmpsController();
-        var groupedData = new Map();
-        ampsController.connectAndSubscribe((message)=>{
-            if (message.c == 'group_begin') {
-                console.log('groupbegin');
-            } else if (message.c == 'group_end') {
-                console.log('groupend');
-            }
-                let data = message.data;
-            groupedData.set(message.k,data);
-        },
-        (subId,column)=>console.log('GROUPING SUBID:',subId),
-        commandObject, 'counterparty');
+    getObjectBrowserComponentReference(){
+        return this.refs.objectBrowser;
     }
 
     render() {
@@ -54,7 +34,7 @@ class App extends React.Component {
                 <div className={styles.gridAndChartContainer}>
                     <div className={styles.tablecontainer}>
                         <TableView ref='tableViewRef'
-                        subscriptionTopic={this.state.subscriptionTopic}
+                            subscriptionTopic={this.state.subscriptionTopic}
                             rowHeight={this.state.rowHeight} />
                     </div>
 
@@ -63,10 +43,11 @@ class App extends React.Component {
                     </div>
                 </div>
                 <div className={styles.graphAndObjectBrowserContainer}>
-                    <D3React />
-
+                    <div id="dagreContainer" className={styles.graphContainer}>
+                        <DagreD3 parent={this}/>
+                    </div>
                     <div className={styles.objectBrowserContainer}>
-                        Space for object browser
+                        <ObjectBrowser ref="objectBrowser"/>
                     </div>
                 </div>
             </div>

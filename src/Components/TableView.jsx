@@ -19,6 +19,14 @@ class TableView extends React.Component {
         this.controller = undefined;
         this.columns = [
             {
+                columnkey: "counterparty",
+                columnvalue: "counterparty"
+            },
+            {
+                columnkey: "receiveIndex",
+                columnvalue: "receiveIndex"
+            },
+            {
                 columnkey: "lastUpdate",
                 columnvalue: "lastUpdate"
             },
@@ -41,10 +49,6 @@ class TableView extends React.Component {
             {
                 columnkey: "name",
                 columnvalue: "name"
-            },
-            {
-                columnkey: "counterparty",
-                columnvalue: "counterparty"
             },
             {
                 columnkey: "volatility",
@@ -77,10 +81,6 @@ class TableView extends React.Component {
             {
                 columnkey: "receiveNotional",
                 columnvalue: "receiveNotional"
-            },
-            {
-                columnkey: "receiveIndex",
-                columnvalue: "receiveIndex"
             },
             {
                 columnkey: "receiveCurrency",
@@ -236,18 +236,18 @@ class TableView extends React.Component {
         this.controller.updateGroupExpansionStatus(groupKey);
     }
 
-    subscribeForMultiLevelGrouping() {
+    // subscribeForMultiLevelGrouping() {
 
-        let commandObject = {
-            "command": "sow_and_subscribe",
-            "topic": "Price",
-            "filter": "/swapId >=0",
-            "orderBy": "/customer",
-            "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
-        }
-        let columnName = 'receiveIndex';
-        this.controller.ampsGroupSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
-    }
+    //     let commandObject = {
+    //         "command": "sow_and_subscribe",
+    //         "topic": "Price",
+    //         "filter": "/swapId >=0",
+    //         "orderBy": "/customer",
+    //         "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
+    //     }
+    //     let columnName = 'receiveIndex';
+    //     this.controller.ampsGroupSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
+    // }
 
     clearGrouping() {
         this.controller.clearGroupSubscriptions();
@@ -281,7 +281,7 @@ class TableView extends React.Component {
         return (
             <div>
                 <BlotterInfo ref="blotterInfo"
-                    subscribedTopic={this.props.subscribedTopic}
+                    subscribedTopic={this.props.subscriptionTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />
                 <div ref="dragToBar"
                     className={styles.dragtobar}

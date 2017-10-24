@@ -142,14 +142,33 @@
 
     .graphContainer{
         width: 70%;
-        background-color: #777570;
+        background-color: #e6e6e6;        
         border: 1px solid black;
     }
 
     .objectBrowserContainer{
         min-width: 30%;
-        background-color: #FAFFFA;
+        background-color: #002b36;
         border: 1px solid #51748B;
         overflow-y: scroll;
     }
 
+    svg > tspan {
+        color: #272822;
+        color: #383830;
+        color: #49483e;
+        color: #75715e;
+        color: #a59f85;
+        color: #f8f8f2;
+        color: #f5f4f1;
+        color: #f9f8f5;
+        color: #f92672;
+        color: #fd971f;
+        color: #f4bf75;
+        color: #000203;
+        color: #a1efe4;
+        color: #755b06;
+        color: #ae81ff;
+        color: #cc6633;
+        color: rgb(255, 255, 250);
+    }

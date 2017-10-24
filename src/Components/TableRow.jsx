@@ -52,6 +52,10 @@ class TableRow extends React.Component {
                 onClick={this.handleRowClick}
                 style={{ backgroundColor: this.props.isGroupedRow ? '#144C5A' : this.dynamicBackgroundColor }}>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
+                    cellData={dataValues.counterparty == undefined ? '' : dataValues.counterparty.strVal}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
+                    cellData={dataValues.receiveIndex == undefined ? '' : dataValues.receiveIndex.strVal}></TableCell>
+                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.lastUpdate == undefined ? '' : dataValues.lastUpdate.dtVal.str}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.receivePrice == undefined ? '' : dataValues.receivePrice.dblVal}></TableCell>
@@ -63,8 +67,6 @@ class TableRow extends React.Component {
                     cellData={dataValues.payPrice == undefined ? '' : dataValues.payPrice.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataKey == undefined ? '' : dataKey.name}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.counterparty == undefined ? '' : dataValues.counterparty.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.volatility == undefined ? '' : dataValues.volatility.dblVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
@@ -81,8 +83,6 @@ class TableRow extends React.Component {
                     cellData={dataValues.receiveDiscountCurve == undefined ? '' : dataValues.receiveDiscountCurve.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.receiveNotional == undefined ? '' : dataValues.receiveNotional.dblVal}></TableCell>
-                <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.receiveIndex == undefined ? '' : dataValues.receiveIndex.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.receiveCurrency == undefined ? '' : dataValues.receiveCurrency.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
