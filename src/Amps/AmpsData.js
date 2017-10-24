@@ -4,7 +4,23 @@ import * as Amps from 'amps';
 var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
 var ampsClient = new Amps.Client('AmpsWebClient');
 var i = 0;
-export default class AmpsData {
+
+var AmpsControllerSingleton = (function () {
+    var instance;
+    return {
+        getInstance: function () {
+            if (instance != undefined) {
+                return instance;
+            } else {
+                instance = new AmpsData();
+                return instance;
+            }
+        }
+    }
+})();
+
+
+ class AmpsData {
 
     constructor() {
         this.ampsconnectObject = undefined;
@@ -31,14 +47,14 @@ export default class AmpsData {
 
     connectAndSubscribe(dataUpdateCallback, subscriberInfoCallback, commandObject, groupingColumnKey) {
         var subscriberId;
-        let ampsCommandObject, tryCount=0;
+        let ampsCommandObject, tryCount = 0;
         if (this.ampsconnectObject == undefined) {
             try {
                 this.ampsconnectObject = ampsClient.connect(ampsServerUri);
-            }catch(e){
-                if(tryCount==5){
+            } catch (e) {
+                if (tryCount == 5) {
                     console.log('multiple connnection timeouts');
-                }else{
+                } else {
                     tryCount++;
                     this.ampsconnectObject = ampsClient.connect(ampsServerUri);
                 }
@@ -77,6 +93,13 @@ export default class AmpsData {
                     subscriberInfoCallback(subId, groupingColumnKey);
                 }
             })
+    }
+
+    unsubscribe(subId, successCallback) {
+        ampsClient.unsubscribe(subId)
+            .then(() => {
+                successCallback(subId);
+            });
     }
 
     unsubscribe(subId, successCallback, subscriptionColumnReference) {
@@ -118,3 +141,5 @@ export default class AmpsData {
     }
 
 }
+
+export default AmpsControllerSingleton;

@@ -1,13 +1,14 @@
-import AmpsController from '../Amps/AmpsData.js';
+import AmpsControllerSingleton from '../Amps/AmpsData.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 import SubscriptionController from './SubscriptionController.js';
 import GroupSubscriptionController from './GroupSubscriptionController.js';
+import QueryController from './QueryController.js';
 
 export default class TableController {
     constructor(componentRef, subscriptionTopic) {
         this.uiRef = componentRef;
         this.subscriptionTopic = subscriptionTopic;
-        this.ampsController = new AmpsController();
+        this.ampsController = AmpsControllerSingleton.getInstance();
         // this.isGroupedView = undefined;
         this.appDataModel = AppDataModelSingleton.getInstance();
         // this.groupingColumnKeyMap = undefined;
@@ -20,6 +21,7 @@ export default class TableController {
         // this.groupedData = undefined;
 
         // this.subscriptionControllersMap = new Map();
+        this.queryController = new QueryController();
         this.columnSubscriptionMapper = new Map();
         this.setGroupingColumnKeyMapper = undefined;
     }
@@ -40,8 +42,8 @@ export default class TableController {
         this.uiRef.loadDataGridWithDefaultView();
     }
 
-    updateUIRowWithData(newData,selectState,rowReference) {
-        this.uiRef.rowUpdate(newData,selectState,rowReference);
+    updateUIRowWithData(newData, selectState, rowReference) {
+        this.uiRef.rowUpdate(newData, selectState, rowReference);
     }
 
     getDefaultViewData(startIndex, endIndex, rowHeight) {
@@ -140,6 +142,10 @@ export default class TableController {
         this.columnSubscriptionMapper.set(columnName, subscriptionId);
     }
 
+    updateUIAggRowWithData(newData, rowReference) {
+        this.uiRef.aggRowUpdate(newData, rowReference);
+    }
+
     updateUIWithGroupedViewData() {
         this.uiRef.loadDataGridWithGroupedView();
     }
@@ -212,13 +218,53 @@ export default class TableController {
     /** DATA ROW SELECTION */
 
     updateRowSelectionData(indexValue) {
+
+        // Updating selectionstate in the rowData for later use in lazyloading
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
         if (dataForSelectedRow != undefined) {
-            dataForSelectedRow.isSelected = true;
+            dataForSelectedRow.isSelected = !dataForSelectedRow.isSelected;
         } else {
             console.log('Data pertaining to the selected row does not exist in the appData');
         }
+
+        // updating selectedRows data
+        if (dataForSelectedRow.isSelected) {
+            this.appDataModel.addSelectedRow(indexValue, dataForSelectedRow);
+        } else {
+            this.appDataModel.removeSelectedRow(indexValue);
+        }
+
+        // update the UI for the selected row
         this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, 'ref' + indexValue);
     }
-}
 
+    fetchAndFormatGraphData(rowIndexValue) {
+        let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
+        const id = dataForSelectedRow.data.values.values.id.strVal;
+
+        // let parentNodeDataQueryRequest = new Promise((resolve, reject) => {
+        //     this.queryController.getGraphDataForNodeWithId('Graph', id);
+        // })
+
+        this.queryController.testMethod('Graph',id);
+        // let parentNodeSourcesQueryRequest = new Promise((resolve, reject) => {
+        //     let result = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
+        // })
+        
+        // let nodesDataArray = new Promise((resolve, reject) => {
+        //     let result = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
+        //     resolve(result);
+        // })
+
+        // Promise.all([parentNodeDataQueryRequest])
+        //         .then(values=>{
+        //             values.forEach(item=>console.log(item));
+        //             new Promise((resolve, reject) => {
+        //                 let result = this.queryController.getGraphDataForNodeWithId('Graph', id);
+        //                 resolve(result);
+        //             }).then(nodesData=>{
+        //                 console.log(nodesData.length);
+        //             })
+        //         });
+    }
+}

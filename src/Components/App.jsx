@@ -8,6 +8,7 @@ import TreeGraph from './TreeGraph.jsx';
 import AmpsController from '../Amps/AmpsData.js';
 import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
+import qGraphData from './qGraphData.js';
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
@@ -44,7 +45,7 @@ class App extends React.Component {
                 </div>
                 <div className={styles.graphAndObjectBrowserContainer}>
                     <div id="dagreContainer" className={styles.graphContainer}>
-                        <DagreD3 parent={this}/>
+                        <DagreD3 parent={this} qGraphData={qGraphData}/>
                     </div>
                     <div className={styles.objectBrowserContainer}>
                         <ObjectBrowser ref="objectBrowser"/>

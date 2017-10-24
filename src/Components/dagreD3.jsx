@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import dagre from 'dagre';
 import * as dagreD3 from 'dagre-d3';
 import * as d3Local from 'd3';
-import qGraphData from './qGraphData.js';
 
 class DagreD3 extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            rootNode : this.props.qGraphData.parentNodeData,
+            parentNodeSources : this.props.qGraphData.parentNodeSources.sources,
+            childeNodesArray : this.props.qGraphData.childeNodesArray
+        }
+
         this.dagreLayoutNodeInfo = undefined;
         this.dagreLayoutEdgeInfo = undefined;
         this.dagreD3Renderer = this.dagreD3Renderer.bind(this);
@@ -19,9 +25,13 @@ class DagreD3 extends Component {
         var g = new dagre.graphlib.Graph();
 
         // Prep TestData
-        let rootNode = qGraphData.parentNodeData;
-        let parentNodeSources = qGraphData.parentNodeSources.sources;
-        let childeNodesArray = qGraphData.childeNodesArray;
+        // let rootNode = qGraphData.parentNodeData;
+        // let parentNodeSources = qGraphData.parentNodeSources.sources;
+        // let childeNodesArray = qGraphData.childeNodesArray;
+
+        let rootNode = this.state.rootNode
+        let parentNodeSources = this.state.parentNodeSources;
+        let childeNodesArray = this.state.childeNodesArray;
 
         // Set an object for the graph label
         g.setGraph({ rankdir: "BT" });
@@ -105,9 +115,9 @@ class DagreD3 extends Component {
             .attr("fill", "black");
 
         // Center the graph
-        var initialScale = 0.75;
+        var initialScale = 0.55;
         let temp = zoom
-            .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 50])
+            .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 90])
             .scale(initialScale);
         temp.event(svg);
         // svg.attr('height', g.graph().height * initialScale + 100);

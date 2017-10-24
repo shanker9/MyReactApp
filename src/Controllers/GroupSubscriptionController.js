@@ -1,10 +1,10 @@
-import AmpsController from '../Amps/AmpsData.js';
+import AmpsControllerSingleton from '../Amps/AmpsData.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 
 export default class GroupSubscriptionController {
     constructor(controllerRef, groupingColumnsArray, commandObject) {
         this.parentControllerRef = controllerRef;
-        this.ampsController = new AmpsController();
+        this.ampsController = AmpsControllerSingleton.getInstance();
         this.appDataModel = AppDataModelSingleton.getInstance();
         this.columnName = groupingColumnsArray;
         this.commandObject = commandObject
@@ -42,7 +42,7 @@ export default class GroupSubscriptionController {
 
             this.mergeJsonObjects(groupHeaderRow,message.data);
             val.groupData = groupHeaderRow;
-            this.parentControllerRef.updateUIRowWithData(val.groupData, 'ref' + message.k);
+            this.parentControllerRef.updateUIAggRowWithData(val.groupData, 'ref' + message.k);
         } else {
             this.aggregatedRowsData.set(message.k, message.data);
             this.groupingColumnKeyMap.set(this.groupingColumnArray.map((val,k)=>this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],message.data)).join('-'), message.k);

@@ -67,7 +67,6 @@ var parentNodeSources = {
         "USD Libor3M_default_Bloomberg_TimeSeries_D"
     ]
 };
-
 var childeNodesArray = [
         {
           "@type": "type.googleapis.com/qspace.DataVertexMsg",

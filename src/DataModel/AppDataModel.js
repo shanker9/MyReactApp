@@ -17,6 +17,7 @@ var AppDataModelSingleton = (function () {
 class AppDataModel {
     constructor() {
         this.dataMap = new Map();
+        this.selectedRows = new Map();
         this.groupedData = undefined;
         this.groupColumnKeyMapper = undefined;
         this.groupedViewData = undefined;
@@ -48,7 +49,7 @@ class AppDataModel {
             "strike": "/values/values/strike/dblVal",
             "underlier": "/values/values/underlier/strVal",
             "volatility": "/values/values/volatility/dblVal"
-          }
+        }
     }
 
     /** dataMap methods */
@@ -73,6 +74,9 @@ class AppDataModel {
     }
 
     getdefaultDataViewSize() { return this.dataMap.size; }
+
+    addSelectedRow(rowKey, rowData) { this.selectedRows.set(rowKey, rowData); }
+    removeSelectedRow(rowKey) { this.selectedRows.delete(rowKey); }
 
     /** groupedData methods */
 

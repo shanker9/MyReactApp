@@ -119,6 +119,7 @@ class TableView extends React.Component {
         this.updateDataGridWithGroupedView = this.updateDataGridWithGroupedView.bind(this);
         this.loadDataGridWithGroupedView = this.loadDataGridWithGroupedView.bind(this);
         this.rowUpdate = this.rowUpdate.bind(this);
+        this.aggRowUpdate = this.aggRowUpdate.bind(this);
         this.scrollEventHandler = this.scrollEventHandler.bind(this);
         this.makeDefaultSubscription = this.makeDefaultSubscription.bind(this);
         this.makeGroupSubscription = this.makeGroupSubscription.bind(this);
@@ -232,22 +233,16 @@ class TableView extends React.Component {
         }
     }
 
+    aggRowUpdate(data,rowReference) {
+        let rowElem = this.refs.gridViewRef.refs[rowReference];
+        if (rowElem != undefined) {
+            rowElem.triggerUpdate(data);
+        }
+    }
+
     updateAggregatedRowExpandStatus(groupKey) {
         this.controller.updateGroupExpansionStatus(groupKey);
     }
-
-    // subscribeForMultiLevelGrouping() {
-
-    //     let commandObject = {
-    //         "command": "sow_and_subscribe",
-    //         "topic": "Price",
-    //         "filter": "/swapId >=0",
-    //         "orderBy": "/customer",
-    //         "options": "projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],grouping=[/customer,/receiveIndex]"
-    //     }
-    //     let columnName = 'receiveIndex';
-    //     this.controller.ampsGroupSubscribe(commandObject, this.controller.multiGroupingDataHandler.bind(this.controller), this.controller.multiGroupingSubscriptionDetailsHandler.bind(this.controller), columnName);
-    // }
 
     clearGrouping() {
         this.controller.clearGroupSubscriptions();
@@ -279,6 +274,11 @@ class TableView extends React.Component {
 
     selectionDataUpdateHandler(rowIndexValue,event){
         this.controller.updateRowSelectionData(rowIndexValue);
+        this.updateGraphWithData(rowIndexValue);
+    }
+
+    updateGraphWithData(rowIndexValue){
+        this.controller.fetchAndFormatGraphData(rowIndexValue);
     }
 
     render() {
