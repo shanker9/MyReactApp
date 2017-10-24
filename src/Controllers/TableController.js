@@ -4,7 +4,7 @@ import SubscriptionController from './SubscriptionController.js';
 import GroupSubscriptionController from './GroupSubscriptionController.js';
 
 export default class TableController {
-    constructor(componentRef,subscriptionTopic) {
+    constructor(componentRef, subscriptionTopic) {
         this.uiRef = componentRef;
         this.subscriptionTopic = subscriptionTopic;
         this.ampsController = new AmpsController();
@@ -40,8 +40,8 @@ export default class TableController {
         this.uiRef.loadDataGridWithDefaultView();
     }
 
-    updateUIRowWithData(newData, rowReference) {
-        this.uiRef.rowUpdate(newData, rowReference);
+    updateUIRowWithData(newData,selectState,rowReference) {
+        this.uiRef.rowUpdate(newData,selectState,rowReference);
     }
 
     getDefaultViewData(startIndex, endIndex, rowHeight) {
@@ -53,18 +53,18 @@ export default class TableController {
 
     updateRowDataInGroupedData(message) {
         let columnKeyMapper = this.appDataModel.getGroupColumnKeyMapper();
-        let columnValue = this.groupingColumnsByLevel.map((val, k) => this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],message.data)).join('-');
+        let columnValue = this.groupingColumnsByLevel.map((val, k) => this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val], message.data)).join('-');
         let groupKey = columnKeyMapper.get(columnValue);
         let groupData = this.appDataModel.getDataFromGroupedData(groupKey);
         let existingData = groupData.bucketData.get(message.k);
         existingData.data = message.data;
     }
 
-    getJsonValAtPath(path,jsonObject){
+    getJsonValAtPath(path, jsonObject) {
         let pathComponents = path.split('/').slice(1), tempJson = jsonObject, temp;
-        for(let i=0; i<pathComponents.length;i++){
+        for (let i = 0; i < pathComponents.length; i++) {
             temp = tempJson[pathComponents[i]];
-            if(temp==undefined){
+            if (temp == undefined) {
                 return null;
             }
             tempJson = temp;
@@ -73,7 +73,7 @@ export default class TableController {
     }
 
 
-    getDatamapSize(){
+    getDatamapSize() {
         return this.appDataModel.getDataMap().size;
     }
 
@@ -81,22 +81,22 @@ export default class TableController {
 
     groupDataByColumnKey(columnName) {
         let subId = this.columnSubscriptionMapper.get(columnName);
-            this.clearGroupSubscriptions();
-            
-            let index = this.groupingColumnsByLevel.indexOf(columnName);
-            if(index!=-1){
-                let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
-                this.groupingColumnsByLevel = newGroupingColumnsOrderArray;
-            }else{
-                this.groupingColumnsByLevel.push(columnName);
-            }
+        this.clearGroupSubscriptions();
 
-            this.groupingColumnsByLevel.length != 0 ? 
-                this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0])
-                : this.updateUIWithDefaultViewData();
+        let index = this.groupingColumnsByLevel.indexOf(columnName);
+        if (index != -1) {
+            let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
+            this.groupingColumnsByLevel = newGroupingColumnsOrderArray;
+        } else {
+            this.groupingColumnsByLevel.push(columnName);
+        }
+
+        this.groupingColumnsByLevel.length != 0 ?
+            this.ampsGroupSubscribe(this.groupingColumnsByLevel.slice(-1)[0])
+            : this.updateUIWithDefaultViewData();
     }
 
-    getGroupingColumnsArray(columnName){
+    getGroupingColumnsArray(columnName) {
         return this.groupingColumnsByLevel;
     }
 
@@ -132,7 +132,7 @@ export default class TableController {
         return commandObject;
     }
 
-    getJSONPathForColumnKey(key){
+    getJSONPathForColumnKey(key) {
         return this.appDataModel.dataKeysJsonpathMapper[key];
     }
 
@@ -207,6 +207,18 @@ export default class TableController {
         while (array.length > 0) {
             array.pop();
         }
+    }
+
+    /** DATA ROW SELECTION */
+
+    updateRowSelectionData(indexValue) {
+        let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
+        if (dataForSelectedRow != undefined) {
+            dataForSelectedRow.isSelected = true;
+        } else {
+            console.log('Data pertaining to the selected row does not exist in the appData');
+        }
+        this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, 'ref' + indexValue);
     }
 }
 

@@ -7,7 +7,7 @@ class TableRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSelected: false,
+            isSelected: this.props.selectState,
             shouldAnimate: false,
             data: props.data
         }
@@ -15,37 +15,38 @@ class TableRow extends React.Component {
         this.handleRowClick = this.handleRowClick.bind(this);
     }
 
-    componentWillMount() {
-        this.state.isSelected = this.props.selectState;
-        // this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
-        this.dynamicBackgroundColor = '#FCFCF5';
-    }
+    // componentWillMount() {
+    //     this.state.isSelected = this.props.selectState;
+    //     // this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : 'white';
+    //     this.dynamicBackgroundColor = '#FCFCF5';
+    // }
 
-    componentWillReceiveProps(nextProps) {
-        this.state.isSelected = nextProps.selectState;
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     this.state.isSelected = nextProps.selectState;
+    // }
 
-    componentWillUpdate() {
-        // this.state.shouldAnimate = true;
-        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FCFCF5';
-    }
+    // componentWillUpdate() {
+    //     // this.state.shouldAnimate = true;
+    //     this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FCFCF5';
+    // }
 
     handleRowClick(e) {
         e.preventDefault();
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
-        this.props.dataUpdateHandler(this.props.indexVal, e.shiftKey); // Update the selection state in the data
+        this.props.selectionDataUpdateHandler(this.props.indexVal, e); // Update the selection state in the data
         if (this.props.isGroupedRow) {
 
         }
     }
 
-    triggerUpdate(newdata) {
-        this.setState({ data: newdata })
+    triggerUpdate(newdata,selectState) {
+        this.setState({ data: newdata,isSelected: selectState });
     }
 
     render() {
         let dataValues = this.state.data.values.values;
         let dataKey = this.state.data.key;
+        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FCFCF5';
         return (
             <tr ref={"tableRow"}
                 className={styles.tableGridRow}

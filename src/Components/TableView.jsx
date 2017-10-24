@@ -225,10 +225,10 @@ class TableView extends React.Component {
 
 
     /** ROW DATA UI UPDATE HANDLER **/
-    rowUpdate(data, rowReference) {
+    rowUpdate(data,selectState,rowReference) {
         let rowElem = this.refs.gridViewRef.refs[rowReference];
         if (rowElem != undefined) {
-            rowElem.triggerUpdate(data);
+            rowElem.triggerUpdate(data,selectState);
         }
     }
 
@@ -277,6 +277,10 @@ class TableView extends React.Component {
         }
     }
 
+    selectionDataUpdateHandler(rowIndexValue,event){
+        this.controller.updateRowSelectionData(rowIndexValue);
+    }
+
     render() {
         return (
             <div>
@@ -312,7 +316,7 @@ class TableView extends React.Component {
                             topDivHeight={this.state.topDivHeight}
                             bottomDivHeight={this.state.bottomDivHeight}
                             columnKeyValues={this.columns}
-                            selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
+                            selectionDataUpdateHandler={this.selectionDataUpdateHandler.bind(this)}
                             dataUpdateStatus={this.props.rowDataUpdateStatus}
                             updateAggregatedRowExpandStatus={this.updateAggregatedRowExpandStatus} />
                     </div>
