@@ -218,7 +218,7 @@ export default class TableController {
     /** DATA ROW SELECTION */
 
     updateRowSelectionData(indexValue) {
-
+        this.appDataModel.clearSelectionStateData();
         // Updating selectionstate in the rowData for later use in lazyloading
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
         if (dataForSelectedRow != undefined) {
@@ -227,6 +227,13 @@ export default class TableController {
             console.log('Data pertaining to the selected row does not exist in the appData');
         }
 
+        //deselecting selected Rows
+        let selectedRows = this.appDataModel.getSelectedRows();
+        selectedRows.forEach((item,key)=>{
+            let dataFromDataMap = this.appDataModel.getDataFromDefaultData(key);
+            this.updateUIRowWithData(dataFromDataMap.data, dataFromDataMap.isSelected, 'ref' + key);
+        })
+
         // updating selectedRows data
         if (dataForSelectedRow.isSelected) {
             this.appDataModel.addSelectedRow(indexValue, dataForSelectedRow);
@@ -234,19 +241,22 @@ export default class TableController {
             this.appDataModel.removeSelectedRow(indexValue);
         }
 
-        // update the UI for the selected row
+        // update the UI for the selected row      
         this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, 'ref' + indexValue);
     }
 
     fetchAndFormatGraphData(rowIndexValue) {
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
         const id = dataForSelectedRow.data.values.values.id.strVal;
-
+        let parentNodeData,parentNodeSources,childNodesArray;
         // let parentNodeDataQueryRequest = new Promise((resolve, reject) => {
-        //     this.queryController.getGraphDataForNodeWithId('Graph', id);
+        //     this.queryController.getGraphDataForNodeWithId('Graph', id).then(val=> resolve(val));
         // })
 
-        this.queryController.testMethod('Graph',id);
+        let parentNodeDataQueryRequest = this.queryController.getGraphDataForNodeWithId('Graph', id);
+        let parentNodeSourcesQueryRequest = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
+        // let nodesDataArray = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
+        // this.queryController.testMethod('Graph',id);
         // let parentNodeSourcesQueryRequest = new Promise((resolve, reject) => {
         //     let result = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
         // })
@@ -254,7 +264,19 @@ export default class TableController {
         // let nodesDataArray = new Promise((resolve, reject) => {
         //     let result = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
         //     resolve(result);
-        // })
+        // })parentNodeDataQueryRequest,parentNodeSourcesQueryRequest,
+
+        Promise.all([parentNodeDataQueryRequest,parentNodeSourcesQueryRequest]).then(values=>{
+            console.log(values);
+            parentNodeData=values[0];
+            parentNodeSources=values[1].sources;
+            let nodeDataArray = this.queryController.getGraphNodesDataArrayWithIds('Graph', parentNodeSources);
+            nodeDataArray.then(result=>{
+                console.log(result);
+                childNodesArray=result;
+                this.uiRef.updateGraphUIWithData({parentNodeData,parentNodeSources,childNodesArray});
+            })
+        })
 
         // Promise.all([parentNodeDataQueryRequest])
         //         .then(values=>{

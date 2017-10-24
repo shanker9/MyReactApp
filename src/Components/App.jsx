@@ -18,15 +18,19 @@ class App extends React.Component {
         this.state = {
             rowHeight: 20,
             subscriptionTopic: 'ProductAll2',
-            vertexData : undefined
+            vertexData: undefined
         }
     }
 
     componentDidMount() {
     }
 
-    getObjectBrowserComponentReference(){
+    getObjectBrowserComponentReference() {
         return this.refs.objectBrowser;
+    }
+
+    getGraphTreeComponentReference() {
+        return this.refs.graphTree;
     }
 
     render() {
@@ -34,21 +38,26 @@ class App extends React.Component {
             <div>
                 <div className={styles.gridAndChartContainer}>
                     <div className={styles.tablecontainer}>
+                    <div className={styles.ComponentTitle}><tspan>Blotter Info</tspan></div>
                         <TableView ref='tableViewRef'
+                            graphTreeComponentReference={this.getGraphTreeComponentReference.bind(this)}
                             subscriptionTopic={this.state.subscriptionTopic}
                             rowHeight={this.state.rowHeight} />
                     </div>
 
                     <div className={styles.chartContainer}>
-                        Space for vol surface
+                        <div className={styles.ComponentTitle}><tspan>Vol Surface Chart</tspan></div>
+                        <tspan>Space for vol surface</tspan>
                     </div>
                 </div>
                 <div className={styles.graphAndObjectBrowserContainer}>
                     <div id="dagreContainer" className={styles.graphContainer}>
-                        <DagreD3 parent={this} qGraphData={qGraphData}/>
+                        <DagreD3 ref="graphTree"
+                            objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
+                            qGraphData={qGraphData} />
                     </div>
                     <div className={styles.objectBrowserContainer}>
-                        <ObjectBrowser ref="objectBrowser"/>
+                        <ObjectBrowser ref="objectBrowser" />
                     </div>
                 </div>
             </div>

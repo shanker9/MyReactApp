@@ -274,11 +274,15 @@ class TableView extends React.Component {
 
     selectionDataUpdateHandler(rowIndexValue,event){
         this.controller.updateRowSelectionData(rowIndexValue);
-        this.updateGraphWithData(rowIndexValue);
+        this.updateGraphData(rowIndexValue);
     }
 
-    updateGraphWithData(rowIndexValue){
+    updateGraphData(rowIndexValue){
         this.controller.fetchAndFormatGraphData(rowIndexValue);
+    }
+
+    updateGraphUIWithData(graphData){
+        this.props.graphTreeComponentReference().updateGraphData(graphData);
     }
 
     render() {

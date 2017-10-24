@@ -12,12 +12,12 @@ export default class QueryController {
             "topic": queryTopic,
             "filter": filter
         };
-        this.ampsController.connectAndSubscribe(dataHandler,subscriptionIdHandler,commandObject);
+        this.ampsController.connectAndSubscribe(dataHandler, subscriptionIdHandler, commandObject);
     }
 
     getGraphDataForNodeWithId(queryTopic, nodeId) {
         let graphNodeData, subscriptionId;
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.getGraphDataWithId(queryTopic, `/id=="${nodeId}"`, (message) => {
                 if (message.c == 'group_begin') { return; }
                 else if (message.c == 'group_end') {
@@ -32,34 +32,22 @@ export default class QueryController {
     }
 
     getGraphNodesDataArrayWithIds(queryTopic, nodeIdArray) {
-        let graphNodesArray = [];
+        let subscriptionId, graphNodesArray = [];
         let commaSeparatedNodeIds = nodeIdArray.map(item => `"${item}"`).join(',');
         let queryString = `/id in (${commaSeparatedNodeIds})`;
 
-        this.getGraphDataWithId(queryTopic, queryString, (message) => {
-            if (message.c == 'group_begin') { return; }
-            else if (message.c == 'group_end') {
-                this.ampsController.unsubscribe(subscriptionId, unsubscribeId => console.log('Query Unsubscribed Id:', unsubscribeId))
-                return graphNodesArray;
-            }
-            else {
-                graphNodeData.push(message.data);
-            }
+        return new Promise((resolve, reject) => {
+            this.getGraphDataWithId(queryTopic, queryString, (message) => {
+                if (message.c == 'group_begin') { return; }
+                else if (message.c == 'group_end') {
+                    this.ampsController.unsubscribe(subscriptionId, unsubscribeId => console.log('Query Unsubscribed Id:', unsubscribeId))
+                    resolve(graphNodesArray);
+                }
+                else {
+                    graphNodesArray.push(message.data);
+                }
+            }, subId => subscriptionId = subId)
         })
-    }
-
-    testMethod(queryTopic, nodeId) {
-        let graphNodeData, subscriptionId;
-        this.getGraphDataWithId(queryTopic, `/id=="${nodeId}"`, (message) => {
-            if (message.c == 'group_begin') { return; }
-            else if (message.c == 'group_end') {
-                this.ampsController.unsubscribe(subscriptionId, unsubscribeId => console.log('Query Unsubscribed Id:', unsubscribeId))
-                graphNodeData;
-            }
-            else {
-                graphNodeData = message.data;
-            }
-        }, subId => subscriptionId = subId)
     }
 
 }

@@ -51,9 +51,7 @@ var parentNodeData = {
     ]
   }
 
-var parentNodeSources = {
-    "id": "Swap_1_PriceSwap_Y_F",
-    "sources": [
+var parentNodeSources = [
         "USD OIS_ShiftRateCurve_N_F",
         "Swap_1_GenerateSwap_N_F",
         "US Gvt Bond Market_default_Bloomberg_HolidayCalendar_D",
@@ -65,9 +63,8 @@ var parentNodeSources = {
         "USD OIS_default_Bloomberg_RateCurve_D",
         "USD Libor3M_ShiftRateCurve_N_F",
         "USD Libor3M_default_Bloomberg_TimeSeries_D"
-    ]
-};
-var childeNodesArray = [
+    ];
+var childNodesArray = [
         {
           "@type": "type.googleapis.com/qspace.DataVertexMsg",
           "id": "Swap_1_default_default_SwapDefinition_D",
@@ -13267,6 +13264,6 @@ var childeNodesArray = [
         }
 ]
 
-var qGraphData = {parentNodeData: parentNodeData, parentNodeSources: parentNodeSources,childeNodesArray: childeNodesArray};
+var qGraphData = {parentNodeData: parentNodeData, parentNodeSources: parentNodeSources,childNodesArray: childNodesArray};
 
 export default qGraphData;

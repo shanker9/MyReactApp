@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import dagre from 'dagre';
 import * as dagreD3 from 'dagre-d3';
 import * as d3Local from 'd3';
+import styles from '../../styles/AppStyles.css'
 
 class DagreD3 extends Component {
 
@@ -9,18 +10,28 @@ class DagreD3 extends Component {
         super(props);
 
         this.state = {
-            rootNode : this.props.qGraphData.parentNodeData,
-            parentNodeSources : this.props.qGraphData.parentNodeSources.sources,
-            childeNodesArray : this.props.qGraphData.childeNodesArray
+            parentNodeData: this.props.qGraphData.parentNodeData,
+            parentNodeSources: this.props.qGraphData.parentNodeSources,
+            childNodesArray: this.props.qGraphData.childNodesArray
         }
 
         this.dagreLayoutNodeInfo = undefined;
         this.dagreLayoutEdgeInfo = undefined;
         this.dagreD3Renderer = this.dagreD3Renderer.bind(this);
+        this.dagreGraphTreeLayout = this.dagreGraphTreeLayout.bind(this);
         this.gLayout = undefined;
     }
 
     componentDidMount() {
+        this.dagreGraphTreeLayout();
+    }
+
+    componentDidUpdate() {
+        this.props.objectBrowserComponentReference().updateData({});
+        this.dagreGraphTreeLayout();
+    }
+
+    dagreGraphTreeLayout() {
         // Create a new directed graph 
         var g = new dagre.graphlib.Graph();
 
@@ -29,9 +40,9 @@ class DagreD3 extends Component {
         // let parentNodeSources = qGraphData.parentNodeSources.sources;
         // let childeNodesArray = qGraphData.childeNodesArray;
 
-        let rootNode = this.state.rootNode
+        let parentNodeData = this.state.parentNodeData
         let parentNodeSources = this.state.parentNodeSources;
-        let childeNodesArray = this.state.childeNodesArray;
+        let childNodesArray = this.state.childNodesArray;
 
         // Set an object for the graph label
         g.setGraph({ rankdir: "BT" });
@@ -42,18 +53,17 @@ class DagreD3 extends Component {
         g.setDefaultEdgeLabel(function () { return {}; });
 
         //setting ParentNode
-        g.setNode(rootNode.id, { label: rootNode.shortId, width: 160, height: 20, data: rootNode });
-        rootNode.sources.forEach(source => {
+        g.setNode(parentNodeData.id, { label: parentNodeData.shortId, width: 160, height: 20, data: parentNodeData });
+        parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
-            g.setEdge(source.source, rootNode.id);
+            g.setEdge(source.source, parentNodeData.id);
         });
-        this.setNodesAndEdges(g, parentNodeSources, childeNodesArray);
+        this.setNodesAndEdges(g, parentNodeSources, childNodesArray);
 
         dagre.layout(g);
 
         this.gLayout = g;
         this.dagreD3Renderer();
-        // this.forceUpdate();
     }
 
     setNodesAndEdges(gElement, nodeIdArray, nodeDataArray) {
@@ -85,8 +95,8 @@ class DagreD3 extends Component {
             node.rx = node.ry = 5;
         });
 
-        d3Local.selectAll("g")
-            .attr("stroke", "red");
+        // d3Local.selectAll("g")
+        //     .attr("stroke", "black");
 
         var svg = d3Local.select("svg")
             .attr("width", document.getElementById("dagreContainer").clientWidth)
@@ -109,7 +119,7 @@ class DagreD3 extends Component {
         render(inner, g);
 
         var selectedNode = inner.selectAll("g.node");
-        selectedNode.on('click', this.updateOBData.bind(this));
+        selectedNode.on('click', this.updateObjectBrowserData.bind(this));
 
         d3Local.selectAll("text")
             .attr("fill", "black");
@@ -124,10 +134,15 @@ class DagreD3 extends Component {
 
     }
 
-    updateOBData(nodeKey) {
+    updateGraphData(graphData) {
+        const { parentNodeData, parentNodeSources, childNodesArray } = graphData;
+        this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
+    }
+
+    updateObjectBrowserData(nodeKey) {
         let nodeData = this.gLayout.node(nodeKey);
         console.dir(nodeData);
-        this.props.parent.getObjectBrowserComponentReference().updateData(nodeData.data);
+        this.props.objectBrowserComponentReference().updateData(nodeData.data);
     }
 
 
@@ -135,6 +150,7 @@ class DagreD3 extends Component {
     render() {
         return (
             <div>
+                <div className={styles.ComponentTitle}><tspan>Graph Tree</tspan></div>
                 <svg>
                     <g></g>
                 </svg>

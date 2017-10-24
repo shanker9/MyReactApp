@@ -51,8 +51,8 @@ class GridView extends React.Component {
                                             ref={'ref' + item.data.rowID}
                                             key={item.data.rowID}
                                             data={item.data.data}
-                                            indexVal={item.data.data.swapId}
-                                            dataUpdateHandler={this.props.selectionDataUpdateHandler}
+                                            indexVal={item.data.rowID}
+                                            selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
                                             selectState={item.data.isSelected}
                                             columnKeyValues={this.props.columnKeyValues} />)
                                 }

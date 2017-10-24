@@ -76,7 +76,14 @@ class AppDataModel {
     getdefaultDataViewSize() { return this.dataMap.size; }
 
     addSelectedRow(rowKey, rowData) { this.selectedRows.set(rowKey, rowData); }
-    removeSelectedRow(rowKey) { this.selectedRows.delete(rowKey); }
+    removeSelectedRow(rowKey) {return this.selectedRows.delete(rowKey); }
+    getSelectedRows(){return this.selectedRows;}
+    clearSelectedRows(){this.selectedRows.clear()};
+    clearSelectionStateData(){
+        this.selectedRows.forEach((item,key)=>{
+            this.getDataFromDefaultData(key).isSelected = false;
+        })
+    }
 
     /** groupedData methods */
 

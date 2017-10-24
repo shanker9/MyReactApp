@@ -148,9 +148,18 @@
 
     .objectBrowserContainer{
         min-width: 30%;
-        background-color: #002b36;
+        background-color: #fffffa;
         border: 1px solid #51748B;
         overflow-y: scroll;
+    }
+
+    .ComponentTitle{
+        border: 1px solid black;
+        background-color: #2C4C65;
+        color: #E7E2E2;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 14px;
+        text-align: center;
     }
 
     svg > tspan {

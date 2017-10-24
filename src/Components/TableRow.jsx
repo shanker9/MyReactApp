@@ -34,9 +34,9 @@ class TableRow extends React.Component {
         e.preventDefault();
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
         this.props.selectionDataUpdateHandler(this.props.indexVal, e); // Update the selection state in the data
-        if (this.props.isGroupedRow) {
+        // if (this.props.isGroupedRow) {
 
-        }
+        // }
     }
 
     triggerUpdate(newdata,selectState) {
