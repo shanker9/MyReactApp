@@ -21,6 +21,7 @@ class DagreD3 extends Component {
         this.dagreD3Renderer = this.dagreD3Renderer.bind(this);
         this.dagreGraphTreeLayout = this.dagreGraphTreeLayout.bind(this);
         this.gLayout = undefined;
+        this.svg = undefined;
     }
 
     componentDidMount() {
@@ -134,22 +135,22 @@ class DagreD3 extends Component {
         // d3Local.selectAll("g")
         //     .attr("stroke", "black");
 
-        var svg = d3Local.select("svg")
+        this.svg = d3Local.select("svg")
             .attr("width", document.getElementById("dagreContainer").clientWidth)
             .attr("height", document.getElementById("dagreContainer").clientHeight)
             .attr("fill", "white");
-        let inner = svg.select("g").attr("stroke", "black");
+        let inner = this.svg.select("g").attr("stroke", "black");
 
         // Set up zoom support
         var zoom = d3Local.behavior.zoom().on("zoom", function () {
             inner.attr("transform", "translate(" + d3.event.translate + ")" +
                 "scale(" + d3.event.scale + ")");
         });
-        svg.call(zoom);
+        this.svg.call(zoom);
 
         // Create the renderer
         var render = new dagreD3.render();
-
+        
         // Run the renderer. This is what draws the final graph.
         render(inner, g);
 
@@ -166,20 +167,20 @@ class DagreD3 extends Component {
         // Center the graph
         var initialScale = 0.90;
 
-        if (g.graph().width > svg.attr("width")) {
-            initialScale = (svg.attr("width")-20) / g.graph().width;
+        if (g.graph().width > this.svg.attr("width")) {
+            initialScale = (this.svg.attr("width") - 20) / g.graph().width;
 
             let temp = zoom
                 .translate([10, 50])
                 .scale(initialScale);
-            temp.event(svg);
+            temp.event(this.svg);
         } else {
             let temp = zoom
-                .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 50])
+                .translate([(this.svg.attr("width") - g.graph().width * initialScale) / 2, 50])
                 .scale(initialScale);
-            temp.event(svg);
+            temp.event(this.svg);
         }
-        svg.attr('height', g.graph().height * initialScale + 100);
+        this.svg.attr('height', g.graph().height * initialScale + 100);
     }
 
     updateGraphData(graphData) {
@@ -188,8 +189,19 @@ class DagreD3 extends Component {
     }
 
     updateObjectBrowserData(nodeKey) {
+        //removing the styling for other selected nodes
+        let allNodes = this.gLayout.nodes();
+        allNodes.forEach(item => {
+            let gElemOfNode = this.gLayout.node(item).elem;
+            gElemOfNode.style.fill = "";
+            gElemOfNode.children[0].style.stroke = "black";
+        })
+
         let nodeData = this.gLayout.node(nodeKey);
-        console.dir(nodeData);
+        let g = nodeData.elem;
+        g.style.fill = "lightblue";
+        g.children[0].style.stroke = "red";
+
         this.props.objectBrowserComponentReference().updateData(nodeData.data);
     }
 
