@@ -3,6 +3,7 @@ import dagre from 'dagre';
 import * as dagreD3 from 'dagre-d3';
 import * as d3Local from 'd3';
 import styles from '../../styles/AppStyles.css'
+import dagreStyles from '../../styles/Dagre.css'
 
 class DagreD3 extends Component {
 
@@ -53,10 +54,21 @@ class DagreD3 extends Component {
         g.setDefaultEdgeLabel(function () { return {}; });
 
         //setting ParentNode
-        g.setNode(parentNodeData.id, { label: parentNodeData.shortId, width: 160, height: 20, data: parentNodeData });
+        g.setNode(parentNodeData.id, {
+            shape: "ellipse",
+            label: parentNodeData.shortId,
+            width: 200,
+            height: 40,
+            data: parentNodeData,
+            labelStyle: "font-size: 1.5em",
+            style: "stroke-width: 2px"
+        });
         parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
-            g.setEdge(source.source, parentNodeData.id);
+            g.setEdge(source.source, parentNodeData.id, {
+                style: "stroke-width: 1px",
+                // lineInterpolate: 'basis'
+            });
         });
         this.setNodesAndEdges(g, parentNodeSources, childNodesArray);
 
@@ -73,11 +85,35 @@ class DagreD3 extends Component {
             nodeData = nodeDataArray.find(item => {
                 return item.id == nodeId;
             });
-            gElement.setNode(nodeId, { label: nodeData.shortId, width: 160, height: 20, data: nodeData });
+
+            if (nodeData.hasOwnProperty('func')) {
+                gElement.setNode(nodeId, {
+                    shape: "ellipse",
+                    label: nodeData.shortId,
+                    width: 200,
+                    height: 40,
+                    data: nodeData,
+                    labelStyle: "font-size: 1.5em",
+                    style: "stroke-width: 2px"
+                });
+            } else {
+                gElement.setNode(nodeId, {
+                    label: nodeData.shortId,
+                    width: 200,
+                    height: 40,
+                    data: nodeData,
+                    labelStyle: "font-size: 1.5em",
+                    style: "stroke-width: 2px"
+                });
+            }
+
             if (nodeData.sources != undefined) {
                 nodeData.sources.forEach(source => {
                     // gElement.setEdge(nodeData.id, source.source);
-                    gElement.setEdge(source.source, nodeData.id);
+                    gElement.setEdge(source.source, nodeData.id, {
+                        style: "stroke-width: 1px",
+                        // lineInterpolate: 'basis'
+                    });
                 })
             }
         });
@@ -101,9 +137,8 @@ class DagreD3 extends Component {
         var svg = d3Local.select("svg")
             .attr("width", document.getElementById("dagreContainer").clientWidth)
             .attr("height", document.getElementById("dagreContainer").clientHeight)
-            .style("background-color", "neon")
-            .attr("fill", "white"),
-            inner = svg.select("g").attr("stroke", "black");
+            .attr("fill", "white");
+        let inner = svg.select("g").attr("stroke", "black");
 
         // Set up zoom support
         var zoom = d3Local.behavior.zoom().on("zoom", function () {
@@ -122,16 +157,29 @@ class DagreD3 extends Component {
         selectedNode.on('click', this.updateObjectBrowserData.bind(this));
 
         d3Local.selectAll("text")
-            .attr("fill", "black");
+            .attr("fill", "black")
+            .style("font")
+
+        // d3Local.selectAll("g")
+        //     .attr("stroke", "black");
 
         // Center the graph
-        var initialScale = 0.55;
-        let temp = zoom
-            .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 90])
-            .scale(initialScale);
-        temp.event(svg);
-        // svg.attr('height', g.graph().height * initialScale + 100);
+        var initialScale = 0.90;
 
+        if (g.graph().width > svg.attr("width")) {
+            initialScale = (svg.attr("width")-20) / g.graph().width;
+
+            let temp = zoom
+                .translate([10, 50])
+                .scale(initialScale);
+            temp.event(svg);
+        } else {
+            let temp = zoom
+                .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 50])
+                .scale(initialScale);
+            temp.event(svg);
+        }
+        svg.attr('height', g.graph().height * initialScale + 100);
     }
 
     updateGraphData(graphData) {
