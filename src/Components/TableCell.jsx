@@ -6,7 +6,7 @@ class TableCell extends React.Component {
     constructor() {
         super();
         this.state = {
-            animateColor: '#EAF188'
+            animateColor: '#ffeb89'
         }
 
         this.detectTheEnd = this.detectTheEnd.bind(this);

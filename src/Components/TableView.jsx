@@ -265,7 +265,7 @@ class TableView extends React.Component {
             }
             let clonedColumnElement = document.getElementById(columnData.cellId).cloneNode(true);
             clonedColumnElement.style.color = "#1E0B06";
-            clonedColumnElement.style.backgroundColor = "yellow";
+            clonedColumnElement.style.backgroundColor = "#ffeb89";
             clonedColumnElement.style.height = this.refs.dragToBar.offsetHeight + "px";
             this.refs.dragToBar.appendChild(clonedColumnElement);
             this.makeGroupSubscription(columnData.cellId);

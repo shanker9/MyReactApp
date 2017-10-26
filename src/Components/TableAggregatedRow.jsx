@@ -61,7 +61,7 @@ class TableAggregatedRow extends React.Component {
             <tr ref={"tableRow"}
                 className={styles.tableRow}
                 onClick={this.handleRowClick}
-                style={{ backgroundColor: '#b8e3ef' }}>
+                style={{ backgroundColor: '#e3f3f7' }}>
 
                 {
                     this.state.columnOrder.map((item, i) => {
