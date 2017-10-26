@@ -23,6 +23,7 @@
     "react-dom": "^15.6.1",
     "react-json-tree": "^0.10.9",
     "react-json-view": "^1.13.1",
+    "react-pretty-json": "^2.0.2",
     "react-select": "^1.0.0-rc.5",
     "webpack": "^3.5.1",
     "webpack-dev-server": "^2.7.0"

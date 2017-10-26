@@ -1,3 +1,24 @@
+    .appContainer{
+        display: flex;
+        flex-direction: column;
+        /* height: -webkit-fill-available; */
+        height: 50em;
+    }
+    
+    .gridAndChartContainer {
+        /* height: 50%; */
+        display: -webkit-flex;
+        display: flex;
+        border: 1px solid black;
+    }
+
+    .graphAndObjectBrowserContainer{
+        display: -webkit-flex;
+        display: flex;
+        /* height: 20em; */
+        flex: 1;
+    }
+
     .tablecontainer {
         width: 70%;
         /* background-color: greenyellow; */
@@ -65,7 +86,7 @@
 
     
     .tableDiv {
-        height: 20em;
+        height: 25em;
         overflow-y: scroll;
         overflow-x: auto;
     }
@@ -88,6 +109,9 @@
         padding: 2px;
         min-width: 200px;
         box-sizing: border-box;
+        outline-style: outset;
+        outline-color : lightgray;
+        outline-width : 1.3px;
         -webkit-transition: background-color 2s;
         -moz-transition: background-color 2s;
         transition: background-color 2s;       
@@ -116,48 +140,43 @@
         font-size: 14px;
     }
 
-    .gridAndChartContainer {
-        display: -webkit-flex;
-        display: flex;
-        border: 1px solid black;
-    }
-
     .chartContainer{
         min-width: 30%;
-        background-color: #FAFFFA;
+        background-color: rgb(255, 255, 255);
         border: 1px solid #51748B;
     }
 
     /* Graph */
 
-    .graphAndObjectBrowserContainer{
-        display: -webkit-flex;
-        display: flex;
-        /* -webkit-flex-direction: row;
-        flex-direction: row; */
-        height: 20em;
-        /* width: 100%; */
-    }
-
-
     .graphContainer{
         width: 70%;
         background-color: #FFFFFF;        
         border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dagreContainer {
+        flex: 1;
     }
 
     .objectBrowserContainer{
         min-width: 30%;
-        background-color: #fffffa;
+        background-color: #ffffff;
         border: 1px solid #51748B;
-        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .objectBrowser{
+        overflow-y: auto;
     }
 
     .ComponentTitle{
         border: 1px solid black;
         background-color: #2C4C65;
         color: #E7E2E2;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: Geneva, Tahoma, sans-serif;
         font-size: 14px;
         text-align: center;
     }
@@ -180,4 +199,9 @@
         color: #ae81ff;
         color: #cc6633;
         color: rgb(255, 255, 250);
+    }
+
+    svg:hover {
+        /* background-color: rgb(206, 77, 77); */
+        cursor: pointer;
     }

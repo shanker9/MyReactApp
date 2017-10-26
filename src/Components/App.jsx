@@ -36,28 +36,32 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <div className={styles.gridAndChartContainer}>
-                    <div className={styles.tablecontainer}>
-                    <div className={styles.ComponentTitle}><tspan>Blotter Info</tspan></div>
-                        <TableView ref='tableViewRef'
-                            graphTreeComponentReference={this.getGraphTreeComponentReference.bind(this)}
-                            subscriptionTopic={this.state.subscriptionTopic}
-                            rowHeight={this.state.rowHeight} />
-                    </div>
+                <div className={styles.appContainer}>
+                    <div className={styles.gridAndChartContainer}>
+                        <div className={styles.tablecontainer}>
+                            <div className={styles.ComponentTitle}><tspan>Blotter Info</tspan></div>
+                            <TableView ref='tableViewRef'
+                                graphTreeComponentReference={this.getGraphTreeComponentReference.bind(this)}
+                                subscriptionTopic={this.state.subscriptionTopic}
+                                rowHeight={this.state.rowHeight} />
+                        </div>
 
-                    <div className={styles.chartContainer}>
-                        <div className={styles.ComponentTitle}><tspan>Vol Surface Chart</tspan></div>
-                        <tspan>Space for vol surface</tspan>
+                        <div className={styles.chartContainer}>
+                            <div className={styles.ComponentTitle}><tspan>Vol Surface Chart</tspan></div>
+                            <tspan>Space for vol surface</tspan>
+                        </div>
                     </div>
-                </div>
-                <div className={styles.graphAndObjectBrowserContainer}>
-                    <div id="dagreContainer" className={styles.graphContainer}>
-                        <DagreD3 ref="graphTree"
-                            objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
-                            qGraphData={qGraphData} />
-                    </div>
-                    <div className={styles.objectBrowserContainer}>
-                        <ObjectBrowser ref="objectBrowser" />
+                    <div className={styles.graphAndObjectBrowserContainer}>
+                        <div className={styles.graphContainer}>
+                        <div className={styles.ComponentTitle}><tspan>Graph Tree</tspan></div>
+                            <DagreD3 ref="graphTree"
+                                objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
+                                qGraphData={qGraphData} />
+                        </div>
+                        <div className={styles.objectBrowserContainer}>
+                            <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>
+                            <ObjectBrowser ref="objectBrowser" />
+                        </div>
                     </div>
                 </div>
             </div>

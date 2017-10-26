@@ -30,6 +30,8 @@ class DagreD3 extends Component {
 
     componentDidUpdate() {
         this.props.objectBrowserComponentReference().updateData({});
+        this.svg.selectAll("*").remove();
+        this.svg.append('g');
         this.dagreGraphTreeLayout();
     }
 
@@ -56,10 +58,10 @@ class DagreD3 extends Component {
 
         //setting ParentNode
         g.setNode(parentNodeData.id, {
-            shape: "ellipse",
+            shape: "rect",
             label: parentNodeData.shortId,
-            width: 200,
-            height: 40,
+            // width: 180,
+            // height: 40,
             data: parentNodeData,
             labelStyle: "font-size: 1.5em",
             style: "stroke-width: 2px"
@@ -67,8 +69,8 @@ class DagreD3 extends Component {
         parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
             g.setEdge(source.source, parentNodeData.id, {
-                style: "stroke-width: 1px",
-                // lineInterpolate: 'basis'
+                style: "stroke-width: 2px; fill-opacity: 0",
+                lineInterpolate: 'basis'
             });
         });
         this.setNodesAndEdges(g, parentNodeSources, childNodesArray);
@@ -89,10 +91,10 @@ class DagreD3 extends Component {
 
             if (nodeData.hasOwnProperty('func')) {
                 gElement.setNode(nodeId, {
-                    shape: "ellipse",
+                    shape: "rect",
                     label: nodeData.shortId,
-                    width: 200,
-                    height: 40,
+                    // width: 180,
+                    // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
                     style: "stroke-width: 2px"
@@ -100,8 +102,8 @@ class DagreD3 extends Component {
             } else {
                 gElement.setNode(nodeId, {
                     label: nodeData.shortId,
-                    width: 200,
-                    height: 40,
+                    // width: 180,
+                    // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
                     style: "stroke-width: 2px"
@@ -112,8 +114,8 @@ class DagreD3 extends Component {
                 nodeData.sources.forEach(source => {
                     // gElement.setEdge(nodeData.id, source.source);
                     gElement.setEdge(source.source, nodeData.id, {
-                        style: "stroke-width: 1px",
-                        // lineInterpolate: 'basis'
+                        style: "stroke-width: 2px; fill-opacity: 0",
+                        lineInterpolate: 'basis'
                     });
                 })
             }
@@ -127,13 +129,17 @@ class DagreD3 extends Component {
         var g = this.gLayout;
 
         g.nodes().forEach(function (v) {
-            var node = g.node(v);
-            // Round the corners of the nodes
-            node.rx = node.ry = 5;
+            let node = g.node(v);
+            if (node.data.hasOwnProperty('func')) {
+                // Round the corners of the nodes
+                node.rx = node.ry = 40;
+            }
         });
 
         // d3Local.selectAll("g")
         //     .attr("stroke", "black");
+
+        // this.svg = d3Local.select('.dagreContainer').append('svg');
 
         this.svg = d3Local.select("svg")
             .attr("width", document.getElementById("dagreContainer").clientWidth)
@@ -150,7 +156,7 @@ class DagreD3 extends Component {
 
         // Create the renderer
         var render = new dagreD3.render();
-        
+
         // Run the renderer. This is what draws the final graph.
         render(inner, g);
 
@@ -168,10 +174,10 @@ class DagreD3 extends Component {
         var initialScale = 0.90;
 
         if (g.graph().width > this.svg.attr("width")) {
-            initialScale = (this.svg.attr("width") - 20) / g.graph().width;
+            initialScale = (this.svg.attr("width") - 100) / g.graph().width;
 
             let temp = zoom
-                .translate([10, 50])
+                .translate([50, 50])
                 .scale(initialScale);
             temp.event(this.svg);
         } else {
@@ -180,7 +186,7 @@ class DagreD3 extends Component {
                 .scale(initialScale);
             temp.event(this.svg);
         }
-        this.svg.attr('height', g.graph().height * initialScale + 100);
+        // this.svg.attr('height', g.graph().height * initialScale + 100);
     }
 
     updateGraphData(graphData) {
@@ -209,8 +215,8 @@ class DagreD3 extends Component {
 
     render() {
         return (
-            <div>
-                <div className={styles.ComponentTitle}><tspan>Graph Tree</tspan></div>
+
+            <div id="dagreContainer" className={styles.dagreContainer}>
                 <svg>
                     <g></g>
                 </svg>

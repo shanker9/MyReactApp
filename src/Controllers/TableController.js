@@ -115,18 +115,30 @@ export default class TableController {
         let command = 'sow_and_subscribe';
         let topic = this.subscriptionTopic;
         let orderby = `/${this.groupingColumnsByLevel[0]}`;
+        let projectionColumnSet = new Set();
+        let numericValueColumns = ['receivePrice', 'price', 'payPrice', 'payNotional', 'receiveNotional'];
+        let dateValueColumns = ['lastUpdate'];
 
         let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
 
-        // let projectionString = this.uiRef.columns.map((item)=>{return this.getJSONPathForColumnKey(item.columnkey)}).join(',');
+        // let projectionString = "/key/name,/values/values/lastUpdate/dtVal/str,SUM(/values/values/receivePrice/dblVal) AS /values/values/receivePrice/dblVal,/values/values/id/strVal,SUM(/values/values/price/dblVal) AS /values/values/price/dblVal,/values/values/payPrice/dblVal,/values/values/volatility/dblVal,/values/values/payCurrency/strVal,/values/values/payDiscountCurve/strVal,/values/values/payFixedRate/dblVal,/values/values/maturityDate/dtVal/str,/values/values/payNotional/dblVal,/values/values/receiveDiscountCurve/strVal,/values/values/receiveNotional/dblVal,/values/values/receiveIndex/strVal,/values/values/receiveCurrency/strVal,/values/values/receiveSpread/dblVal,/values/values/counterparty/strVal,/values/values/amerEuro/strVal,/values/values/putCall/strVal,/values/values/contractSize/strVal,/values/values/strike/dblVal,/values/values/underlier/strVal";
 
-        // let options = 'projection=[/customer,/receiveIndex,/swapId,/interest,sum(/swap_rate) as /swap_rate,/yearsIn,/payFixedRate,/payCurrency],'
-        //     + `grouping=[${groupingObject}]`;
+        let groupingColumnsCopy = this.groupingColumnsByLevel.slice(0);
 
-        let projectionString = "/key/name,/values/values/lastUpdate/dtVal/str,SUM(/values/values/receivePrice/dblVal) AS /values/values/receivePrice/dblVal,/values/values/id/strVal,SUM(/values/values/price/dblVal) AS /values/values/price/dblVal,/values/values/payPrice/dblVal,/values/values/volatility/dblVal,/values/values/payCurrency/strVal,/values/values/payDiscountCurve/strVal,/values/values/payFixedRate/dblVal,/values/values/maturityDate/dtVal/str,/values/values/payNotional/dblVal,/values/values/receiveDiscountCurve/strVal,/values/values/receiveNotional/dblVal,/values/values/receiveIndex/strVal,/values/values/receiveCurrency/strVal,/values/values/receiveSpread/dblVal,/values/values/counterparty/strVal,/values/values/amerEuro/strVal,/values/values/putCall/strVal,/values/values/contractSize/strVal,/values/values/strike/dblVal,/values/values/underlier/strVal";
+        if (groupingColumnsCopy.indexOf('name') != -1) {
+            groupingColumnsCopy.splice(projectionArray.indexOf('name'), 1);
+            groupingColumnsCopy.push('name');
+            groupingColumnsCopy.reverse();
+        }
 
-        // let projectionString = "/key/name,/values/values/counterparty/strVal,/values/values/receivePrice/dblVal,/values/values/volatility/dblVal";
-        // let projectionString = "/values/values/lastUpdate/dtVal/str as /lastUpdate, /values/values/receivePrice/dblVal as /receivePrice, /values/values/id/strVal as /id, /values/values/price/dblVal as /price, /values/values/payPrice/dblVal as /payPrice, /key/name as /name, /values/values/volatility/dblVal as /volatility, /values/values/payCurrency/strVal as /payCurrency, /values/values/payDiscountCurve/strVal as /payDiscountCurve, /values/values/payFixedRate/dblVal as /payFixedRate, /values/values/maturityDate/dtVal/str as /maturityDate, /values/values/payNotional/dblVal as /payNotional, /values/values/receiveDiscountCurve/strVal as /receiveDiscountCurve, /values/values/receiveNotional/dblVal as /receiveNotional, /values/values/receiveIndex/strVal as /receiveIndex, /values/values/receiveCurrency/strVal as /receiveCurrency, /values/values/receiveSpread/dblVal as /receiveSpread, /values/values/counterparty/strVal as /counterparty, /values/values/amerEuro/strVal as /amerEuro, /values/values/putCall/strVal as /putCall, /values/values/contractSize/strVal as /contractSize, /values/values/strike/dblVal as /strike, /values/values/underlier/strVal] as /underlier";
+        let groupingColumnsProjectionString = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item)).join(',');
+        let aggregateColumnsProjectionString = numericValueColumns.map(item => this.getJSONPathForColumnKey(item))
+            .map(path => `SUM(${path}) AS ${path}`).join(',');
+        let dateValueColumnsProjectionString = dateValueColumns.map(item => this.getJSONPathForColumnKey(item)).join(',');
+
+        let projArray = [groupingColumnsProjectionString,dateValueColumnsProjectionString,aggregateColumnsProjectionString];
+        let projectionString = projArray.join(',');
+
 
         let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
 
@@ -229,7 +241,7 @@ export default class TableController {
 
         //deselecting selected Rows
         let selectedRows = this.appDataModel.getSelectedRows();
-        selectedRows.forEach((item,key)=>{
+        selectedRows.forEach((item, key) => {
             let dataFromDataMap = this.appDataModel.getDataFromDefaultData(key);
             this.updateUIRowWithData(dataFromDataMap.data, dataFromDataMap.isSelected, 'ref' + key);
         })
@@ -248,7 +260,7 @@ export default class TableController {
     fetchAndFormatGraphData(rowIndexValue) {
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
         const id = dataForSelectedRow.data.values.values.id.strVal;
-        let parentNodeData,parentNodeSources,childNodesArray;
+        let parentNodeData, parentNodeSources, childNodesArray;
         // let parentNodeDataQueryRequest = new Promise((resolve, reject) => {
         //     this.queryController.getGraphDataForNodeWithId('Graph', id).then(val=> resolve(val));
         // })
@@ -260,21 +272,21 @@ export default class TableController {
         // let parentNodeSourcesQueryRequest = new Promise((resolve, reject) => {
         //     let result = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
         // })
-        
+
         // let nodesDataArray = new Promise((resolve, reject) => {
         //     let result = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
         //     resolve(result);
         // })parentNodeDataQueryRequest,parentNodeSourcesQueryRequest,
 
-        Promise.all([parentNodeDataQueryRequest,parentNodeSourcesQueryRequest]).then(values=>{
+        Promise.all([parentNodeDataQueryRequest, parentNodeSourcesQueryRequest]).then(values => {
             console.log(values);
-            parentNodeData=values[0];
-            parentNodeSources=values[1].sources;
+            parentNodeData = values[0];
+            parentNodeSources = values[1].sources;
             let nodeDataArray = this.queryController.getGraphNodesDataArrayWithIds('Graph', parentNodeSources);
-            nodeDataArray.then(result=>{
+            nodeDataArray.then(result => {
                 console.log(result);
-                childNodesArray=result;
-                this.uiRef.updateGraphUIWithData({parentNodeData,parentNodeSources,childNodesArray});
+                childNodesArray = result;
+                this.uiRef.updateGraphUIWithData({ parentNodeData, parentNodeSources, childNodesArray });
             })
         })
 

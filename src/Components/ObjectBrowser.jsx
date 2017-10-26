@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import JSONTree from 'react-json-tree';
-import ReactJson from 'react-json-view'
-import styles from '../../styles/AppStyles.css'
+import ReactJson from 'react-json-view';
+import JsonView from 'react-pretty-json';
+import styles from '../../styles/AppStyles.css';
 
 class ObjectBrowser extends Component {
 
@@ -38,11 +39,11 @@ class ObjectBrowser extends Component {
 
     render() {
         return (
-            <div >
-            <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>
-            <JSONTree data={this.state.data} theme={'monokai'} hideRoot={true} invertTheme={true} />
-            {/* <ReactJson src={this.state.data} name={false} theme="Hopscotch"/> */}
-            </div>
+                <div className={styles.objectBrowser}>
+                    {/* <JSONTree data={this.state.data} theme={'monokai'} hideRoot={true} invertTheme={true} /> */}
+                    {/* <ReactJson src={this.state.data} name={false} theme="Hopscotch"/> */}
+                    <JsonView json={this.state.data} />
+                </div>
         );
     }
 }

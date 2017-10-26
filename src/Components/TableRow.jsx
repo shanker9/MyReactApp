@@ -46,7 +46,7 @@ class TableRow extends React.Component {
     render() {
         let dataValues = this.state.data.values.values;
         let dataKey = this.state.data.key;
-        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FCFCF5';
+        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FFFFFF';
         return (
             <tr ref={"tableRow"}
                 className={styles.tableGridRow}
