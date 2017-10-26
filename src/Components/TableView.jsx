@@ -153,7 +153,7 @@ class TableView extends React.Component {
     /** NON-GROUPING METHODS**/
 
     makeDefaultSubscription() {
-        this.controller = new TableController(this,this.subscriptionTopic);
+        this.controller = new TableController(this, this.subscriptionTopic);
         let commandObject1 = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
@@ -161,7 +161,7 @@ class TableView extends React.Component {
         }
 
         this.controller.ampsSubscribe1(commandObject1);
-       
+
     }
 
     loadDataGridWithDefaultView() {
@@ -226,14 +226,14 @@ class TableView extends React.Component {
 
 
     /** ROW DATA UI UPDATE HANDLER **/
-    rowUpdate(data,selectState,rowReference) {
+    rowUpdate(data, selectState, rowReference) {
         let rowElem = this.refs.gridViewRef.refs[rowReference];
         if (rowElem != undefined) {
-            rowElem.triggerUpdate(data,selectState);
+            rowElem.triggerUpdate(data, selectState);
         }
     }
 
-    aggRowUpdate(data,rowReference) {
+    aggRowUpdate(data, rowReference) {
         let rowElem = this.refs.gridViewRef.refs[rowReference];
         if (rowElem != undefined) {
             rowElem.triggerUpdate(data);
@@ -272,16 +272,16 @@ class TableView extends React.Component {
         }
     }
 
-    selectionDataUpdateHandler(rowIndexValue,event){
+    selectionDataUpdateHandler(rowIndexValue, event) {
         this.controller.updateRowSelectionData(rowIndexValue);
         this.updateGraphData(rowIndexValue);
     }
 
-    updateGraphData(rowIndexValue){
+    updateGraphData(rowIndexValue) {
         this.controller.fetchAndFormatGraphData(rowIndexValue);
     }
 
-    updateGraphUIWithData(graphData){
+    updateGraphUIWithData(graphData) {
         this.props.graphTreeComponentReference().updateGraphData(graphData);
     }
 
@@ -298,21 +298,39 @@ class TableView extends React.Component {
                     DRAG COLUMNS HERE TO START GROUPING
                 </div>
                 <div className={styles.gridContainerDiv}>
-                    <div id="scrollableHeaderDiv" className={styles.headerDiv}>
-                        <table className={styles.table}>
-                            <thead className={styles.tableHead}>
-                                <tr className={styles.tableHeaderRow}>
-                                    {this.columns.map((item, i) =>
-                                        <TableHeaderCell
-                                            key={i}
-                                            groupingHandler={this.makeGroupSubscription}
-                                            cellKey={item.columnkey}
-                                            cellData={item.columnvalue} />
-                                    )}
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                    {this.state.isGroupedView ?
+                        <div id="scrollableHeaderDiv" className={styles.headerDiv}>
+                            <table className={styles.table}>
+                                <thead className={styles.tableHead}>
+                                    <tr className={styles.tableHeaderRow}>
+                                        <th style={{minWidth:'18px'}}/>
+                                        {this.columns.map((item, i) =>
+                                            <TableHeaderCell
+                                                key={i}
+                                                groupingHandler={this.makeGroupSubscription}
+                                                cellKey={item.columnkey}
+                                                cellData={item.columnvalue} />
+                                        )}
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div> :
+                        <div id="scrollableHeaderDiv" className={styles.headerDiv}>
+                            <table className={styles.table}>
+                                <thead className={styles.tableHead}>
+                                    <tr className={styles.tableHeaderRow}>
+                                        {this.columns.map((item, i) =>
+                                            <TableHeaderCell
+                                                key={i}
+                                                groupingHandler={this.makeGroupSubscription}
+                                                cellKey={item.columnkey}
+                                                cellData={item.columnvalue} />
+                                        )}
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    }
                     <div id="scrollableTableDiv" className={styles.tableDiv} onScroll={this.scrollEventHandler}>
                         <GridView isGroupedView={this.state.isGroupedView}
                             ref='gridViewRef'

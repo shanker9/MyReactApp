@@ -25,13 +25,19 @@ class DagreD3 extends Component {
     }
 
     componentDidMount() {
-        this.dagreGraphTreeLayout();
+        // this.dagreGraphTreeLayout();
     }
 
     componentDidUpdate() {
         this.props.objectBrowserComponentReference().updateData({});
-        this.svg.selectAll("*").remove();
-        this.svg.append('g');
+        if (this.svg != undefined) {
+            // this.svg.selectAll("*").remove();
+            // this.svg.append('g');
+            let containter = document.getElementById("dagreContainer");
+            containter.removeChild(containter.childNodes[0]);
+            this.svg = d3Local.select('#dagreContainer').append('svg');
+            this.svg.append('g');
+        }
         this.dagreGraphTreeLayout();
     }
 
@@ -69,7 +75,7 @@ class DagreD3 extends Component {
         parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
             g.setEdge(source.source, parentNodeData.id, {
-                style: "stroke-width: 2px; fill-opacity: 0",
+                style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
                 lineInterpolate: 'basis'
             });
         });
@@ -114,7 +120,7 @@ class DagreD3 extends Component {
                 nodeData.sources.forEach(source => {
                     // gElement.setEdge(nodeData.id, source.source);
                     gElement.setEdge(source.source, nodeData.id, {
-                        style: "stroke-width: 2px; fill-opacity: 0",
+                        style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
                         lineInterpolate: 'basis'
                     });
                 })
@@ -177,7 +183,7 @@ class DagreD3 extends Component {
             initialScale = (this.svg.attr("width") - 100) / g.graph().width;
 
             let temp = zoom
-                .translate([50, 50])
+                .translate([50, 100])
                 .scale(initialScale);
             temp.event(this.svg);
         } else {

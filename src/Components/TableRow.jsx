@@ -34,9 +34,6 @@ class TableRow extends React.Component {
         e.preventDefault();
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
         this.props.selectionDataUpdateHandler(this.props.indexVal, e); // Update the selection state in the data
-        // if (this.props.isGroupedRow) {
-
-        // }
     }
 
     triggerUpdate(newdata,selectState) {
@@ -51,7 +48,8 @@ class TableRow extends React.Component {
             <tr ref={"tableRow"}
                 className={styles.tableGridRow}
                 onClick={this.handleRowClick}
-                style={{ backgroundColor: this.props.isGroupedRow ? '#144C5A' : this.dynamicBackgroundColor }}>
+                style={{ backgroundColor: this.dynamicBackgroundColor }}>
+                {this.props.isGroupedView ? <td className={styles.tdGroupedView}></td> : <tspan/>}
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.counterparty == undefined ? '' : dataValues.counterparty.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}

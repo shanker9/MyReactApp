@@ -41,12 +41,13 @@ class GridView extends React.Component {
                                         aggregatedRowKey={item.key}
                                         indexVal={item.data.groupData.swapId}
                                         dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                                        selectState={false}
+                                        selectState={item.data.showBucketData}
                                         bucketData={item.data.bucketData}
                                         updateAggregatedRowExpandStatus={this.props.updateAggregatedRowExpandStatus}
                                         columnKeyValues={this.props.columnKeyValues} />)
                                 } else {
                                     return (
+
                                         <TableRow
                                             ref={'ref' + item.data.rowID}
                                             key={item.data.rowID}
@@ -54,7 +55,8 @@ class GridView extends React.Component {
                                             indexVal={item.data.rowID}
                                             selectionDataUpdateHandler={this.props.selectionDataUpdateHandler}
                                             selectState={item.data.isSelected}
-                                            columnKeyValues={this.props.columnKeyValues} />)
+                                            columnKeyValues={this.props.columnKeyValues}
+                                            isGroupedView={this.props.isGroupedView} />)
                                 }
                             })}
                         </div>

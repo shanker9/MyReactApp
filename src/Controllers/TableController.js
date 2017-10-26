@@ -134,9 +134,10 @@ export default class TableController {
         let groupingColumnsProjectionString = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item)).join(',');
         let aggregateColumnsProjectionString = numericValueColumns.map(item => this.getJSONPathForColumnKey(item))
             .map(path => `SUM(${path}) AS ${path}`).join(',');
-        let dateValueColumnsProjectionString = dateValueColumns.map(item => this.getJSONPathForColumnKey(item)).join(',');
+        // let dateValueColumnsProjectionString = dateValueColumns.map(item => this.getJSONPathForColumnKey(item)).join(',');
 
-        let projArray = [groupingColumnsProjectionString,dateValueColumnsProjectionString,aggregateColumnsProjectionString];
+        let projArray = [groupingColumnsProjectionString,aggregateColumnsProjectionString];
+        // let projArray = [groupingColumnsProjectionString,dateValueColumnsProjectionString,aggregateColumnsProjectionString];
         let projectionString = projArray.join(',');
 
 

@@ -13,43 +13,45 @@ class TableAggregatedRow extends React.Component {
             shouldAnimate: false,
             showBucketData: false,
             data: props.data,
-            columnOrder: this.props.columnKeyValues
+            columnOrder: this.props.columnKeyValues,
+            expandStatus : this.props.selectState
         }
 
         this.controller = new RowController();
 
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
-        this.displayBucketData = this.displayBucketData.bind(this);
+        // this.displayBucketData = this.displayBucketData.bind(this);
     }
 
-    displayBucketData(bucketData) {
-        let result = [];
-        if (this.state.showBucketData) {
-            // return bucketData.map((value, k) =>
-            // <TableRow
-            //     key={value.rowID}
-            //     data={value.data}
-            //     indexVal={value.data.swapId}
-            //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
-            //     selectState={value.isSelected} />)
-            bucketData.forEach((value, key, mapObj) => {
-                result.push(
-                    <TableRow
-                        key={value.rowID}
-                        data={value.data}
-                        indexVal={value.data.swapId}
-                        dataUpdateHandler={this.props.selectionDataUpdateHandler}
-                        selectState={value.isSelected} />)
-            })
-        }
-        return result;
-    }
+    // displayBucketData(bucketData) {
+    //     let result = [];
+    //     if (this.state.showBucketData) {
+    //         // return bucketData.map((value, k) =>
+    //         // <TableRow
+    //         //     key={value.rowID}
+    //         //     data={value.data}
+    //         //     indexVal={value.data.swapId}
+    //         //     dataUpdateHandler={this.props.selectionDataUpdateHandler}
+    //         //     selectState={value.isSelected} />)
+    //         bucketData.forEach((value, key, mapObj) => {
+    //             result.push(
+    //                 <TableRow
+    //                     key={value.rowID}
+    //                     data={value.data}
+    //                     indexVal={value.data.swapId}
+    //                     dataUpdateHandler={this.props.selectionDataUpdateHandler}
+    //                     selectState={value.isSelected} />)
+    //         })
+    //     }
+    //     return result;
+    // }
 
     handleRowClick(e) {
         e.preventDefault();
         // this.setState({ showBucketData: !this.state.showBucketData })
         this.props.updateAggregatedRowExpandStatus(this.props.aggregatedRowKey);
+        this.setState({expandStatus: !this.state.expandStatus});
     }
 
     triggerUpdate(newdata) {
@@ -62,7 +64,7 @@ class TableAggregatedRow extends React.Component {
                 className={styles.tableRow}
                 onClick={this.handleRowClick}
                 style={{ backgroundColor: '#e3f3f7' }}>
-
+                <td className={styles.tdGroupedView}>{this.state.expandStatus?'-':'+'}</td>
                 {
                     this.state.columnOrder.map((item, i) => {
                         return (

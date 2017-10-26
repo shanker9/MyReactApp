@@ -100,6 +100,10 @@
         cursor: default;
     }
 
+    .tableRow:hover {
+        cursor: default;
+    }
+
     .td {
         border: 1px solid grey;
         border-bottom: 0px;
@@ -115,6 +119,20 @@
         -webkit-transition: background-color 2s;
         -moz-transition: background-color 2s;
         transition: background-color 2s;       
+    }
+
+    .tdGroupedView {
+        border: 1px solid grey;
+        border-bottom: 0px;
+        text-align: center;
+        font-size: 100%;
+        font-weight: bold;
+        padding: 2px;
+        min-width: 20px;
+        box-sizing: border-box;
+        outline-style: outset;
+        outline-color : lightgray;
+        outline-width : 1.3px; 
     }
 
     .leftAlignContentCells {
@@ -179,27 +197,6 @@
         font-family: Geneva, Tahoma, sans-serif;
         font-size: 14px;
         text-align: center;
-    }
-
-    svg > tspan {
-        color: #272822;
-        color: #383830;
-        color: #49483e;
-        color: #75715e;
-        color: #a59f85;
-        color: #f8f8f2;
-        color: #f5f4f1;
-        color: #f9f8f5;
-        color: #f92672;
-        color: #fd971f;
-        color: #f4bf75;
-        color: #000203;
-        color: #EFA1A1;
-        color: #755b06;
-        color: #ae81ff;
-        color: #cc6633;
-        color: rgb(255, 255, 250);
-        color: rgb(181, 236, 253);
     }
 
     svg:hover {

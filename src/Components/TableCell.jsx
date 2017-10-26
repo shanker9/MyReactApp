@@ -51,7 +51,7 @@ class TableCell extends React.Component {
     render() {
 
         return (
-            <td ref={"tableCell"} className={styles.td} style={this.props.childStyle}>
+            <td ref={"tableCell"} className={styles.td} >
                 {this.props.cellData}
             </td>
         )
