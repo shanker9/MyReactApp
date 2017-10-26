@@ -29,15 +29,6 @@ class DagreD3 extends Component {
     }
 
     componentDidUpdate() {
-        this.props.objectBrowserComponentReference().updateData({});
-        if (this.svg != undefined) {
-            // this.svg.selectAll("*").remove();
-            // this.svg.append('g');
-            let containter = document.getElementById("dagreContainer");
-            containter.removeChild(containter.childNodes[0]);
-            this.svg = d3Local.select('#dagreContainer').append('svg');
-            this.svg.append('g');
-        }
         this.dagreGraphTreeLayout();
     }
 
@@ -196,6 +187,14 @@ class DagreD3 extends Component {
     }
 
     updateGraphData(graphData) {
+        this.props.objectBrowserComponentReference().updateData({});
+        if (this.svg != undefined) {
+            let containter = document.getElementById("dagreContainer");
+            containter.removeChild(containter.childNodes[0]);
+            this.svg = d3Local.select('#dagreContainer').append('svg');
+            this.svg.append('g');
+        }
+
         const { parentNodeData, parentNodeSources, childNodesArray } = graphData;
         this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
     }
