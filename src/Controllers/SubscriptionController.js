@@ -36,7 +36,7 @@ export default class SubscriptionController {
             if (this.appDataModel.getGroupedData() != undefined) {
                 this.parentControllerRef.updateRowDataInGroupedData(message);
             }
-            this.parentControllerRef.updateUIRowWithData(newData,item.isSelected, 'ref' + item.rowID);
+            this.parentControllerRef.updateUIRowWithData(newData,item.isSelected, item.rowID);
         }
     }
 

@@ -15,16 +15,23 @@ export default class QueryController {
         this.ampsController.connectAndSubscribe(dataHandler, subscriptionIdHandler, commandObject);
     }
 
-    getGraphDataForNodeWithId(queryTopic, nodeId) {
-        let graphNodeData, subscriptionId;
+    getGraphDataForNodeWithId(queryTopic, nodeId, unsubscribeAfterSowData, callback) {
+        let graphNodeData, subscriptionId, isSowDataEnd;
         return new Promise((resolve, reject) => {
             this.getGraphDataWithId(queryTopic, `/id=="${nodeId}"`, (message) => {
                 if (message.c == 'group_begin') { return; }
                 else if (message.c == 'group_end') {
-                    this.ampsController.unsubscribe(subscriptionId, unsubscribeId => console.log('Query Unsubscribed Id:', unsubscribeId))
+                    if (unsubscribeAfterSowData) {
+                        this.ampsController.unsubscribe(subscriptionId, unsubscribeId => console.log('Query Unsubscribed Id:', unsubscribeId))
+                    }
+                    isSowDataEnd = true;
                     resolve(graphNodeData);
                 }
                 else {
+                    if (isSowDataEnd) {
+                        callback(message.data);
+                        return;
+                    }
                     graphNodeData = message.data;
                 }
             }, subId => subscriptionId = subId)

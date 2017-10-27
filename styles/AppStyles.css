@@ -179,7 +179,7 @@
     }
 
     .objectBrowserContainer{
-        min-width: 30%;
+        width: 30%;
         background-color: #ffffff;
         border: 1px solid #51748B;
         display: flex;
@@ -188,6 +188,7 @@
 
     .objectBrowser{
         overflow-y: auto;
+        overflow-x: auto;
     }
 
     .ComponentTitle{

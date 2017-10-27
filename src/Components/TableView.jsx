@@ -227,14 +227,17 @@ class TableView extends React.Component {
 
     /** ROW DATA UI UPDATE HANDLER **/
     rowUpdate(data, selectState, rowReference) {
-        let rowElem = this.refs.gridViewRef.refs[rowReference];
+        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
         if (rowElem != undefined) {
             rowElem.triggerUpdate(data, selectState);
         }
+        // if (selectState) {
+        //     this.updateGraphData(rowReference);
+        // }
     }
 
     aggRowUpdate(data, rowReference) {
-        let rowElem = this.refs.gridViewRef.refs[rowReference];
+        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
         if (rowElem != undefined) {
             rowElem.triggerUpdate(data);
         }
@@ -278,7 +281,9 @@ class TableView extends React.Component {
     }
 
     updateGraphData(rowIndexValue) {
-        this.controller.fetchAndFormatGraphData(rowIndexValue);
+        this.controller.fetchAndFormatGraphData(rowIndexValue, (updateData) => {
+            this.props.graphTreeComponentReference().updateParentNodeData(updateData);
+        });
     }
 
     updateGraphUIWithData(graphData) {
@@ -303,7 +308,7 @@ class TableView extends React.Component {
                             <table className={styles.table}>
                                 <thead className={styles.tableHead}>
                                     <tr className={styles.tableHeaderRow}>
-                                        <th style={{minWidth:'18px'}}/>
+                                        <th style={{ minWidth: '18px' }} />
                                         {this.columns.map((item, i) =>
                                             <TableHeaderCell
                                                 key={i}

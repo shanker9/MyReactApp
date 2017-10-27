@@ -136,7 +136,7 @@ export default class TableController {
             .map(path => `SUM(${path}) AS ${path}`).join(',');
         // let dateValueColumnsProjectionString = dateValueColumns.map(item => this.getJSONPathForColumnKey(item)).join(',');
 
-        let projArray = [groupingColumnsProjectionString,aggregateColumnsProjectionString];
+        let projArray = [groupingColumnsProjectionString, aggregateColumnsProjectionString];
         // let projArray = [groupingColumnsProjectionString,dateValueColumnsProjectionString,aggregateColumnsProjectionString];
         let projectionString = projArray.join(',');
 
@@ -244,7 +244,7 @@ export default class TableController {
         let selectedRows = this.appDataModel.getSelectedRows();
         selectedRows.forEach((item, key) => {
             let dataFromDataMap = this.appDataModel.getDataFromDefaultData(key);
-            this.updateUIRowWithData(dataFromDataMap.data, dataFromDataMap.isSelected, 'ref' + key);
+            this.updateUIRowWithData(dataFromDataMap.data, dataFromDataMap.isSelected, key);
         })
 
         // updating selectedRows data
@@ -255,29 +255,17 @@ export default class TableController {
         }
 
         // update the UI for the selected row      
-        this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, 'ref' + indexValue);
+        this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, indexValue);
     }
 
-    fetchAndFormatGraphData(rowIndexValue) {
+    fetchAndFormatGraphData(rowIndexValue, graphUpdateCallback) {
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
         const id = dataForSelectedRow.data.values.values.id.strVal;
         let parentNodeData, parentNodeSources, childNodesArray;
-        // let parentNodeDataQueryRequest = new Promise((resolve, reject) => {
-        //     this.queryController.getGraphDataForNodeWithId('Graph', id).then(val=> resolve(val));
-        // })
 
-        let parentNodeDataQueryRequest = this.queryController.getGraphDataForNodeWithId('Graph', id);
+        let parentNodeDataQueryRequest = this.queryController.getGraphDataForNodeWithId('Graph', id, false, graphUpdateCallback);
         let parentNodeSourcesQueryRequest = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
-        // let nodesDataArray = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
-        // this.queryController.testMethod('Graph',id);
-        // let parentNodeSourcesQueryRequest = new Promise((resolve, reject) => {
-        //     let result = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
-        // })
 
-        // let nodesDataArray = new Promise((resolve, reject) => {
-        //     let result = this.queryController.getGraphNodesDataArrayWithIds('Graph', id);
-        //     resolve(result);
-        // })parentNodeDataQueryRequest,parentNodeSourcesQueryRequest,
 
         Promise.all([parentNodeDataQueryRequest, parentNodeSourcesQueryRequest]).then(values => {
             console.log(values);

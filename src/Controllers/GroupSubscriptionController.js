@@ -42,7 +42,7 @@ export default class GroupSubscriptionController {
 
             this.mergeJsonObjects(groupHeaderRow,message.data);
             val.groupData = groupHeaderRow;
-            this.parentControllerRef.updateUIAggRowWithData(val.groupData, 'ref' + message.k);
+            this.parentControllerRef.updateUIAggRowWithData(val.groupData, message.k);
         } else {
             this.aggregatedRowsData.set(message.k, message.data);
             this.groupingColumnKeyMap.set(this.groupingColumnArray.map((val,k)=>this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val],message.data)).join('-'), message.k);

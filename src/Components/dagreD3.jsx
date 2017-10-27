@@ -13,7 +13,8 @@ class DagreD3 extends Component {
         this.state = {
             parentNodeData: this.props.qGraphData.parentNodeData,
             parentNodeSources: this.props.qGraphData.parentNodeSources,
-            childNodesArray: this.props.qGraphData.childNodesArray
+            childNodesArray: this.props.qGraphData.childNodesArray,
+            selectedNode: undefined
         }
 
         this.dagreLayoutNodeInfo = undefined;
@@ -56,13 +57,16 @@ class DagreD3 extends Component {
         //setting ParentNode
         g.setNode(parentNodeData.id, {
             shape: "rect",
-            label: parentNodeData.shortId,
-            // width: 180,
-            // height: 40,
+            label: `${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(2)}`,
+            // label: `${parentNodeData.shortId}`,
+            width: 180,
+            height: 40,
             data: parentNodeData,
             labelStyle: "font-size: 1.5em",
-            style: "stroke-width: 2px"
+            style: "stroke-width: 2px; fill:#ffeb89"
         });
+
+        //setting edges to parentNode
         parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
             g.setEdge(source.source, parentNodeData.id, {
@@ -94,7 +98,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px"
+                    style: "stroke-width: 2px; fill:#ffeb89"
                 });
             } else {
                 gElement.setNode(nodeId, {
@@ -103,7 +107,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px"
+                    style: "stroke-width: 2px; fill:#9CDCF5"
                 });
             }
 
@@ -138,10 +142,12 @@ class DagreD3 extends Component {
 
         // this.svg = d3Local.select('.dagreContainer').append('svg');
 
-        this.svg = d3Local.select("svg")
-            .attr("width", document.getElementById("dagreContainer").clientWidth)
-            .attr("height", document.getElementById("dagreContainer").clientHeight)
-            .attr("fill", "white");
+        if (this.svg == undefined) {
+            this.svg = d3Local.select("svg")
+                .attr("width", document.getElementById("dagreContainer").clientWidth)
+                .attr("height", document.getElementById("dagreContainer").clientHeight)
+                .attr("fill", "white");
+        }
         let inner = this.svg.select("g").attr("stroke", "black");
 
         // Set up zoom support
@@ -158,7 +164,7 @@ class DagreD3 extends Component {
         render(inner, g);
 
         var selectedNode = inner.selectAll("g.node");
-        selectedNode.on('click', this.updateObjectBrowserData.bind(this));
+        selectedNode.on('click', this.nodeClickHandler.bind(this));
 
         d3Local.selectAll("text")
             .attr("fill", "black")
@@ -188,15 +194,29 @@ class DagreD3 extends Component {
 
     updateGraphData(graphData) {
         this.props.objectBrowserComponentReference().updateData({});
+        // this.clearSvg();
+
+        const { parentNodeData, parentNodeSources, childNodesArray } = graphData;
+        this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
+    }
+
+    updateParentNodeData(parentNodeData) {
+        // this.clearSvg();
+        this.setState({ parentNodeData: parentNodeData });
+    }
+
+    clearSvg() {
         if (this.svg != undefined) {
             let containter = document.getElementById("dagreContainer");
             containter.removeChild(containter.childNodes[0]);
             this.svg = d3Local.select('#dagreContainer').append('svg');
             this.svg.append('g');
         }
+    }
 
-        const { parentNodeData, parentNodeSources, childNodesArray } = graphData;
-        this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
+    nodeClickHandler(nodeKey) {
+        this.setState({ selectedNode: nodeKey })
+        this.updateObjectBrowserData(nodeKey);
     }
 
     updateObjectBrowserData(nodeKey) {
