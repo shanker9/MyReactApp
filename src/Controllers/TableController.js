@@ -263,7 +263,9 @@ export default class TableController {
         const id = dataForSelectedRow.data.values.values.id.strVal;
         let parentNodeData, parentNodeSources, childNodesArray;
 
-        let parentNodeDataQueryRequest = this.queryController.getGraphDataForNodeWithId('Graph', id, false, graphUpdateCallback);
+        this.queryController.unsubscribeParentNodeData();
+
+        let parentNodeDataQueryRequest = this.queryController.getParentNodeData('Graph', id, graphUpdateCallback);
         let parentNodeSourcesQueryRequest = this.queryController.getGraphDataForNodeWithId('GraphSources', id);
 
 

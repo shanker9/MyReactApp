@@ -157,6 +157,10 @@ class DagreD3 extends Component {
         });
         this.svg.call(zoom);
 
+        let translateX = d3Local.transform(this.svg.select('g').attr("transform")).translate[0],
+        translateY = d3Local.transform(this.svg.select('g').attr("transform")).translate[1],
+        scale = d3Local.transform(this.svg.select('g').attr("transform")).scale[0];
+
         // Create the renderer
         var render = new dagreD3.render();
 
