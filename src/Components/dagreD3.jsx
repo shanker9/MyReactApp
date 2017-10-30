@@ -143,7 +143,7 @@ class DagreD3 extends Component {
         // this.svg = d3Local.select('.dagreContainer').append('svg');
         let isInitialSVGRender = true, translateX, translateY, scale;
         if (this.svg == undefined) {
-            this.svg = d3Local.select("svg")
+            this.svg = d3Local.select("svg.treeSvg")
                 .attr("width", document.getElementById("dagreContainer").clientWidth)
                 .attr("height", document.getElementById("dagreContainer").clientHeight)
                 .attr("fill", "white");
@@ -258,19 +258,33 @@ class DagreD3 extends Component {
         g.children[0].style.stroke = "red";
 
         this.updateObjectBrowserData(nodeData);
+        this.updateChartComponent(nodeData);
     }
 
     updateObjectBrowserData(nodeData) {
         this.props.objectBrowserComponentReference().updateData(nodeData.data);
     }
 
-
+    updateChartComponent(nodeData) {
+        let datePathComponent, dataArrayKey;
+        if (nodeData.data.shortId.startsWith('TS')) {
+            datePathComponent = 'dateTime';
+            dataArrayKey = 'entries';
+        }
+        else if (nodeData.data.shortId.startsWith('RC')) {
+            datePathComponent = 'date';
+            dataArrayKey = 'points';
+        }
+        if (datePathComponent && dataArrayKey) {
+            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
+        }
+    }
 
     render() {
         return (
 
             <div id="dagreContainer" className={styles.dagreContainer}>
-                <svg>
+                <svg className='treeSvg'>
                     <g></g>
                 </svg>
             </div>

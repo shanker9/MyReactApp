@@ -10,6 +10,7 @@ import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
 import qGraphData from './qGraphData.js';
 import Plot from './Surface.jsx';
+import TwoDChart from './TwoDChart.jsx'
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
@@ -34,6 +35,10 @@ class App extends React.Component {
         return this.refs.graphTree;
     }
 
+    getChartComponentReference(){
+        return this.refs.chart;
+    }
+
     render() {
         return (
             <div>
@@ -49,7 +54,7 @@ class App extends React.Component {
 
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Vol Surface Chart</tspan></div>
-                            {/* <Plot/> */}
+                            <TwoDChart ref="chart"/>
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
@@ -57,6 +62,7 @@ class App extends React.Component {
                         <div className={styles.ComponentTitle}><tspan>Graph Tree</tspan></div>
                             <DagreD3 ref="graphTree"
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
+                                chartComponentReference={this.getChartComponentReference.bind(this)}
                                 qGraphData={qGraphData} />
                         </div>
                         <div className={styles.objectBrowserContainer}>
@@ -68,6 +74,9 @@ class App extends React.Component {
             </div>
 
         );
+        // return(
+        //     <TwoDVisChart />            
+        // )
     }
 
 }
