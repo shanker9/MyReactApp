@@ -10,6 +10,7 @@ import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
 import qGraphData from './qGraphData.js';
 import Plot from './Surface.jsx';
+import TwoDChart from './TwoDChart.jsx';
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
@@ -49,7 +50,7 @@ class App extends React.Component {
 
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Vol Surface Chart</tspan></div>
-                            {/* <Plot/> */}
+                            <TwoDChart/>
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>

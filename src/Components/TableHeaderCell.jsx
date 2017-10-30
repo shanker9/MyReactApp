@@ -16,7 +16,7 @@ class TableHeaderCell extends React.Component {
     }
 
     dragStart(event){
-        console.log('Dragged Element: ',event.target);
+        // console.log('Dragged Element: ',event.target);
         const cellId = this.props.cellKey;
         const isSelected = this.state.isSelected;
         event.dataTransfer.setData("groupingColumnData",JSON.stringify({cellId:cellId,isSelected:isSelected}));

@@ -131,7 +131,7 @@ class TableView extends React.Component {
     }
 
     componentDidMount() {
-        this.makeDefaultSubscription();
+        // this.makeDefaultSubscription();
     }
 
     componentDidUpdate() {

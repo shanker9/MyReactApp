@@ -37,19 +37,12 @@ class DagreD3 extends Component {
         // Create a new directed graph 
         var g = new dagre.graphlib.Graph();
 
-        // Prep TestData
-        // let rootNode = qGraphData.parentNodeData;
-        // let parentNodeSources = qGraphData.parentNodeSources.sources;
-        // let childeNodesArray = qGraphData.childeNodesArray;
-
-        let parentNodeData = this.state.parentNodeData
-        let parentNodeSources = this.state.parentNodeSources;
-        let childNodesArray = this.state.childNodesArray;
+        let parentNodeData = this.state.parentNodeData,
+            parentNodeSources = this.state.parentNodeSources,
+            childNodesArray = this.state.childNodesArray;
 
         // Set an object for the graph label
         g.setGraph({ rankdir: "BT" });
-
-        console.log(g.rankdir);
 
         // Default to assigning a new object as a label for each new edge.
         g.setDefaultEdgeLabel(function () { return {}; });
@@ -57,10 +50,10 @@ class DagreD3 extends Component {
         //setting ParentNode
         g.setNode(parentNodeData.id, {
             shape: "rect",
-            label: `        ${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(10)}`,
+            label: `${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(2)}`,
             // label: `${parentNodeData.shortId}`,
-            // width: 180,
-            height: 40,
+            width: 180,
+            height: 50,
             data: parentNodeData,
             labelStyle: "font-size: 1.5em",
             style: "stroke-width: 2px; fill:#ffeb89"
@@ -70,8 +63,8 @@ class DagreD3 extends Component {
         parentNodeData.sources.forEach(source => {
             // g.setEdge(rootNode.id, source.source);
             g.setEdge(source.source, parentNodeData.id, {
-                style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
-                lineInterpolate: 'basis'
+                style: "stroke-width: 3px; fill-opacity: 0; stroke:lightgrey",
+                // lineInterpolate: 'basis'
             });
         });
         this.setNodesAndEdges(g, parentNodeSources, childNodesArray);
@@ -115,8 +108,8 @@ class DagreD3 extends Component {
                 nodeData.sources.forEach(source => {
                     // gElement.setEdge(nodeData.id, source.source);
                     gElement.setEdge(source.source, nodeData.id, {
-                        style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
-                        lineInterpolate: 'basis'
+                        style: "stroke-width: 3px; fill-opacity: 0; stroke:lightgrey",
+                        // lineInterpolate: 'basis'
                     });
                 })
             }
@@ -196,7 +189,7 @@ class DagreD3 extends Component {
                 initialScale = (this.svg.attr("width") - 100) / g.graph().width;
 
                 let temp = zoom
-                    .translate([50, 100])
+                    .translate([50, 50])
                     .scale(initialScale);
                 temp.event(this.svg);
             } else {
@@ -242,17 +235,24 @@ class DagreD3 extends Component {
     }
 
     nodeClickHandler(nodeKey) {
+
+        if (this.selectedNodeKey) {
+            let selectedNodeElem = this.gLayout.node(this.selectedNodeKey).elem;
+            selectedNodeElem.style.fill = "";
+            selectedNodeElem.children[0].style.stroke = "black";
+        }
+
         this.selectedNodeKey = nodeKey;
 
         //removing the styling for other selected nodes
-        let allNodes = this.gLayout.nodes();
-        allNodes.forEach(item => {
-            let gElemOfNode = this.gLayout.node(item).elem;
-            gElemOfNode.style.fill = "";
-            gElemOfNode.children[0].style.stroke = "black";
-        })
+        // let allNodes = this.gLayout.nodes();
+        // allNodes.forEach(item => {
+        //     let gElemOfNode = this.gLayout.node(item).elem;
+        //     gElemOfNode.style.fill = "";
+        //     gElemOfNode.children[0].style.stroke = "black";
+        // })
 
-        let nodeData = this.gLayout.node(nodeKey);
+        let nodeData = this.gLayout.node(this.selectedNodeKey);
         let g = nodeData.elem;
         g.style.fill = "lightblue";
         g.children[0].style.stroke = "red";
