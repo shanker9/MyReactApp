@@ -215,7 +215,7 @@ class DagreD3 extends Component {
 
         const { parentNodeData, parentNodeSources, childNodesArray } = graphData;
         this.gLayout = undefined;
-        this.svg = undefined;
+        // this.svg = undefined;
         this.selectedNodeKey = undefined;
         this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
     }

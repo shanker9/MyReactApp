@@ -30,6 +30,12 @@ class TwoDChart extends Component {
     this.chartWidth = boundingDiv.clientWidth;
   }
 
+  componentWillUpdate() {
+    let boundingDiv = document.getElementById('chartBoundingDiv');
+    this.chartHeight = boundingDiv.clientHeight;
+    this.chartWidth = boundingDiv.clientWidth;
+  }
+
   getChartData(testData) {
     let chartData = [];
     let dataMin, dataMax;
@@ -62,23 +68,28 @@ class TwoDChart extends Component {
 
     // const this.state.dataObject = this.getChartData(chartData);
     return (
-      <div id='chartBoundingDiv' style={{ flex: 1 }}>
-        <AreaChart width={this.chartWidth} height={this.chartHeight} data={this.state.dataObject.chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <XAxis dataKey="time" scale='auto' />
-          <YAxis domain={['auto', this.state.dataObject.dataMax]} label="Rate">
-          </YAxis>
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
-          <Area
-            type='monotone'
-            dataKey='rate'
-            dot={true}
-            stroke='#316086'
-            fill='#bfe2ff'
-          />
-        </AreaChart>
-      </div>
+      // <div>
+      //   <button style={{ height: '40px', width: '150px' }} />
+        <div id='chartBoundingDiv' style={{ flex: 1 }}>
+          <AreaChart width={this.chartWidth} height={this.chartHeight} data={this.state.dataObject.chartData}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <XAxis dataKey="time" scale='auto' />
+            <YAxis domain={['auto', this.state.dataObject.dataMax]}>
+              <Label/>
+              <Text scaleToFit={true}/>
+            </YAxis>
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Area
+              type='monotone'
+              dataKey='rate'
+              dot={true}
+              stroke='#316086'
+              fill='#bfe2ff'
+            />
+          </AreaChart>
+        </div>
+      // </div>
     );
   }
 }
