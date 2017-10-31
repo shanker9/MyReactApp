@@ -48,14 +48,16 @@ class TwoDChart extends Component {
 
       chartData.push({ time: xVal, rate: yVal });
     })
-    let ticksInterval = ((dataMax - dataMin) / chartData.length).toFixed(2);
-    return { chartData, dataMin, dataMax, ticksInterval };
+    dataMax = dataMax.toFixed(2);
+    dataMin = dataMin.toFixed(2);
+    // let ticksInterval = ((dataMax - dataMin) / chartData.length).toFixed(2);
+    return { chartData, dataMin, dataMax };
   }
 
   getFormatedDate(item) {
     let d = new Date(parseInt(item[this.entriesDatePathComponent].value * 1000));
     // return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-    return `${d.getDate()} ${this.monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    return `${d.getDate()}${this.monthNames[d.getMonth()]}${d.getFullYear()}`;
   }
 
   renderChartWithData(data, datePathComponent) {
@@ -70,25 +72,30 @@ class TwoDChart extends Component {
     return (
       // <div>
       //   <button style={{ height: '40px', width: '150px' }} />
-        <div id='chartBoundingDiv' style={{ flex: 1 }}>
-          <AreaChart width={this.chartWidth} height={this.chartHeight} data={this.state.dataObject.chartData}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <XAxis dataKey="time" scale='auto' />
-            <YAxis domain={['auto', this.state.dataObject.dataMax]}>
-              <Label/>
-              <Text scaleToFit={true}/>
-            </YAxis>
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Area
-              type='monotone'
-              dataKey='rate'
-              dot={true}
-              stroke='#316086'
-              fill='#bfe2ff'
-            />
-          </AreaChart>
-        </div>
+      <div id='chartBoundingDiv' style={{ flex: 1 }}>
+        <AreaChart width={this.chartWidth} height={this.chartHeight} data={this.state.dataObject.chartData}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <XAxis dataKey="time"
+            tickCount={2}
+            interval={10}
+          />
+          <YAxis domain={['auto', this.state.dataObject.dataMax]}
+            allowDecimals={true}
+            tickCount={8}
+          >
+          </YAxis>
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip />
+          <Area
+            type='monotone'
+            dataKey='rate'
+            dot={true}
+            stroke='#316086'
+            fill='#bfe2ff'
+          />
+          <Text width={10} />
+        </AreaChart>
+      </div>
       // </div>
     );
   }

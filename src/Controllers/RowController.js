@@ -26,6 +26,9 @@ export default class RowController {
             }
             tempJson = temp;
         }
+        if(typeof tempJson === 'number'){
+            return tempJson.toFixed(2);
+        }
         return tempJson;
     }
 }

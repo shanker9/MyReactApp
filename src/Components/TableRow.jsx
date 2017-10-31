@@ -44,6 +44,11 @@ class TableRow extends React.Component {
         let dataValues = this.state.data.values.values;
         let dataKey = this.state.data.key;
         this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FFFFFF';
+
+        //temp fix
+        let receivePrice = dataValues.receivePrice['dblVal'] !=undefined ? dataValues.receivePrice['dblVal'].toFixed(2) : undefined;
+        let price = dataValues.price['dblVal'] !=undefined ? dataValues.price['dblVal'].toFixed(2) : undefined;
+        let payPrice = dataValues.payPrice['dblVal'] !=undefined ? dataValues.payPrice['dblVal'].toFixed(2) : undefined;
         return (
             <tr ref={"tableRow"}
                 className={styles.tableGridRow}
@@ -57,13 +62,13 @@ class TableRow extends React.Component {
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.lastUpdate == undefined ? '' : dataValues.lastUpdate.dtVal.str}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.receivePrice == undefined ? '' : dataValues.receivePrice.dblVal}></TableCell>
+                    cellData={dataValues.receivePrice == undefined ? '' : receivePrice}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataValues.id == undefined ? '' : dataValues.id.strVal}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.price == undefined ? '' : dataValues.price.dblVal}></TableCell>
+                    cellData={dataValues.price == undefined ? '' : price}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
-                    cellData={dataValues.payPrice == undefined ? '' : dataValues.payPrice.dblVal}></TableCell>
+                    cellData={dataValues.payPrice == undefined ? '' : payPrice}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
                     cellData={dataKey == undefined ? '' : dataKey.name}></TableCell>
                 <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
