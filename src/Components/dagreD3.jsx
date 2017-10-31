@@ -56,7 +56,7 @@ class DagreD3 extends Component {
             height: 50,
             data: parentNodeData,
             labelStyle: "font-size: 1.5em",
-            style: "stroke-width: 2px; fill:#ffeb89"
+            style: "stroke-width: 4px; stroke:#650922; fill:white"
         });
 
         //setting edges to parentNode
@@ -91,7 +91,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px; fill:#ffeb89"
+                    style: "stroke-width: 4px; stroke:#650922; fill:white"
                 });
             } else {
                 gElement.setNode(nodeId, {
@@ -100,7 +100,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px; fill:#9CDCF5"
+                    style: "stroke-width: 4px; stroke:#650922; fill:white"
                 });
             }
 
@@ -136,7 +136,7 @@ class DagreD3 extends Component {
         // this.svg = d3Local.select('.dagreContainer').append('svg');
         let isInitialSVGRender = true, translateX, translateY, scale;
         if (this.svg == undefined) {
-            this.svg = d3Local.select("svg")
+            this.svg = d3Local.select("svg.treeSvg")
                 .attr("width", document.getElementById("dagreContainer").clientWidth)
                 .attr("height", document.getElementById("dagreContainer").clientHeight)
                 .attr("fill", "white");
@@ -244,33 +244,39 @@ class DagreD3 extends Component {
 
         this.selectedNodeKey = nodeKey;
 
-        //removing the styling for other selected nodes
-        // let allNodes = this.gLayout.nodes();
-        // allNodes.forEach(item => {
-        //     let gElemOfNode = this.gLayout.node(item).elem;
-        //     gElemOfNode.style.fill = "";
-        //     gElemOfNode.children[0].style.stroke = "black";
-        // })
-
         let nodeData = this.gLayout.node(this.selectedNodeKey);
         let g = nodeData.elem;
         g.style.fill = "lightblue";
         g.children[0].style.stroke = "red";
 
         this.updateObjectBrowserData(nodeData);
+        this.updateChartComponent(nodeData);
     }
 
     updateObjectBrowserData(nodeData) {
         this.props.objectBrowserComponentReference().updateData(nodeData.data);
     }
 
-
+    updateChartComponent(nodeData) {
+        let datePathComponent, dataArrayKey;
+        if (nodeData.data.shortId.startsWith('TS')) {
+            datePathComponent = 'dateTime';
+            dataArrayKey = 'entries';
+        }
+        else if (nodeData.data.shortId.startsWith('RC')) {
+            datePathComponent = 'date';
+            dataArrayKey = 'points';
+        }
+        if (datePathComponent && dataArrayKey) {
+            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
+        }
+    }
 
     render() {
         return (
 
             <div id="dagreContainer" className={styles.dagreContainer}>
-                <svg>
+                <svg className='treeSvg'>
                     <g></g>
                 </svg>
             </div>
