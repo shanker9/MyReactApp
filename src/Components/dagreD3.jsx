@@ -57,13 +57,13 @@ class DagreD3 extends Component {
         //setting ParentNode
         g.setNode(parentNodeData.id, {
             shape: "rect",
-            label: `        ${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(10)}`,
+            label: `${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(2)}`,
             // label: `${parentNodeData.shortId}`,
             // width: 180,
             height: 40,
             data: parentNodeData,
             labelStyle: "font-size: 1.5em",
-            style: "stroke-width: 2px; fill:#ffeb89"
+            style: "stroke-width: 4px; stroke:#650922"
         });
 
         //setting edges to parentNode
@@ -71,7 +71,7 @@ class DagreD3 extends Component {
             // g.setEdge(rootNode.id, source.source);
             g.setEdge(source.source, parentNodeData.id, {
                 style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
-                lineInterpolate: 'basis'
+                // lineInterpolate: 'basis'
             });
         });
         this.setNodesAndEdges(g, parentNodeSources, childNodesArray);
@@ -98,7 +98,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px; fill:#ffeb89"
+                    style: "stroke-width: 4px; stroke:#650922"
                 });
             } else {
                 gElement.setNode(nodeId, {
@@ -107,7 +107,7 @@ class DagreD3 extends Component {
                     // height: 40,
                     data: nodeData,
                     labelStyle: "font-size: 1.5em",
-                    style: "stroke-width: 2px; fill:#9CDCF5"
+                    style: "stroke-width: 4px; stroke:#650922"
                 });
             }
 
@@ -116,7 +116,7 @@ class DagreD3 extends Component {
                     // gElement.setEdge(nodeData.id, source.source);
                     gElement.setEdge(source.source, nodeData.id, {
                         style: "stroke-width: 3px; fill-opacity: 0; stroke:grey",
-                        lineInterpolate: 'basis'
+                        // lineInterpolate: 'basis'
                     });
                 })
             }
