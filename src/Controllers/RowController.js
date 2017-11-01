@@ -1,4 +1,5 @@
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
+import format from 'format-number';
 
 export default class RowController {
 
@@ -16,6 +17,12 @@ export default class RowController {
         }
     }
 
+    formatNumber(number){
+        let myFormat = format({prefix: '$',integerSeparator :','});
+        let formattedNum = myFormat(number);
+        return formattedNum;
+    }
+
 
     getJsonValAtPath(path, jsonObject) {
         let pathComponents = path.split('/').slice(1), tempJson = jsonObject, temp;
@@ -27,7 +34,7 @@ export default class RowController {
             tempJson = temp;
         }
         if(typeof tempJson === 'number'){
-            return tempJson.toFixed(2);
+            return this.formatNumber(tempJson.toFixed(2));
         }
         return tempJson;
     }

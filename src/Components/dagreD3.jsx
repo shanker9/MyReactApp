@@ -4,6 +4,7 @@ import * as dagreD3 from 'dagre-d3';
 import * as d3Local from 'd3';
 import styles from '../../styles/AppStyles.css'
 import dagreStyles from '../../styles/Dagre.css'
+import format from 'format-number';
 
 class DagreD3 extends Component {
 
@@ -33,6 +34,12 @@ class DagreD3 extends Component {
         this.dagreGraphTreeLayout();
     }
 
+    formatNumber(number){
+        let myFormat = format({prefix: '$',integerSeparator :','});
+        let formattedNum = myFormat(number);
+        return formattedNum;
+    }
+
     dagreGraphTreeLayout() {
         // Create a new directed graph 
         var g = new dagre.graphlib.Graph();
@@ -50,7 +57,7 @@ class DagreD3 extends Component {
         //setting ParentNode
         g.setNode(parentNodeData.id, {
             shape: "rect",
-            label: `${parentNodeData.shortId}\n ${parentNodeData.result.data.values.values.price.dblVal.toFixed(2)}`,
+            label: `${parentNodeData.shortId}\n ${this.formatNumber(parentNodeData.result.data.values.values.price.dblVal.toFixed(2))}`,
             // label: `${parentNodeData.shortId}`,
             width: 180,
             height: 50,
@@ -239,7 +246,7 @@ class DagreD3 extends Component {
         if (this.selectedNodeKey) {
             let selectedNodeElem = this.gLayout.node(this.selectedNodeKey).elem;
             selectedNodeElem.style.fill = "";
-            selectedNodeElem.children[0].style.stroke = "black";
+            selectedNodeElem.children[0].style.stroke = "#650922";
         }
 
         this.selectedNodeKey = nodeKey;

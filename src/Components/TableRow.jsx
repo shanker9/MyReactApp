@@ -1,6 +1,7 @@
 import React from 'react';
 import TableCell from './TableCell.jsx';
-import styles from '../../styles/AppStyles.css'
+import styles from '../../styles/AppStyles.css';
+import format from 'format-number';
 
 class TableRow extends React.Component {
 
@@ -40,15 +41,21 @@ class TableRow extends React.Component {
         this.setState({ data: newdata,isSelected: selectState });
     }
 
+    formatNumber(number){
+        let myFormat = format({prefix: '$',integerSeparator :','});
+        let formattedNum = myFormat(number);
+        return formattedNum;
+    }
+
     render() {
         let dataValues = this.state.data.values.values;
         let dataKey = this.state.data.key;
         this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FFFFFF';
 
         //temp fix
-        let receivePrice = dataValues.receivePrice['dblVal'] !=undefined ? dataValues.receivePrice['dblVal'].toFixed(2) : undefined;
-        let price = dataValues.price['dblVal'] !=undefined ? dataValues.price['dblVal'].toFixed(2) : undefined;
-        let payPrice = dataValues.payPrice['dblVal'] !=undefined ? dataValues.payPrice['dblVal'].toFixed(2) : undefined;
+        let receivePrice = dataValues.receivePrice['dblVal'] !=undefined ? this.formatNumber(dataValues.receivePrice['dblVal'].toFixed(2)) : undefined;
+        let price = dataValues.price['dblVal'] !=undefined ? this.formatNumber(dataValues.price['dblVal'].toFixed(2)) : undefined;
+        let payPrice = dataValues.payPrice['dblVal'] !=undefined ? this.formatNumber(dataValues.payPrice['dblVal'].toFixed(2)) : undefined;
         return (
             <tr ref={"tableRow"}
                 className={styles.tableGridRow}
