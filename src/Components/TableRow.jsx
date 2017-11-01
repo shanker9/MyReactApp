@@ -50,7 +50,7 @@ class TableRow extends React.Component {
     render() {
         let dataValues = this.state.data.values.values;
         let dataKey = this.state.data.key;
-        this.dynamicBackgroundColor = this.state.isSelected ? '#8593A4' : '#FFFFFF';
+        this.dynamicBackgroundColor = this.state.isSelected ? '#397dd4' : '#FFFFFF';
 
         //temp fix
         let receivePrice = dataValues.receivePrice['dblVal'] !=undefined ? this.formatNumber(dataValues.receivePrice['dblVal'].toFixed(2)) : undefined;

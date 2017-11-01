@@ -1,27 +1,37 @@
+    .appEnclosingDiv{
+        position: absolute;
+        width: 99vw;
+        height: 90vh;
+        background-color: rgb(226, 226, 226);
+        padding: 5px;
+    }
+    
     .appContainer{
         display: flex;
         flex-direction: column;
-        /* height: -webkit-fill-available; */
-        height: 48em;
+        /* height: 57em; */
+        height: 100%;
+        background-color: white;
     }
     
     .gridAndChartContainer {
-        /* height: 50%; */
+        /* max-height: 60%; */
+        flex: 1;
         display: -webkit-flex;
         display: flex;
-        border: 1px solid black;
+        /* border: 1px solid black; */
     }
 
     .graphAndObjectBrowserContainer{
+        flex: 1;
         display: -webkit-flex;
         display: flex;
-        /* height: 20em; */
-        flex: 1;
     }
 
     .tablecontainer {
-        width: 70%;
-        /* background-color: greenyellow; */
+        max-width: 70%;
+        border: 1px solid rgb(150, 188, 211);
+        border-collapse: collapse;        
     }
     
     .blotterinfocontainer {
@@ -41,8 +51,13 @@
     }
 
     .gridContainerDiv {
-        border: 1px solid grey;
-        flex-wrap: wrap;
+        /* border: 1px solid grey; */
+        /* flex-wrap: wrap; */
+        /* flex: 1; */
+        display: flex;
+        flex-direction: column; 
+        /* flex: 0.2; */
+        /* max-height: 100%; */
     }
     
     .header {
@@ -53,7 +68,8 @@
     .headerDiv {
         overflow-x: hidden;     
         overflow-y: scroll;
-        background-color: #2C4C65;
+        /* background-color: #2C4C65; */
+        background-color: rgb(48, 125, 212);
     }
 
     .table {
@@ -79,21 +95,81 @@
         /* text-align: center; */
         vertical-align: middle;
         padding: 1px;
-        min-width: 200px;
+        min-width: 170px;
         box-sizing: border-box;
-        color: #E7E2E2;        
+        color: white;   
     }
 
     
     .tableDiv {
-        height: 20em;
+        height: 21em;
         overflow-y: scroll;
         overflow-x: auto;
     }
 
+    .tableDiv::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        box-shadow : inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 1px;
+        background-color: #F5F5F5;
+    }
+    
+    .tableDiv::-webkit-scrollbar
+    {
+        width: 15px;
+        height: 15px;
+        background-color: #F5F5F5;
+    }
+    
+    .tableDiv::-webkit-scrollbar-thumb
+    {
+        border-radius: 5px;
+        /* -webkit-box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
+        /* box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
+        /* background-color: #a86161; */
+        background-image: -webkit-gradient(linear,
+									   left bottom,
+									   left top,
+                                       color-stop(0, #c5c8cc),
+                                       color-stop(0.2, #95afcf),                                       
+									   color-stop(0.50, #307dd4),
+									   color-stop(0.75, #6b9cd4));
+    }
+
+    .headerDiv::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        box-shadow : inset 0 0 6px rgba(0,0,0,0.3);
+        /* border-radius: 10px; */
+        background-color: #F5F5F5;
+        opacity: 0;
+    }
+
+    .headerDiv::-webkit-scrollbar
+    {
+        width: 15px;
+        height: 15px;
+        background-color: #F5F5F5;
+    }
+    
+    .headerDiv::-webkit-scrollbar-thumb
+    {
+        /* border-radius: 5px; */
+        /* -webkit-box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
+        /* box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
+        /* background-color: #a86161; */
+        background-image: -webkit-gradient(linear,
+									   left bottom,
+									   left top,
+									   color-stop(0.44, rgb(122,153,217)),
+									   color-stop(0.72, rgb(73,125,189)),
+									   color-stop(0.86, rgb(28,58,148)));
+    }
+
+
     .tableGridRow {
         border-collapse: collapse;
-        min-height: 20px;
+        height: 20px;
     }
 
     tr:hover {
@@ -107,11 +183,12 @@
     .td {
         border: 1px solid grey;
         border-bottom: 0px;
-        text-align: center;
+        text-align: left;
         font-size: 80%;
         font-weight: 300;
-        padding: 2px;
-        min-width: 200px;
+        padding-left: 5px;
+        /* padding-right: 5px; */
+        min-width: 170px;
         box-sizing: border-box;
         outline-style: outset;
         outline-color : lightgray;
@@ -159,9 +236,9 @@
     }
 
     .chartContainer{
-        min-width: 30%;
+        width: 30%;
         background-color: rgb(255, 255, 255);
-        border: 1px solid #51748B;
+        border: 1px solid rgb(150, 188, 211);
         display: flex;
         flex-direction: column;        
     }
@@ -171,7 +248,7 @@
     .graphContainer{
         width: 70%;
         background-color: #FFFFFF;        
-        border: 1px solid black;
+        border: 1px solid rgb(150, 188, 211);        
         display: flex;
         flex-direction: column;
     }
@@ -183,7 +260,7 @@
     .objectBrowserContainer{
         width: 30%;
         background-color: #ffffff;
-        border: 1px solid #51748B;
+        border: 1px solid rgb(150, 188, 211);
         display: flex;
         flex-direction: column;
     }
@@ -194,7 +271,7 @@
     }
 
     .ComponentTitle{
-        border: 1px solid black;
+        /* border: 1px solid black; */
         background-color: #F0F3F5;
         color: #0C0101;
         font-family: Geneva, Tahoma, sans-serif;

@@ -35,13 +35,13 @@ class App extends React.Component {
         return this.refs.graphTree;
     }
 
-    getChartComponentReference(){
+    getChartComponentReference() {
         return this.refs.chart;
     }
 
     render() {
         return (
-            <div>
+            <div className={styles.appEnclosingDiv}>
                 <div className={styles.appContainer}>
                     <div className={styles.gridAndChartContainer}>
                         <div className={styles.tablecontainer}>
@@ -54,13 +54,13 @@ class App extends React.Component {
 
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
-                            <TwoDChart ref="chart"/>
+                            <TwoDChart ref="chart" />
                             {/* <ThreeDChart/> */}
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
                         <div className={styles.graphContainer}>
-                        <div className={styles.ComponentTitle}><tspan>Graph Sources</tspan></div>
+                            <div className={styles.ComponentTitle}><tspan>Graph Sources</tspan></div>
                             <DagreD3 ref="graphTree"
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
