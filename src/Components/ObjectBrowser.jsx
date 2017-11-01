@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import JSONTree from 'react-json-tree';
-import ReactJson from 'react-json-view';
 import JsonView from 'react-pretty-json';
 import styles from '../../styles/AppStyles.css';
 

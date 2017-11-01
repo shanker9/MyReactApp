@@ -4,7 +4,6 @@ import TableRow from './TableRow.jsx';
 import TableView from './TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import GridView from './GridView.jsx'
-import TreeGraph from './TreeGraph.jsx';
 import AmpsController from '../Amps/AmpsData.js';
 import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
