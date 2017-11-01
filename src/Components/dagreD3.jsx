@@ -262,14 +262,16 @@ class DagreD3 extends Component {
         if (nodeData.data.shortId.startsWith('TS')) {
             datePathComponent = 'dateTime';
             dataArrayKey = 'entries';
+            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
         }
         else if (nodeData.data.shortId.startsWith('RC')) {
             datePathComponent = 'date';
             dataArrayKey = 'points';
+            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);            
         }
-        if (datePathComponent && dataArrayKey) {
-            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
-        }
+        // if (datePathComponent && dataArrayKey) {
+        //     this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
+        // }
     }
 
     render() {

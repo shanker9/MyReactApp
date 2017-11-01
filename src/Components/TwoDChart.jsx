@@ -70,8 +70,6 @@ class TwoDChart extends Component {
 
     // const this.state.dataObject = this.getChartData(chartData);
     return (
-      // <div>
-      //   <button style={{ height: '40px', width: '150px' }} />
       <div id='chartBoundingDiv' style={{ flex: 1 }}>
         <AreaChart width={this.chartWidth} height={this.chartHeight} data={this.state.dataObject.chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -96,7 +94,6 @@ class TwoDChart extends Component {
           <Text width={10} />
         </AreaChart>
       </div>
-      // </div>
     );
   }
 }
