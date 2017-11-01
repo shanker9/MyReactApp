@@ -1,7 +1,7 @@
 {
   "name": "qgraphweb",
   "version": "1.0.0",
-  "description": "React WebApp",
+  "description": "qGraph Around the World",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base ./ --host 10.0.0.10 --port 8080 --open"
