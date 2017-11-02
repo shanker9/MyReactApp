@@ -31,19 +31,27 @@
     .tablecontainer {
         max-width: 70%;
         border: 1px solid rgb(150, 188, 211);
-        border-collapse: collapse;        
+        border-collapse: collapse;
+        display: flex;
+        flex-direction: column;   
+    }
+
+    .blottercontainer{
+        height: -webkit-fill-available;
+        display: flex;
+        flex-direction: column;
     }
     
     .blotterinfocontainer {
         align-items : center;
         padding: 2px;
-        margin-bottom: 10px;
+        /* margin-bottom: 10px; */
         /* border: 0.5px solid grey; */
     }
 
     .dragtobar{
-        background-color: rgb(255, 255, 255);
-        border: 0.5px dotted black;
+        /* background-color: rgb(255, 255, 255); */
+        border: 1px dotted black;
         height: 27px;
         text-align: center;
         vertical-align: middle;
@@ -57,7 +65,8 @@
         display: flex;
         flex-direction: column; 
         /* flex: 0.2; */
-        /* max-height: 100%; */
+        /* max-height: 20em; */
+        /* max-height: 20em; */
     }
     
     .header {
@@ -102,15 +111,15 @@
 
     
     .tableDiv {
-        height: 21em;
+        height: -webkit-fill-available;
         overflow-y: scroll;
         overflow-x: auto;
     }
 
     .tableDiv::-webkit-scrollbar-track
     {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-        box-shadow : inset 0 0 6px rgba(0,0,0,0.3);
+        /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
+        /* box-shadow : inset 0 0 6px rgba(0,0,0,0.3); */
         border-radius: 1px;
         background-color: #F5F5F5;
     }
@@ -157,13 +166,13 @@
         /* border-radius: 5px; */
         /* -webkit-box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
         /* box-shadow: inset 10px 0 6px rgba(0,0,0,.3); */
-        /* background-color: #a86161; */
-        background-image: -webkit-gradient(linear,
+        background-color: #307dd4;
+        /* background-image: -webkit-gradient(linear,
 									   left bottom,
 									   left top,
 									   color-stop(0.44, rgb(122,153,217)),
 									   color-stop(0.72, rgb(73,125,189)),
-									   color-stop(0.86, rgb(28,58,148)));
+									   color-stop(0.86, rgb(28,58,148))); */
     }
 
 
@@ -271,7 +280,8 @@
     }
 
     .ComponentTitle{
-        /* border: 1px solid black; */
+        border: 0.5px solid rgb(163, 159, 159);
+        margin: 5px 5px 5px 5px;
         background-color: #F0F3F5;
         color: #0C0101;
         font-family: Geneva, Tahoma, sans-serif;
