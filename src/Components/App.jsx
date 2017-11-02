@@ -36,7 +36,15 @@ class App extends React.Component {
     }
 
     getChartComponentReference() {
-        return this.refs.chart;
+        return this.refs.twoDchart;
+    }
+
+    get3DChartComponentReference(){
+        return this.refs.threeDchart;
+    }
+
+    passNewDatato3DChart(){
+        this.get3DChartComponentReference().formatData();
     }
 
     render() {
@@ -54,8 +62,8 @@ class App extends React.Component {
 
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
-                            <TwoDChart ref="chart" />
-                            {/* <ThreeDChart/> */}
+                            {/* <TwoDChart ref="twoDchart" /> */}
+                            <ThreeDChart ref="threeDchart" />
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
@@ -65,6 +73,7 @@ class App extends React.Component {
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
                                 qGraphData={qGraphData} />
+                            <button style={{ height: '20px' }} onClick={this.passNewDatato3DChart.bind(this)} />
                         </div>
                         <div className={styles.objectBrowserContainer}>
                             <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>
@@ -76,7 +85,7 @@ class App extends React.Component {
 
         );
         // return(
-        //     <TwoDVisChart />            
+        //     <ThreeDChart/>          
         // )
     }
 

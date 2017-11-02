@@ -1,6 +1,6 @@
     .appEnclosingDiv{
         position: absolute;
-        width: 99vw;
+        width: 98vw;
         height: 90vh;
         background-color: rgb(226, 226, 226);
         padding: 5px;
@@ -192,12 +192,13 @@
     .td {
         border: 1px solid grey;
         border-bottom: 0px;
-        text-align: left;
+        text-align: center;
         font-size: 80%;
         font-weight: 300;
         padding-left: 5px;
         /* padding-right: 5px; */
         min-width: 170px;
+        max-width: 190px;
         box-sizing: border-box;
         outline-style: outset;
         outline-color : lightgray;
@@ -281,7 +282,7 @@
 
     .ComponentTitle{
         border: 0.5px solid rgb(163, 159, 159);
-        margin: 5px 5px 5px 5px;
+        margin: 2px 4px 4px 2px;
         background-color: #F0F3F5;
         color: #0C0101;
         font-family: Geneva, Tahoma, sans-serif;
