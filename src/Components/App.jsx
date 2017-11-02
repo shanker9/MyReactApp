@@ -10,7 +10,7 @@ import ObjectBrowser from './ObjectBrowser.jsx';
 import qGraphData from './qGraphData.js';
 import Plot from './Surface.jsx';
 import TwoDChart from './TwoDChart.jsx';
-import ThreeDChart from './ThreeDChart.jsx';
+import ChartHOC from './ChartHOC.jsx';
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
@@ -36,7 +36,7 @@ class App extends React.Component {
     }
 
     getChartComponentReference() {
-        return this.refs.twoDchart;
+        return this.refs.chartHOC;
     }
 
     get3DChartComponentReference(){
@@ -63,7 +63,7 @@ class App extends React.Component {
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
                             {/* <TwoDChart ref="twoDchart" /> */}
-                            <ThreeDChart ref="threeDchart" />
+                            <ChartHOC ref='chartHOC'/>
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
@@ -73,7 +73,7 @@ class App extends React.Component {
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
                                 qGraphData={qGraphData} />
-                            <button style={{ height: '20px' }} onClick={this.passNewDatato3DChart.bind(this)} />
+                            {/* <button style={{ height: '20px' }} onClick={this.passNewDatato3DChart.bind(this)} /> */}
                         </div>
                         <div className={styles.objectBrowserContainer}>
                             <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>

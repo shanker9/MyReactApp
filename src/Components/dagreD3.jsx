@@ -34,8 +34,8 @@ class DagreD3 extends Component {
         this.dagreGraphTreeLayout();
     }
 
-    formatNumber(number){
-        let myFormat = format({prefix: '$',integerSeparator :','});
+    formatNumber(number) {
+        let myFormat = format({ prefix: '$', integerSeparator: ',' });
         let formattedNum = myFormat(number);
         return formattedNum;
     }
@@ -269,12 +269,38 @@ class DagreD3 extends Component {
         if (nodeData.data.shortId.startsWith('TS')) {
             datePathComponent = 'dateTime';
             dataArrayKey = 'entries';
-            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);
+            this.props.chartComponentReference().drawChartWithData({
+                chartData:
+                {
+                    data: nodeData.data.data[dataArrayKey],
+                    datePathComponent: datePathComponent
+                },
+                chartType: '2D'
+            }
+            );
         }
         else if (nodeData.data.shortId.startsWith('RC')) {
             datePathComponent = 'date';
             dataArrayKey = 'points';
-            this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);            
+            this.props.chartComponentReference().drawChartWithData({
+                chartData:
+                {
+                    data: nodeData.data.data[dataArrayKey],
+                    datePathComponent: datePathComponent
+                },
+                chartType: '2D'
+            }
+            );
+        } else if (nodeData.data.shortId.startsWith('VS')) {
+            dataArrayKey = 'curves';
+            this.props.chartComponentReference().drawChartWithData({
+                chartData:
+                {
+                    data: nodeData.data.data[dataArrayKey],
+                },
+                chartType: '3D'
+            }
+            );
         }
         // if (datePathComponent && dataArrayKey) {
         //     this.props.chartComponentReference().renderChartWithData(nodeData.data.data[dataArrayKey], datePathComponent);

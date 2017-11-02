@@ -5,22 +5,19 @@ class ThreeDChart extends Component {
     constructor() {
         super();
 
+        this.state = {
+            volData: [],
+        }
+
         this.data = null;
         this.graph = null;
-        this.custom = this.custom.bind(this);
         this.render3DChart = this.render3DChart.bind(this);
         this.chartWidth = 0;
         this.chartHeight = 0;
         this.graph3d = undefined;
         this.dataSet = undefined;
-    }
-
-    componentDidMount() {
-
-        let boundingDiv = document.getElementById('chartBoundingDiv');
-        this.chartHeight = boundingDiv.clientHeight;
-        this.chartWidth = boundingDiv.clientWidth;
-        this.render3DChart();
+        this.layoutOptions = undefined;
+        this.monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         this.volsurfaceData = [
             {
                 "maturity": {
@@ -95,71 +92,78 @@ class ThreeDChart extends Component {
                 ]
             }
         ]
+
+    }
+
+    componentDidMount() {
+
+        let boundingDiv = document.getElementById('chartBoundingDiv');
+        this.chartHeight = boundingDiv.clientHeight;
+        this.chartWidth = boundingDiv.clientWidth;
+        this.render3DChart();
     }
 
     render3DChart() {
         // Create and populate a data table.
-        this.dataSet = new vis.DataSet();
-        // create some nice looking data with sin/cos
-        let steps = 50;  // number of datapoints will be steps*steps
-        let axisMax = 314;
-        let axisStep = axisMax / steps;
-        for (let x = 0; x < axisMax; x += axisStep) {
-            for (let y = 0; y < axisMax; y += axisStep) {
-                let value = this.custom(x, y);
-                this.dataSet.add({
-                    x: x,
-                    y: y,
-                    z: value,
-                    style: value
-                });
-            }
-        }
+        // this.dataSet = new vis.DataSet();
 
-        //width: this.chartWidth.toString(),
-        // height: (this.chartHeight).toString(),
+        // let formatedArray = [], id = 0;
+        // this.volsurfaceData.forEach(item => {
+        //     item.strikes.forEach((val, index) => {
+        //         formatedArray.push({ x: item.maturity.value / 1000, y: Math.round(val * 100), z: Math.round(item.vols[index] * 100) });
+        //         id++;
+        //     })
+        // });
+
+        // this.dataSet.add(formatedArray);   
+
         // specify options
-        let options = {
+        this.layoutOptions = {
             width: '95%',
             height: '95%',
             style: 'surface',
+            xLabel: 'maturity',
+            xValueLabel: value => this.getFormatedDate(value),
+            yLabel: 'strikes',
+            zLabel: 'vols',
+            legendLabel: 'Vols',
+            tooltip: point => `maturity: <b>${this.getFormatedDate(point.x)}</b>`,
             showPerspective: false,
             showGrid: true,
             showShadow: false,
             keepAspectRatio: false,
             showLegend: true,
-            verticalRatio: 0.5,
-            tooltip: true,
-            backgroundColor : 'black',
+            backgroundColor: 'white',
         };
 
         // create a graph3d
         let container = document.getElementById('chartBoundingDiv');
-        this.graph3d = new vis.Graph3d(container, this.dataSet, options);
+        this.graph3d = new vis.Graph3d(container, this.dataSet, this.layoutOptions);
     }
 
-    custom(x, y) {
-        return (Math.sin(x / 50) * Math.cos(y / 50) * 50 + 50);
+    getFormatedDate(value) {
+        let d = new Date(value);
+        return `${d.getDate()}${this.monthNames[d.getMonth()]}${d.getFullYear()}`;
     }
 
-    formatData(volsurfaceData) {
+    renderChartWithData(dataParams) {
         let data = new vis.DataSet();
         let formatedArray = [], id = 0;
-        this.volsurfaceData.forEach(item => {
+        dataParams.data.forEach(item => {
             item.strikes.forEach((val, index) => {
-                formatedArray.push({ x: val, y: item.vols[index], z: item.maturity.value });
+                formatedArray.push({ x: item.maturity.value * 1000, y: val, z: item.vols[index] });
                 id++;
             })
         });
 
         data.add(formatedArray);
         this.graph3d.setData(data);
-        this.graph3d.redraw();
+        // this.graph3d.redraw();
     }
 
     render() {
         return (
-            <div id="chartBoundingDiv" style={{ flex: 1 }} />
+            <div id="chartBoundingDiv" style={{ flex: 1 , font:'5px'}} />
         );
     }
 }

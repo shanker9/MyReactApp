@@ -36,10 +36,10 @@ class TwoDChart extends Component {
     this.chartWidth = boundingDiv.clientWidth;
   }
 
-  getChartData(testData) {
+  getChartData(graphData) {
     let chartData = [];
     let dataMin, dataMax;
-    testData.forEach(item => {
+    graphData.forEach(item => {
       let object, xVal = this.getFormatedDate(item),
         yVal = item.value * 100;
 
@@ -56,13 +56,12 @@ class TwoDChart extends Component {
 
   getFormatedDate(item) {
     let d = new Date(parseInt(item[this.entriesDatePathComponent].value * 1000));
-    // return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
     return `${d.getDate()}${this.monthNames[d.getMonth()]}${d.getFullYear()}`;
   }
 
-  renderChartWithData(data, datePathComponent) {
-    this.entriesDatePathComponent = datePathComponent;
-    let formatedDataForAreaChart = this.getChartData(data);
+  renderChartWithData(dataParams) {
+    this.entriesDatePathComponent = dataParams.datePathComponent;
+    let formatedDataForAreaChart = this.getChartData(dataParams.data);
     this.setState({ dataObject: formatedDataForAreaChart });
   }
 
