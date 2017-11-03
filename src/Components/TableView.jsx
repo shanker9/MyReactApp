@@ -155,7 +155,7 @@ class TableView extends React.Component {
     makeDefaultSubscription() {
         this.controller = new TableController(this, this.subscriptionTopic);
         let commandObject1 = {
-            "command": "sow",
+            "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
             "orderBy": "/name"
         }

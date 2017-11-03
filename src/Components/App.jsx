@@ -9,7 +9,7 @@ import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
 import qGraphData from './qGraphData.js';
 import Plot from './Surface.jsx';
-import TwoDChart from './TwoDChart.jsx';
+import ThreeDChart from './ThreeDChart.jsx';
 import ChartHOC from './ChartHOC.jsx';
 
 var scrollUpdateDelay = true;
@@ -62,7 +62,7 @@ class App extends React.Component {
 
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
-                            {/* <TwoDChart ref="twoDchart" /> */}
+                            {/* <ThreeDChart /> */}
                             <ChartHOC ref='chartHOC'/>
                         </div>
                     </div>
