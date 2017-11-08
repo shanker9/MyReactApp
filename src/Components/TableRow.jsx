@@ -68,7 +68,7 @@ class TableRow extends React.Component {
                 {this.props.isGroupedView ? <td className={styles.tdGroupedView}></td> : <tspan />}
                 {
                     this.state.columnOrder.map((item, i) => {
-                        return <TableCell parentBackgroundColor={this.dynamicBackgroundColor}
+                        return <TableCell key={i} parentBackgroundColor={this.dynamicBackgroundColor}
                             cellData={this.getCellDataForKey(this.state.data, item.columnkey)}></TableCell>
                     })
                 }
