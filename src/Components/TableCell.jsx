@@ -6,9 +6,9 @@ class TableCell extends React.Component {
     constructor() {
         super();
         this.state = {
-            animateColor: 'yellow'
+            animateColor: '#fff7a5'
         }
-
+        this.conditionalAnimateColor = undefined;
         this.detectTheEnd = this.detectTheEnd.bind(this);
     }
 
@@ -26,7 +26,7 @@ class TableCell extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
+        this.conditionalAnimateColor = nextProps.cellData > this.props.cellData ? '#b7ffb5' : '#ff8372';
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -42,6 +42,7 @@ class TableCell extends React.Component {
     componentDidUpdate() {
 
         this.refs.tableCell.style.backgroundColor = this.state.animateColor;
+        // this.refs.tableCell.style.backgroundColor = this.conditionalAnimateColor;
     }
 
     detectTheEnd(e) {
