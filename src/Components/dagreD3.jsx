@@ -24,6 +24,8 @@ class DagreD3 extends Component {
         this.gLayout = undefined;
         this.svg = undefined;
         this.selectedNodeKey = undefined;
+        this.isInitialSVGRender = true;
+        
     }
 
     componentDidMount() {
@@ -141,7 +143,7 @@ class DagreD3 extends Component {
         //     .attr("stroke", "black");
 
         // this.svg = d3Local.select('.dagreContainer').append('svg');
-        let isInitialSVGRender = true, translateX, translateY, scale;
+        let translateX, translateY, scale;
         if (this.svg == undefined) {
             this.svg = d3Local.select("svg.treeSvg")
                 .attr("width", document.getElementById("dagreContainer").clientWidth)
@@ -151,7 +153,7 @@ class DagreD3 extends Component {
             translateX = d3Local.transform(this.svg.select('g').attr("transform")).translate[0];
             translateY = d3Local.transform(this.svg.select('g').attr("transform")).translate[1];
             scale = d3Local.transform(this.svg.select('g').attr("transform")).scale[0];
-            isInitialSVGRender = false;
+            // isInitialSVGRender = false;
         }
         let inner = this.svg.select("g").attr("stroke", "black");
 
@@ -189,7 +191,7 @@ class DagreD3 extends Component {
         //     .attr("stroke", "black");
 
         // Center the graph
-        if (isInitialSVGRender) {
+        if (this.isInitialSVGRender) {
             let initialScale = 0.90;
 
             if (g.graph().width > this.svg.attr("width")) {
@@ -205,6 +207,7 @@ class DagreD3 extends Component {
                     .scale(initialScale);
                 temp.event(this.svg);
             }
+            this.isInitialSVGRender = false;
         } else {
             let temp = zoom
                 .translate([translateX, translateY])
@@ -224,6 +227,7 @@ class DagreD3 extends Component {
         this.gLayout = undefined;
         // this.svg = undefined;
         this.selectedNodeKey = undefined;
+        this.isInitialSVGRender = true;
         this.setState({ parentNodeData: parentNodeData, parentNodeSources: parentNodeSources, childNodesArray: childNodesArray });
     }
 
