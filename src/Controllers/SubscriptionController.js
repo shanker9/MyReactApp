@@ -40,36 +40,6 @@ export default class SubscriptionController {
         }
     }
 
-    defaultSubscriptionDataHandler2(message) {
-        if (message.c == 'group_begin') {
-            console.log(message.c);
-            return;
-        } else if (message.c == 'group_end') {
-            console.log(message.c);
-            this.parentControllerRef.updateUIWithDefaultViewData();
-            return;
-        }
-
-        let newData = message.data;
-        // let val = newData.values.values;
-        let rowKey = newData.key.name;
-        let item = this.appDataModel.getDataFromDefaultData(rowKey);
-
-        newData.values.values.lastUpdate.dtVal.formattedDate = this.dateFormatter(newData.values.values.lastUpdate.dtVal.value);
-
-        item.data.values.values = this.mergeJsonObjects(item.data.values.values, newData.values.values);
-
-        // if (item == undefined) {
-        //     this.appDataModel.addorUpdateRowData(rowKey, { "rowID": rowKey, "data": newData, "isSelected": false, "isUpdated": false });
-        // } else {
-        this.appDataModel.addorUpdateRowData(rowKey, { "rowID": item.rowID, "data": item.data, "isSelected": item.isSelected, "isUpdated": true });
-
-        // if (this.appDataModel.getGroupedData() != undefined) {
-        //     this.parentControllerRef.updateRowDataInGroupedData(message);
-        // }
-        this.parentControllerRef.updateUIRowWithData(item.data, 'ref' + item.rowID);
-    }
-
 
     defaultSubscriptionDetailsHandler(subscriptionId) {
         console.log('Default Subscription ID:', subscriptionId);
