@@ -7,8 +7,6 @@ import GridView from './GridView.jsx'
 import AmpsController from '../Amps/AmpsData.js';
 import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
-import qGraphData from './qGraphData.js';
-import Plot from './Surface.jsx';
 import ThreeDChart from './ThreeDChart.jsx';
 import ChartHOC from './ChartHOC.jsx';
 
