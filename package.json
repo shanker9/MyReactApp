@@ -4,7 +4,7 @@
   "description": "qGraph Around the World",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --content-base ./ --host localhost --port 8080 --open"
+    "start": "webpack-dev-server --hot --inline --content-base ./ --host localhost --port 9090 --open"
   },
   "author": "Shanker",
   "license": "ISC",

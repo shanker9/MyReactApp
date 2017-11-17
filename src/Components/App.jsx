@@ -72,7 +72,7 @@ class App extends React.Component {
                             <DagreD3 ref="graphTree"
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
-                                qGraphData={qGraphData} />
+                                qGraphData={{}} />
                             {/* <button style={{ height: '20px' }} onClick={this.passNewDatato3DChart.bind(this)} /> */}
                         </div>
                         <div className={styles.objectBrowserContainer}>
