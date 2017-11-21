@@ -15,6 +15,34 @@ class TableRow extends React.Component {
         }
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
+
+        this.dataKeysJsonpathMapper = {
+            "counterparty": "/data/counterparty",
+
+            "maturityDate": "/data/maturityDate/str",
+
+            "payCurrency": "/data/pay/currency",
+            "payDiscountCurve": "/data/pay/discountCurve",
+            "payFixedRate": "/data/pay/fixedRate",
+            "payNotional": "/data/pay/notional",
+
+            "receiveCurrency": "/data/receive/currency",
+            "receiveDiscountCurve": "/data/receive/discountCurve",
+            "receiveIndex": "/data/receive/index",
+            "receiveNotional": "/data/receive/notional",
+
+            "lastUpdate": "/lastUpdated/str",
+
+            "payLeg": "/output/componentPrices/payLeg",
+            "receiveLeg": "/output/componentPrices/receiveLeg",
+
+            "price": "/output/price",
+            "rho10bps": "/output/rho10bps",
+
+            "product": "/product",
+            "underlier": "/underlier",
+            "vertex": "/vertex"
+        }
     }
 
     handleRowClick(e) {
@@ -33,23 +61,66 @@ class TableRow extends React.Component {
         return formattedNum;
     }
 
+    // getCellDataForKey(data, key) {
+    //     let result;
+    //     if (data.values.values[key] == undefined) {
+    //         if (data.key[key] == undefined) { return '' }
+    //         else {
+    //             result = data.key[key];
+    //         }
+    //     } else {
+    //         let val = data.values.values[key];
+    //         if (val.hasOwnProperty('strVal')) {
+    //             result = val['strVal'];
+    //         } else if (val.hasOwnProperty('dtVal')) {
+    //             result = val['dtVal']['str'];
+    //         } else if (val.hasOwnProperty('dblVal')) {
+    //             result = val['dblVal'];
+    //         }
+    //     }
+
+    //     if ((key === 'receivePrice' || key === 'price' || key === 'payPrice') && result !== null) {
+    //         return this.formatNumber(result.toFixed(2));
+    //     }
+    //     return result;
+    // }
+
     getCellDataForKey(data, key) {
-        let result;
-        if (data.values.values[key] == undefined) {
-            if (data.key[key] == undefined) { return '' }
-            else {
-                result = data.key[key];
-            }
+        let result, jsonpathforkey = this.dataKeysJsonpathMapper[key];
+
+        if (jsonpathforkey == undefined) {
+            return '';
         } else {
-            let val = data.values.values[key];
-            if (val.hasOwnProperty('strVal')) {
-                result = val['strVal'];
-            } else if (val.hasOwnProperty('dtVal')) {
-                result = val['dtVal']['str'];
-            } else if (val.hasOwnProperty('dblVal')) {
-                result = val['dblVal'];
+            let pathComponents = jsonpathforkey.split('/');
+            pathComponents = pathComponents.filter(item => {
+                if (item != "")
+                    return item;
+            })
+            if (pathComponents.length == 0) {
+                result = data[key];
+            } else {
+                result = data;
+                pathComponents.forEach(pathComponent => {
+                    result = result[pathComponent];
+                })
             }
         }
+
+        // if (data.data.values[key] == undefined) {
+        //     if (data.key[key] == undefined) { return '' }
+        //     else {
+        //         result = data.key[key];
+        //     }
+        // } else {
+        //     let val = data.values.values[key];
+        //     if (val.hasOwnProperty('strVal')) {
+        //         result = val['strVal'];
+        //     } else if (val.hasOwnProperty('dtVal')) {
+        //         result = val['dtVal']['str'];
+        //     } else if (val.hasOwnProperty('dblVal')) {
+        //         result = val['dblVal'];
+        //     }
+        // }
 
         if ((key === 'receivePrice' || key === 'price' || key === 'payPrice') && result !== null) {
             return this.formatNumber(result.toFixed(2));
@@ -58,7 +129,7 @@ class TableRow extends React.Component {
     }
 
     render() {
-        this.dynamicBackgroundColor = this.state.isSelected ? '#7cb6ff' : this.props.isRowColored ? '#edeff2':'#FFFFFF';
+        this.dynamicBackgroundColor = this.state.isSelected ? '#7cb6ff' : this.props.isRowColored ? '#edeff2' : '#FFFFFF';
 
         return (
             <tr ref={"tableRow"}

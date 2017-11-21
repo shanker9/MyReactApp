@@ -19,7 +19,7 @@ class App extends React.Component {
         super();
         this.state = {
             rowHeight: 20,
-            subscriptionTopic: 'ProductAll2',
+            subscriptionTopic: 'ProductAll',
             vertexData: undefined
         }
     }

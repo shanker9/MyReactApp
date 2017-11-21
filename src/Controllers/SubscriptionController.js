@@ -20,7 +20,7 @@ export default class SubscriptionController {
         }
 
         let newData = message.data;
-        let val = newData.values.values;
+        // let val = newData.values.values;
         let rowKey = message.k;
         // let rowKey = newData.key.name;
         let item = this.appDataModel.getDataFromDefaultData(rowKey);

@@ -22,6 +22,35 @@ class AppDataModel {
         this.groupColumnKeyMapper = undefined;
         this.groupedViewData = undefined;
 
+        // this.dataKeysJsonpathMapper = {
+        //     "label": "/key/label",
+        //     "name": "/key/name",
+        //     "source": "/key/source",
+        //     "amerEuro": "/values/values/amerEuro/strVal",
+        //     "contractSize": "/values/values/contractSize/strVal",
+        //     "counterparty": "/values/values/counterparty/strVal",
+        //     "error": "/values/values/error/strVal",
+        //     "id": "/values/values/id/strVal",
+        //     "lastUpdate": "/values/values/lastUpdate/dtVal/str",
+        //     "maturityDate": "/values/values/maturityDate/dtVal/str",
+        //     "payCurrency": "/values/values/payCurrency/strVal",
+        //     "payDiscountCurve": "/values/values/payDiscountCurve/strVal",
+        //     "payFixedRate": "/values/values/payFixedRate/dblVal",
+        //     "payNotional": "/values/values/payNotional/dblVal",
+        //     "payPrice": "/values/values/payPrice/dblVal",
+        //     "price": "/values/values/price/dblVal",
+        //     "putCall": "/values/values/putCall/strVal",
+        //     "receiveCurrency": "/values/values/receiveCurrency/strVal",
+        //     "receiveDiscountCurve": "/values/values/receiveDiscountCurve/strVal",
+        //     "receiveIndex": "/values/values/receiveIndex/strVal",
+        //     "receiveNotional": "/values/values/receiveNotional/dblVal",
+        //     "receivePrice": "/values/values/receivePrice/dblVal",
+        //     "receiveSpread": "/values/values/receiveSpread/dblVal",
+        //     "strike": "/values/values/strike/dblVal",
+        //     "underlier": "/values/values/underlier/strVal",
+        //     "volatility": "/values/values/volatility/dblVal"
+        // }
+
         this.dataKeysJsonpathMapper = {
             "label": "/key/label",
             "name": "/key/name",
