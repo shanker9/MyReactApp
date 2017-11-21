@@ -158,7 +158,6 @@ class TableView extends React.Component {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
             "orderBy": "/name",
-            "options":"conflation=500ms"
         }
 
         this.controller.ampsSubscribe1(commandObject1);
