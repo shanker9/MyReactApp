@@ -27,28 +27,28 @@ class TableView extends React.Component {
                 columnvalue: "receiveIndex"
             },
             {
-                columnkey: "lastUpdate",
-                columnvalue: "lastUpdate"
+                columnkey: "lastUpdated",
+                columnvalue: "lastUpdated"
             },
             {
-                columnkey: "receivePrice",
-                columnvalue: "receivePrice"
+                columnkey: "receiveLeg",
+                columnvalue: "receiveLeg"
             },
             {
-                columnkey: "id",
-                columnvalue: "id"
+                columnkey: "vertex",
+                columnvalue: "vertex"
             },
             {
                 columnkey: "price",
                 columnvalue: "price"
             },
             {
-                columnkey: "payPrice",
-                columnvalue: "payPrice"
+                columnkey: "payLeg",
+                columnvalue: "payLeg"
             },
             {
-                columnkey: "name",
-                columnvalue: "name"
+                columnkey: "product",
+                columnvalue: "product"
             },
             {
                 columnkey: "volatility",
@@ -91,12 +91,12 @@ class TableView extends React.Component {
                 columnvalue: "receiveSpread"
             },
             {
-                columnkey: "amerEuro",
-                columnvalue: "amerEuro"
+                columnkey: "amerOrEuro",
+                columnvalue: "amerOrEuro"
             },
             {
-                columnkey: "putCall",
-                columnvalue: "putCall"
+                columnkey: "putOrCall",
+                columnvalue: "putOrCall"
             },
             {
                 columnkey: "contractSize",
@@ -158,6 +158,7 @@ class TableView extends React.Component {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
             "orderBy": "/name",
+            "filter":"(/underlier NOT LIKE '.')"
         }
 
         this.controller.ampsSubscribe1(commandObject1);
@@ -176,10 +177,14 @@ class TableView extends React.Component {
             bottomDivHeight: bottomDivHeight,
             isGroupedView: false
         });
+        // endIndex = gridDataSource.length;
 
         let viewableUpperLimit = Math.round(gridDiv.clientHeight / this.props.rowHeight);
         let lowerLimit = startIndex + 1;
-        let upperLimit = startIndex + viewableUpperLimit < endIndex ? startIndex + viewableUpperLimit : endIndex;
+        let upperLimit = startIndex + viewableUpperLimit < endIndex ? 
+                        (startIndex + viewableUpperLimit > gridDataSource.length ? gridDataSource.length : startIndex + viewableUpperLimit)
+                        : endIndex;
+        
         this.refs.blotterInfo.updateGroupedViewStateTo(false);
         this.refs.blotterInfo.updateRowViewInfo(lowerLimit, upperLimit, this.controller.getDatamapSize());
     }
@@ -191,9 +196,17 @@ class TableView extends React.Component {
         let endIndex = startIndex + 50;
         let viewableUpperLimit = Math.round(gridDiv.clientHeight / this.props.rowHeight);
         let lowerLimit = startIndex + 1;
-        let upperLimit = startIndex + viewableUpperLimit < endIndex ? startIndex + viewableUpperLimit : endIndex;
 
-        this.setState(this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
+        let { gridDataSource, topDivHeight, bottomDivHeight } = this.controller.getDefaultViewData(startIndex, endIndex, this.props.rowHeight);
+        this.setState({
+            gridDataSource: gridDataSource,
+            topDivHeight: topDivHeight,
+            bottomDivHeight: bottomDivHeight,
+            isGroupedView: this.state.isGroupedView
+        });
+        let upperLimit = startIndex + viewableUpperLimit < endIndex ? 
+                        (startIndex + viewableUpperLimit > gridDataSource.length ? gridDataSource.length : startIndex + viewableUpperLimit)
+                        : endIndex;
         this.refs.blotterInfo.updateRowViewInfo(lowerLimit, upperLimit, this.controller.getDatamapSize());
     }
 

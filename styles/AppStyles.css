@@ -104,7 +104,7 @@
         /* text-align: center; */
         vertical-align: middle;
         padding: 3px;
-        min-width: 170px;
+        min-width: 190px;
         /* box-sizing: border-box; */
         outline-style: outset;
         outline-color : lightgray;
@@ -200,8 +200,8 @@
         font-weight: 300;
         padding-left: 5px;
         /* padding-right: 5px; */
-        min-width: 170px;
-        max-width: 190px;
+        min-width: 190px;
+        /* max-width: 190px; */
         /* box-sizing: border-box; */
         outline-style: outset;
         outline-color : lightgray;

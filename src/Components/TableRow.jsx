@@ -17,6 +17,8 @@ class TableRow extends React.Component {
         this.handleRowClick = this.handleRowClick.bind(this);
 
         this.dataKeysJsonpathMapper = {
+            "amerOrEuro": "/data/amerOrEuro",
+            "contractSize":"/data/contractSize",
             "counterparty": "/data/counterparty",
 
             "maturityDate": "/data/maturityDate/str",
@@ -26,21 +28,26 @@ class TableRow extends React.Component {
             "payFixedRate": "/data/pay/fixedRate",
             "payNotional": "/data/pay/notional",
 
+            "putOrCall":"/data/putOrCall",            
+
             "receiveCurrency": "/data/receive/currency",
             "receiveDiscountCurve": "/data/receive/discountCurve",
             "receiveIndex": "/data/receive/index",
             "receiveNotional": "/data/receive/notional",
 
-            "lastUpdate": "/lastUpdated/str",
+            "strike":"/data/strike",
+
+            "lastUpdated": "/lastUpdated/str",
 
             "payLeg": "/output/componentPrices/payLeg",
             "receiveLeg": "/output/componentPrices/receiveLeg",
 
             "price": "/output/price",
             "rho10bps": "/output/rho10bps",
+            "volatility":"/output/volatility",
 
             "product": "/product",
-            "underlier": "/underlier",
+            "underlier": "/data/underlier",
             "vertex": "/vertex"
         }
     }
