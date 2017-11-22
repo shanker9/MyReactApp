@@ -27,28 +27,28 @@ class TableView extends React.Component {
                 columnvalue: "receiveIndex"
             },
             {
-                columnkey: "lastUpdate",
-                columnvalue: "lastUpdate"
+                columnkey: "lastUpdated",
+                columnvalue: "lastUpdated"
             },
             {
-                columnkey: "receivePrice",
-                columnvalue: "receivePrice"
+                columnkey: "receiveLeg",
+                columnvalue: "receiveLeg"
             },
             {
-                columnkey: "id",
-                columnvalue: "id"
+                columnkey: "vertex",
+                columnvalue: "vertex"
             },
             {
                 columnkey: "price",
                 columnvalue: "price"
             },
             {
-                columnkey: "payPrice",
-                columnvalue: "payPrice"
+                columnkey: "payLeg",
+                columnvalue: "payLeg"
             },
             {
-                columnkey: "name",
-                columnvalue: "name"
+                columnkey: "product",
+                columnvalue: "product"
             },
             {
                 columnkey: "volatility",
@@ -91,12 +91,12 @@ class TableView extends React.Component {
                 columnvalue: "receiveSpread"
             },
             {
-                columnkey: "amerEuro",
-                columnvalue: "amerEuro"
+                columnkey: "amerOrEuro",
+                columnvalue: "amerOrEuro"
             },
             {
-                columnkey: "putCall",
-                columnvalue: "putCall"
+                columnkey: "putOrCall",
+                columnvalue: "putOrCall"
             },
             {
                 columnkey: "contractSize",
@@ -158,6 +158,7 @@ class TableView extends React.Component {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
             "orderBy": "/name",
+            "filter":"(/underlier NOT LIKE '.')"
         }
 
         this.controller.ampsSubscribe1(commandObject1);
