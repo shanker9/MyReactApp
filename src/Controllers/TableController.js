@@ -116,8 +116,8 @@ export default class TableController {
         let topic = this.subscriptionTopic;
         let orderby = `/${this.groupingColumnsByLevel[0]}`;
         let projectionColumnSet = new Set();
-        let numericValueColumns = ['receivePrice', 'price', 'payPrice', 'payNotional', 'receiveNotional'];
-        let dateValueColumns = ['lastUpdate'];
+        let numericValueColumns = ['payNotional', 'receiveNotional', 'price', 'receiveLeg', 'payLeg'];
+        let dateValueColumns = ['lastUpdated'];
 
         let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
 
@@ -143,6 +143,14 @@ export default class TableController {
 
         let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
 
+        options = `projection=[/data,`+
+            `SUM(/data/pay/notional) AS /data/pay/notional,` +
+            `/data/receive/index,` +            
+            `SUM(/data/receive/notional) AS /data/receive/notional,` +
+            `SUM(/output/price) AS /output/price,` +
+            `SUM(/output/componentPrices/receiveLeg) AS /output/componentPrices/receiveLeg,` +
+            `SUM(/output/componentPrices/payLeg) AS /output/componentPrices/payLeg],` +
+            `grouping=[/data/receive/index]`;
         let commandObject = { command, topic, orderby, options };
         return commandObject;
     }
