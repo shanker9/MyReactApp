@@ -9,7 +9,7 @@ export default class SubscriptionController {
     }
 
 
-    defaultSubscriptionDataHandler1(message) {
+    defaultSubscriptionDataHandler(message) {
         if (message.c == 'group_begin') {
             console.log(message.c);
             return;
@@ -20,9 +20,7 @@ export default class SubscriptionController {
         }
 
         let newData = message.data;
-        // let val = newData.values.values;
         let rowKey = message.k;
-        // let rowKey = newData.key.name;
         let item = this.appDataModel.getDataFromDefaultData(rowKey);
 
         // newData.values.values.lastUpdate.dtVal.formattedDate = this.dateFormatter(newData.values.values.lastUpdate.dtVal.value);

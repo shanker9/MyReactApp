@@ -29,7 +29,7 @@ export default class TableController {
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
     ampsSubscribe1(commandObject, columnName) {
         let subController = new SubscriptionController(this);
-        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler1.bind(subController),
+        this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
             subController.defaultSubscriptionDetailsHandler.bind(subController),
             commandObject, columnName);
     }
@@ -115,42 +115,45 @@ export default class TableController {
         let command = 'sow_and_subscribe';
         let topic = this.subscriptionTopic;
         let orderby = `/${this.groupingColumnsByLevel[0]}`;
-        let projectionColumnSet = new Set();
         let numericValueColumns = ['payNotional', 'receiveNotional', 'price', 'receiveLeg', 'payLeg'];
         let dateValueColumns = ['lastUpdated'];
 
         let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
 
-        // let projectionString = "/key/name,/values/values/lastUpdate/dtVal/str,SUM(/values/values/receivePrice/dblVal) AS /values/values/receivePrice/dblVal,/values/values/id/strVal,SUM(/values/values/price/dblVal) AS /values/values/price/dblVal,/values/values/payPrice/dblVal,/values/values/volatility/dblVal,/values/values/payCurrency/strVal,/values/values/payDiscountCurve/strVal,/values/values/payFixedRate/dblVal,/values/values/maturityDate/dtVal/str,/values/values/payNotional/dblVal,/values/values/receiveDiscountCurve/strVal,/values/values/receiveNotional/dblVal,/values/values/receiveIndex/strVal,/values/values/receiveCurrency/strVal,/values/values/receiveSpread/dblVal,/values/values/counterparty/strVal,/values/values/amerEuro/strVal,/values/values/putCall/strVal,/values/values/contractSize/strVal,/values/values/strike/dblVal,/values/values/underlier/strVal";
-
         let groupingColumnsCopy = this.groupingColumnsByLevel.slice(0);
 
-        if (groupingColumnsCopy.indexOf('name') != -1) {
-            groupingColumnsCopy.splice(projectionArray.indexOf('name'), 1);
-            groupingColumnsCopy.push('name');
-            groupingColumnsCopy.reverse();
-        }
+        // if (groupingColumnsCopy.indexOf('name') != -1) {
+        //     groupingColumnsCopy.splice(projectionArray.indexOf('name'), 1);
+        //     groupingColumnsCopy.push('name');
+        //     groupingColumnsCopy.reverse();
+        // }
 
-        let groupingColumnsProjectionString = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item)).join(',');
-        let aggregateColumnsProjectionString = numericValueColumns.map(item => this.getJSONPathForColumnKey(item))
-            .map(path => `SUM(${path}) AS ${path}`).join(',');
-        // let dateValueColumnsProjectionString = dateValueColumns.map(item => this.getJSONPathForColumnKey(item)).join(',');
+        let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
+        let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
-        let projArray = [groupingColumnsProjectionString, aggregateColumnsProjectionString];
-        // let projArray = [groupingColumnsProjectionString,dateValueColumnsProjectionString,aggregateColumnsProjectionString];
-        let projectionString = projArray.join(',');
+        let projectionStringArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray);
+        projectionStringArray.sort();
 
+        projectionStringArray = projectionStringArray.map(path =>{
+            if(aggregateColumnsJsonpathArray.indexOf(path) != -1){
+                return `SUM(${path}) AS ${path}`;
+            }else{
+                return `${path}`;
+            }
+        });
+
+        let projectionString = projectionStringArray.join(',');
 
         let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
 
-        options = `projection=[/data,`+
-            `SUM(/data/pay/notional) AS /data/pay/notional,` +
-            `/data/receive/index,` +            
-            `SUM(/data/receive/notional) AS /data/receive/notional,` +
-            `SUM(/output/price) AS /output/price,` +
-            `SUM(/output/componentPrices/receiveLeg) AS /output/componentPrices/receiveLeg,` +
-            `SUM(/output/componentPrices/payLeg) AS /output/componentPrices/payLeg],` +
-            `grouping=[/data/receive/index]`;
+        // options = `projection=[/data,`+
+        //     `SUM(/data/pay/notional) AS /data/pay/notional,` +
+        //     `/data/receive/index,` +
+        //     `SUM(/data/receive/notional) AS /data/receive/notional,` +
+        //     `SUM(/output/price) AS /output/price,` +
+        //     `SUM(/output/componentPrices/receiveLeg) AS /output/componentPrices/receiveLeg,` +
+        //     `SUM(/output/componentPrices/payLeg) AS /output/componentPrices/payLeg],` +
+        //     `grouping=[/data/receive/index]`;
         let commandObject = { command, topic, orderby, options };
         return commandObject;
     }
@@ -289,15 +292,5 @@ export default class TableController {
             })
         })
 
-        // Promise.all([parentNodeDataQueryRequest])
-        //         .then(values=>{
-        //             values.forEach(item=>console.log(item));
-        //             new Promise((resolve, reject) => {
-        //                 let result = this.queryController.getGraphDataForNodeWithId('Graph', id);
-        //                 resolve(result);
-        //             }).then(nodesData=>{
-        //                 console.log(nodesData.length);
-        //             })
-        //         });
     }
 }
