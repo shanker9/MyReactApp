@@ -9,25 +9,17 @@ export default class TableController {
         this.uiRef = componentRef;
         this.subscriptionTopic = subscriptionTopic;
         this.ampsController = AmpsControllerSingleton.getInstance();
-        // this.isGroupedView = undefined;
         this.appDataModel = AppDataModelSingleton.getInstance();
-        // this.groupingColumnKeyMap = undefined;
-        // this.aggregatedRowsData = undefined;
-        // this.subscriptionData = new Map();
-        this.groupingColumnsByLevel = [];
-        // this.multiLevelData = new Map();
-        // this.valueKeyMapSecondLevel = new Map();
-        // this.multiGroupingDataMap = new Map();
-        // this.groupedData = undefined;
 
-        // this.subscriptionControllersMap = new Map();
+        this.groupingColumnsByLevel = [];
+
         this.queryController = new QueryController();
         this.columnSubscriptionMapper = new Map();
         this.setGroupingColumnKeyMapper = undefined;
     }
 
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
-    ampsSubscribe1(commandObject, columnName) {
+    ampsSubscribe(commandObject, columnName) {
         let subController = new SubscriptionController(this);
         this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
             subController.defaultSubscriptionDetailsHandler.bind(subController),
@@ -122,12 +114,6 @@ export default class TableController {
 
         let groupingColumnsCopy = this.groupingColumnsByLevel.slice(0);
 
-        // if (groupingColumnsCopy.indexOf('name') != -1) {
-        //     groupingColumnsCopy.splice(projectionArray.indexOf('name'), 1);
-        //     groupingColumnsCopy.push('name');
-        //     groupingColumnsCopy.reverse();
-        // }
-
         let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
         let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
@@ -146,14 +132,6 @@ export default class TableController {
 
         let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
 
-        // options = `projection=[/data,`+
-        //     `SUM(/data/pay/notional) AS /data/pay/notional,` +
-        //     `/data/receive/index,` +
-        //     `SUM(/data/receive/notional) AS /data/receive/notional,` +
-        //     `SUM(/output/price) AS /output/price,` +
-        //     `SUM(/output/componentPrices/receiveLeg) AS /output/componentPrices/receiveLeg,` +
-        //     `SUM(/output/componentPrices/payLeg) AS /output/componentPrices/payLeg],` +
-        //     `grouping=[/data/receive/index]`;
         let commandObject = { command, topic, orderby, options };
         return commandObject;
     }

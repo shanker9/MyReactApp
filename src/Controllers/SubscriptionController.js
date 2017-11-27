@@ -23,9 +23,6 @@ export default class SubscriptionController {
         let rowKey = message.k;
         let item = this.appDataModel.getDataFromDefaultData(rowKey);
 
-        // newData.values.values.lastUpdate.dtVal.formattedDate = this.dateFormatter(newData.values.values.lastUpdate.dtVal.value);
-        // newData.values.values.maturityDate.dtVal.formattedDate = this.dateFormatter(newData.values.values.maturityDate.dtVal.value);
-
         if (item == undefined) {
             this.appDataModel.addorUpdateRowData(rowKey, { "rowID": rowKey, "data": newData, "isSelected": false, "isUpdated": false });
         } else {

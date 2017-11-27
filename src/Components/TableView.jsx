@@ -114,8 +114,7 @@ class TableView extends React.Component {
 
         this.subscriptionTopic = this.props.subscriptionTopic;
 
-        /** Event Handlers */
-        this.updateDataGrid = this.updateDataGridWithDefaultView.bind(this);
+        this.updateDataGridWithDefaultView = this.updateDataGridWithDefaultView.bind(this);
         this.updateDataGridWithGroupedView = this.updateDataGridWithGroupedView.bind(this);
         this.loadDataGridWithGroupedView = this.loadDataGridWithGroupedView.bind(this);
         this.rowUpdate = this.rowUpdate.bind(this);
@@ -161,8 +160,7 @@ class TableView extends React.Component {
             "filter":"(/underlier NOT LIKE '.')"
         }
 
-        this.controller.ampsSubscribe1(commandObject1);
-
+        this.controller.ampsSubscribe(commandObject1);
     }
 
     loadDataGridWithDefaultView() {
@@ -177,7 +175,6 @@ class TableView extends React.Component {
             bottomDivHeight: bottomDivHeight,
             isGroupedView: false
         });
-        // endIndex = gridDataSource.length;
 
         let viewableUpperLimit = Math.round(gridDiv.clientHeight / this.props.rowHeight);
         let lowerLimit = startIndex + 1;
@@ -244,9 +241,6 @@ class TableView extends React.Component {
         if (rowElem != undefined) {
             rowElem.triggerUpdate(data, selectState);
         }
-        // if (selectState) {
-        //     this.updateGraphData(rowReference);
-        // }
     }
 
     aggRowUpdate(data, rowReference) {

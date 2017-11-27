@@ -8,7 +8,6 @@ import {
   Area,
   Label
 } from 'recharts';
-import chartData from './testData.js';
 
 class TwoDChart extends Component {
 
