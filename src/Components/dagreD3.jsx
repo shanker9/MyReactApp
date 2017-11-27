@@ -59,8 +59,8 @@ class DagreD3 extends Component {
         //setting ParentNode
         g.setNode(parentNodeData.id, {
             shape: "rect",
-            label: `${parentNodeData.shortId}\n ${this.formatNumber(parentNodeData.result.data.values.values.price.dblVal.toFixed(2))}`,
-            // label: `${parentNodeData.shortId}`,
+            // label: `${parentNodeData.shortId}\n ${this.formatNumber(parentNodeData.result.data.values.values.price.dblVal.toFixed(2))}`,
+            label: `${parentNodeData.shortId}`,
             width: 180,
             height: 50,
             data: parentNodeData,

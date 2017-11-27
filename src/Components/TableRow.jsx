@@ -68,30 +68,6 @@ class TableRow extends React.Component {
         return formattedNum;
     }
 
-    // getCellDataForKey(data, key) {
-    //     let result;
-    //     if (data.values.values[key] == undefined) {
-    //         if (data.key[key] == undefined) { return '' }
-    //         else {
-    //             result = data.key[key];
-    //         }
-    //     } else {
-    //         let val = data.values.values[key];
-    //         if (val.hasOwnProperty('strVal')) {
-    //             result = val['strVal'];
-    //         } else if (val.hasOwnProperty('dtVal')) {
-    //             result = val['dtVal']['str'];
-    //         } else if (val.hasOwnProperty('dblVal')) {
-    //             result = val['dblVal'];
-    //         }
-    //     }
-
-    //     if ((key === 'receivePrice' || key === 'price' || key === 'payPrice') && result !== null) {
-    //         return this.formatNumber(result.toFixed(2));
-    //     }
-    //     return result;
-    // }
-
     getCellDataForKey(data, key) {
         let result, jsonpathforkey = this.dataKeysJsonpathMapper[key];
 
@@ -113,23 +89,7 @@ class TableRow extends React.Component {
             }
         }
 
-        // if (data.data.values[key] == undefined) {
-        //     if (data.key[key] == undefined) { return '' }
-        //     else {
-        //         result = data.key[key];
-        //     }
-        // } else {
-        //     let val = data.values.values[key];
-        //     if (val.hasOwnProperty('strVal')) {
-        //         result = val['strVal'];
-        //     } else if (val.hasOwnProperty('dtVal')) {
-        //         result = val['dtVal']['str'];
-        //     } else if (val.hasOwnProperty('dblVal')) {
-        //         result = val['dblVal'];
-        //     }
-        // }
-
-        if ((key === 'receivePrice' || key === 'price' || key === 'payPrice') && result !== null) {
+        if ((key === 'receiveLeg' || key === 'price' || key === 'payLeg') && result !== null) {
             return this.formatNumber(result.toFixed(2));
         }
         return result;

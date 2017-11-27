@@ -249,7 +249,7 @@ export default class TableController {
 
     fetchAndFormatGraphData(rowIndexValue, graphUpdateCallback) {
         let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
-        const id = dataForSelectedRow.data.values.values.id.strVal;
+        const id = dataForSelectedRow.data.vertex;
         let parentNodeData, parentNodeSources, childNodesArray;
 
         this.queryController.unsubscribeParentNodeData();

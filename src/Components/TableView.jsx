@@ -178,10 +178,8 @@ class TableView extends React.Component {
 
         let viewableUpperLimit = Math.round(gridDiv.clientHeight / this.props.rowHeight);
         let lowerLimit = startIndex + 1;
-        let upperLimit = startIndex + viewableUpperLimit < endIndex ? 
-                        (startIndex + viewableUpperLimit > gridDataSource.length ? gridDataSource.length : startIndex + viewableUpperLimit)
-                        : endIndex;
-        
+
+        let upperLimit = viewableUpperLimit > gridDataSource.length ? startIndex + gridDataSource.length : startIndex + viewableUpperLimit;
         this.refs.blotterInfo.updateGroupedViewStateTo(false);
         this.refs.blotterInfo.updateRowViewInfo(lowerLimit, upperLimit, this.controller.getDatamapSize());
     }
@@ -201,9 +199,8 @@ class TableView extends React.Component {
             bottomDivHeight: bottomDivHeight,
             isGroupedView: this.state.isGroupedView
         });
-        let upperLimit = startIndex + viewableUpperLimit < endIndex ? 
-                        (startIndex + viewableUpperLimit > gridDataSource.length ? gridDataSource.length : startIndex + viewableUpperLimit)
-                        : endIndex;
+
+        let upperLimit = viewableUpperLimit > gridDataSource.length ? startIndex + gridDataSource.length : startIndex + viewableUpperLimit;
         this.refs.blotterInfo.updateRowViewInfo(lowerLimit, upperLimit, this.controller.getDatamapSize());
     }
 
@@ -276,6 +273,7 @@ class TableView extends React.Component {
             let clonedColumnElement = document.getElementById(columnData.cellId).cloneNode(true);
             clonedColumnElement.style.color = "#1E0B06";
             clonedColumnElement.style.backgroundColor = "#ffeb89";
+            clonedColumnElement.style.boxSizing = "border-box";
             clonedColumnElement.style.height = this.refs.dragToBar.offsetHeight + "px";
             this.refs.dragToBar.appendChild(clonedColumnElement);
             this.makeGroupSubscription(columnData.cellId);
