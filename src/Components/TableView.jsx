@@ -23,6 +23,10 @@ class TableView extends React.Component {
                 columnvalue: "counterparty"
             },
             {
+                columnkey: "product",
+                columnvalue: "product"
+            },
+            {
                 columnkey: "receiveIndex",
                 columnvalue: "receiveIndex"
             },
@@ -45,10 +49,6 @@ class TableView extends React.Component {
             {
                 columnkey: "payLeg",
                 columnvalue: "payLeg"
-            },
-            {
-                columnkey: "product",
-                columnvalue: "product"
             },
             {
                 columnkey: "volatility",
@@ -157,7 +157,6 @@ class TableView extends React.Component {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
             "orderBy": "/name",
-            "filter":"(/underlier NOT LIKE '.')"
         }
 
         this.controller.ampsSubscribe(commandObject1);

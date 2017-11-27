@@ -47,7 +47,7 @@ class TableRow extends React.Component {
             "volatility":"/output/volatility",
 
             "product": "/product",
-            "underlier": "/data/underlier",
+            "underlier": "/underlier",
             "vertex": "/vertex"
         }
     }
