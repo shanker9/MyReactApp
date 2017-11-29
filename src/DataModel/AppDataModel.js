@@ -149,7 +149,7 @@ class AppDataModel {
             // tupleArray.push([key, item]);
         })
         tupleArray.sort(sortFunction);
-        tupleArray.forEach(item=>console.log(item[0]));        
+        // tupleArray.forEach(item=>console.log(item[0]));        
         var sortedMap = new Map();
         tupleArray.forEach(function (item) {
             // sortedMap[keyColumnMapper.get(item[0])] = item[1];
