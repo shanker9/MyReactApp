@@ -27,9 +27,9 @@ export default class GroupSubscriptionController {
             let keyBinMapper = this.getGroupBuckets(this.appDataModel.getDataMap(),this.groupingColumnArray);
             let groupedDat = this.mapBinDataToAggregatedRows(this.aggregatedRowsData,keyBinMapper);
             this.appDataModel.setGroupedData(groupedDat);
-            let groupedViewData = this.appDataModel.createGroupedViewedData(groupedDat);
+            this.appDataModel.sortGroupedDataBy('product');            
+            let groupedViewData = this.appDataModel.createGroupedViewedData(this.appDataModel.getGroupedData());
             this.appDataModel.setGroupedViewData(groupedViewData);
-
             this.parentControllerRef.updateUIWithGroupedViewData();
             return;
         }

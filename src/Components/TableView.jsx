@@ -109,6 +109,22 @@ class TableView extends React.Component {
             {
                 columnkey: "underlier",
                 columnvalue: "underlier"
+            },
+            {
+                columnkey: "rho10bps",
+                columnvalue: "rho10bps"
+            },
+            {
+                columnkey: "gamma1pct",
+                columnvalue: "gamma1pct"
+            },
+            {
+                columnkey: "delta1pct",
+                columnvalue: "delta1pct"
+            },
+            {
+                columnkey: "vega1pt",
+                columnvalue: "vega1pt"
             }
         ];
 
@@ -131,6 +147,7 @@ class TableView extends React.Component {
 
     componentDidMount() {
         this.makeDefaultSubscription();
+        this.makeGroupSubscription('product');
     }
 
     componentDidUpdate() {

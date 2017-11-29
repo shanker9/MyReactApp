@@ -44,6 +44,9 @@ class TableRow extends React.Component {
 
             "price": "/output/price",
             "rho10bps": "/output/rho10bps",
+            "gamma1pct": "/output/gamma1pct",
+            "delta1pct": "/output/delta1pct",
+            "vega1pt": "/output/vega1pt",            
             "volatility":"/output/volatility",
 
             "product": "/product",

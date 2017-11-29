@@ -107,7 +107,7 @@ export default class TableController {
         let command = 'sow_and_subscribe';
         let topic = this.subscriptionTopic;
         let orderby = `/${this.groupingColumnsByLevel[0]}`;
-        let numericValueColumns = ['payNotional', 'receiveNotional', 'price', 'receiveLeg', 'payLeg'];
+        let numericValueColumns = ['rho10bps', 'vega1pt', 'delta1pct', 'gamma1pct', 'payNotional', 'receiveNotional', 'price', 'receiveLeg', 'payLeg'];
         let dateValueColumns = ['lastUpdated'];
 
         let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
