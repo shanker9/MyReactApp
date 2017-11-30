@@ -17,7 +17,7 @@ class App extends React.Component {
         super();
         this.state = {
             rowHeight: 20,
-            subscriptionTopic: 'ProductAll',
+            subscriptionTopic: 'ProductAllTopic',
             vertexData: undefined
         }
     }
@@ -37,13 +37,14 @@ class App extends React.Component {
         return this.refs.chartHOC;
     }
 
-    get3DChartComponentReference(){
+    get3DChartComponentReference() {
         return this.refs.threeDchart;
     }
 
-    passNewDatato3DChart(){
+    passNewDatato3DChart() {
         this.get3DChartComponentReference().formatData();
     }
+
 
     render() {
         return (
@@ -57,11 +58,9 @@ class App extends React.Component {
                                 subscriptionTopic={this.state.subscriptionTopic}
                                 rowHeight={this.state.rowHeight} />
                         </div>
-
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
-                            {/* <ThreeDChart /> */}
-                            <ChartHOC ref='chartHOC'/>
+                            <ChartHOC ref='chartHOC' />
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
@@ -71,7 +70,6 @@ class App extends React.Component {
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
                                 qGraphData={{}} />
-                            {/* <button style={{ height: '20px' }} onClick={this.passNewDatato3DChart.bind(this)} /> */}
                         </div>
                         <div className={styles.objectBrowserContainer}>
                             <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>

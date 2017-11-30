@@ -22,6 +22,7 @@
     "react-dom": "latest",
     "react-pretty-json": "^2.0.2",
     "react-select": "^1.0.0-rc.5",
+    "react-simple-range": "^1.6.0",
     "recharts": "^1.0.0-beta.0",
     "vis": "^4.21.0",
     "webpack": "^3.5.1",

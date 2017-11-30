@@ -4,8 +4,10 @@ import BlotterInfo from './BlotterInfo.jsx';
 import TableRow from './TableRow.jsx';
 import TableHeaderCell from './TableHeaderCell.jsx';
 import GridView from './GridView.jsx';
+import ReactSimpleRange from 'react-simple-range';
 import styles from '../../styles/AppStyles.css'
-var flag = false, skipcount = 0;
+
+// var flag = false, skipcount = 0;
 class TableView extends React.Component {
 
     constructor(props) {
@@ -311,9 +313,30 @@ class TableView extends React.Component {
         this.props.graphTreeComponentReference().updateGraphData(graphData);
     }
 
+    sliderChangeHandler(e) {
+        console.dir(e.value);
+    }
+
     render() {
         return (
             <div className={styles.blottercontainer}>
+                <div className={styles.temporalUIblock}>
+                    <div className={styles.temporalslider}>
+                        <ReactSimpleRange
+                            disableTrack
+                            min={0}
+                            max={15}
+                            step={5}
+                            defaultValue={15}
+                            sliderSize={6}
+                            thumbSize={15}
+                            sliderColor="#61a9f9"
+                            trackColor="#307dd4"
+                            thumbColor="#307dd4"
+                            onChange={this.sliderChangeHandler.bind(this)} />
+                    </div>
+                    <button className={styles.temporalButton}> Live Prices </button>
+                </div>
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscriptionTopic}
                     clearGrouping={this.clearGrouping.bind(this)} />
