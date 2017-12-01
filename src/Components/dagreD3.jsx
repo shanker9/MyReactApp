@@ -195,16 +195,16 @@ class DagreD3 extends Component {
             let initialScale = 0.90;
 
             if (g.graph().width > this.svg.attr("width")) {
-                initialScale = (this.svg.attr("width") - 100) / g.graph().width;
-
+                initialScaleX = (this.svg.attr("width") - 100) / g.graph().width;
+                initialScaleY = (this.svg.attr("height") - 20) / g.graph().height;
                 let temp = zoom
-                    .translate([50, 50])
-                    .scale(initialScale);
+                    .translate([50, 10])
+                    .scale(initialScaleX,initialScaleY);
                 temp.event(this.svg);
             } else {
                 let temp = zoom
-                    .translate([(this.svg.attr("width") - g.graph().width * initialScale) / 2, 50])
-                    .scale(initialScale);
+                    .translate([(this.svg.attr("width") - g.graph().width * initialScale) / 2, 10])
+                    .scale(initialScale,initialScale);
                 temp.event(this.svg);
             }
             this.isInitialSVGRender = false;
