@@ -285,7 +285,7 @@ class TableView extends React.Component {
         let columnIndexInGroupedList = this.controller.getGroupingColumnsArray().indexOf(columnData.cellId);
 
         if (columnIndexInGroupedList == -1) {
-            if (this.controller.getGroupingColumnsArray().length == 0) {
+            if (this.refs.dragToBar.firstChild.nodeName == '#text') {
                 this.refs.dragToBar.removeChild(this.refs.dragToBar.firstChild);
             }
             let clonedColumnElement = document.getElementById(columnData.cellId).cloneNode(true);
@@ -314,7 +314,8 @@ class TableView extends React.Component {
     }
 
     sliderChangeHandler(e) {
-        console.dir(e.value);
+        console.dir(15 - e.value);
+        this.controller.getDateAtBeforeMins(15 - e.value);
     }
 
     render() {
@@ -328,7 +329,7 @@ class TableView extends React.Component {
                             max={15}
                             step={5}
                             defaultValue={15}
-                            sliderSize={6}
+                            sliderSize={4}
                             thumbSize={15}
                             sliderColor="#61a9f9"
                             trackColor="#307dd4"

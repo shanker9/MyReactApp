@@ -120,10 +120,10 @@ export default class TableController {
         let projectionStringArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray);
         projectionStringArray.sort();
 
-        projectionStringArray = projectionStringArray.map(path =>{
-            if(aggregateColumnsJsonpathArray.indexOf(path) != -1){
+        projectionStringArray = projectionStringArray.map(path => {
+            if (aggregateColumnsJsonpathArray.indexOf(path) != -1) {
                 return `SUM(${path}) AS ${path}`;
-            }else{
+            } else {
                 return `${path}`;
             }
         });
@@ -197,19 +197,19 @@ export default class TableController {
         this.appDataModel.setGroupedViewData(undefined);
     }
 
-    clearGroupSubscription(subscriptionId, groupingColumnKey) {
-        this.unsubscribe(subscriptionId, (subId, columnRef) => this.columnSubscriptionMapper.delete(columnRef), groupingColumnKey);
+    // clearGroupSubscription(subscriptionId, groupingColumnKey) {
+    //     this.unsubscribe(subscriptionId, (subId, columnRef) => this.columnSubscriptionMapper.delete(columnRef), groupingColumnKey);
 
-        this.appDataModel.getGroupedData().clear();
-        this.appDataModel.setGroupedData(undefined);
+    //     this.appDataModel.getGroupedData().clear();
+    //     this.appDataModel.setGroupedData(undefined);
 
-        this.appDataModel.getGroupColumnKeyMapper().clear();
-        this.appDataModel.setGroupColumnKeyMapper(undefined);
+    //     this.appDataModel.getGroupColumnKeyMapper().clear();
+    //     this.appDataModel.setGroupColumnKeyMapper(undefined);
 
-        this.clearArray(this.appDataModel.getGroupedViewData());
-        this.appDataModel.setGroupedViewData(undefined);
+    //     this.clearArray(this.appDataModel.getGroupedViewData());
+    //     this.appDataModel.setGroupedViewData(undefined);
 
-    }
+    // }
 
     clearArray(array) {
         while (array.length > 0) {
@@ -269,6 +269,26 @@ export default class TableController {
                 this.uiRef.updateGraphUIWithData({ parentNodeData, parentNodeSources, childNodesArray });
             })
         })
+    }
 
+    /* TEMPORAL METHODS */
+
+    getDateAtBeforeMins(minutesInPast) {
+        let bookmark = this.getBookmarkInPast(minutesInPast);
+        let commandObject = {
+            "command": "sow_and_subscribe",
+            "topic": this.subscriptionTopic,
+            "orderBy": "/name",
+            "bookmark": bookmark
+        }
+        // this.ampsSubscribe(commandObject);
+    }
+
+    getBookmarkInPast(minutesInPast) {
+        let dateNow = new Date(Date.now());
+        dateNow.setMinutes(dateNow.getMinutes() - minutesInPast);
+        let bookmark = `${dateNow.getUTCFullYear()}${dateNow.getUTCMonth() + 1}${dateNow.getUTCDate() < 10 ? '0' + dateNow.getUTCDate() : dateNow.getUTCDate()}T\
+${dateNow.getUTCHours()}${dateNow.getUTCMinutes()}${dateNow.getUTCSeconds()}`;
+        console.log(bookmark);
     }
 }

@@ -57,6 +57,10 @@ var AmpsControllerSingleton = (function () {
                     ampsCommandObject = ampsCommandObject.filter(commandObject.filter);
                 }
 
+                if (commandObject.bookmark != undefined) {
+                    ampsCommandObject = ampsCommandObject.bookmark(commandObject.bookmark);
+                }
+
                 if (commandObject.orderBy != undefined) {
                     ampsCommandObject = ampsCommandObject.orderBy(commandObject.orderBy);
                 }
