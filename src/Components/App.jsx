@@ -3,8 +3,8 @@ import TableView from './Grid/View/TableView.jsx';
 import styles from '../../styles/AppStyles.css'
 import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
-import ThreeDChart from './ThreeDChart.jsx';
-import ChartHOC from './ChartHOC.jsx';
+import ThreeDChart from './Charts/View/ThreeDChart.jsx';
+import ChartHOC from './Charts/View/ChartHOC.jsx';
 
 var scrollUpdateDelay = true;
 class App extends React.Component {
