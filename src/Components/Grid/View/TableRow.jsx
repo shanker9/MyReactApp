@@ -1,6 +1,6 @@
 import React from 'react';
 import TableCell from './TableCell.jsx';
-import styles from '../../styles/AppStyles.css';
+import styles from '../../../../styles/AppStyles.css'
 import format from 'format-number';
 
 class TableRow extends React.Component {

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TableRow from './TableRow.jsx';
 import TableAggregatedRow from './TableAggregatedRow.jsx';
-import styles from '../../styles/AppStyles.css'
+import styles from '../../../../styles/AppStyles.css'
 
 class GridView extends React.Component {
 

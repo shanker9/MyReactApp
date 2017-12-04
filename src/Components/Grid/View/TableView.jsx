@@ -1,11 +1,11 @@
 import React from 'react';
-import TableController from '../Controllers/TableController.js';
+import TableController from '../../../Controllers/TableController.js';
 import BlotterInfo from './BlotterInfo.jsx';
 import TableRow from './TableRow.jsx';
 import TableHeaderCell from './TableHeaderCell.jsx';
 import GridView from './GridView.jsx';
 import ReactSimpleRange from 'react-simple-range';
-import styles from '../../styles/AppStyles.css'
+import styles from '../../../../styles/AppStyles.css'
 
 // var flag = false, skipcount = 0;
 class TableView extends React.Component {

@@ -1,10 +1,6 @@
 import React from 'react';
-import AppController from '../Controllers/TableController.js';
-import TableRow from './TableRow.jsx';
-import TableView from './TableView.jsx';
+import TableView from './Grid/View/TableView.jsx';
 import styles from '../../styles/AppStyles.css'
-import GridView from './GridView.jsx'
-import AmpsController from '../Amps/AmpsData.js';
 import DagreD3 from './dagreD3.jsx';
 import ObjectBrowser from './ObjectBrowser.jsx';
 import ThreeDChart from './ThreeDChart.jsx';
@@ -81,9 +77,6 @@ class App extends React.Component {
             </div>
 
         );
-        // return(
-        //     <ThreeDChart/>          
-        // )
     }
 
 }

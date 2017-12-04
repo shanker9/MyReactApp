@@ -1,8 +1,8 @@
 import React from 'react';
 import TableCell from './TableCell.jsx';
 import TableRow from './TableRow.jsx';
-import styles from '../../styles/AppStyles.css';
-import RowController from '../Controllers/RowController.js';
+import styles from '../../../../styles/AppStyles.css'
+import RowController from '../../../Controllers/RowController.js';
 
 class TableAggregatedRow extends React.Component {
 

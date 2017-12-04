@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../styles/AppStyles.css'
+import styles from '../../../../styles/AppStyles.css'
 
 class BlotterInfo extends React.Component {
     constructor() {
