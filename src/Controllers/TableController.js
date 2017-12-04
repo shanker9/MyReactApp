@@ -12,7 +12,7 @@ export default class TableController {
         this.appDataModel = AppDataModelSingleton.getInstance();
 
         this.groupingColumnsByLevel = [];
-
+        this.livedatasubscriptionId = undefined;
         this.queryController = new QueryController();
         this.columnSubscriptionMapper = new Map();
         this.setGroupingColumnKeyMapper = undefined;
@@ -22,7 +22,7 @@ export default class TableController {
     ampsSubscribe(commandObject, columnName) {
         let subController = new SubscriptionController(this);
         this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
-            subController.defaultSubscriptionDetailsHandler.bind(subController),
+            (subId)=>this.livedatasubscriptionId = subId,
             commandObject, columnName);
     }
 
@@ -109,18 +109,20 @@ export default class TableController {
         let orderby = `/${this.groupingColumnsByLevel[0]}`;
         let numericValueColumns = ['rho10bps', 'vega1pt', 'delta1pct', 'gamma1pct', 'payNotional', 'receiveNotional', 'price', 'receiveLeg', 'payLeg'];
         let dateValueColumns = ['lastUpdated'];
+        let nonNumericColumns = ['counterparty','receiveIndex','payCurrency','payDiscountCurve','receiveDiscountCurve','receiveCurrency','amerOrEuro','putOrCall','contractSize','strike'];
 
         let groupingString = this.groupingColumnsByLevel.map((item, i) => `${this.getJSONPathForColumnKey(item)}`).join(',');
 
         let groupingColumnsCopy = this.groupingColumnsByLevel.slice(0);
 
         let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
+        let nonNumericColumnsJsonpathArray = nonNumericColumns.map(item => this.getJSONPathForColumnKey(item));
         let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
-        let projectionStringArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray);
-        projectionStringArray.sort();
+        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray,nonNumericColumnsJsonpathArray);
+        projectionsArray.sort();
 
-        projectionStringArray = projectionStringArray.map(path => {
+        projectionsArray = projectionsArray.map(path => {
             if (aggregateColumnsJsonpathArray.indexOf(path) != -1) {
                 return `SUM(${path}) AS ${path}`;
             } else {
@@ -128,7 +130,7 @@ export default class TableController {
             }
         });
 
-        let projectionString = projectionStringArray.join(',');
+        let projectionString = projectionsArray.join(',');
 
         let options = `projection=[${projectionString}],grouping=[${groupingString}]`;
 
@@ -276,19 +278,31 @@ export default class TableController {
     getDateAtBeforeMins(minutesInPast) {
         let bookmark = this.getBookmarkInPast(minutesInPast);
         let commandObject = {
-            "command": "sow_and_subscribe",
+            "command": "sow",
             "topic": this.subscriptionTopic,
-            "orderBy": "/name",
-            "bookmark": bookmark
+            "bookmark": bookmark,            
+            "orderBy": "/product",
         }
         // this.ampsSubscribe(commandObject);
+        this.unsubscribe(this.livedatasubscriptionId,(subid,colname)=>console.log('unsubscribed live data subscription with id',subid))
+        let subController = new SubscriptionController(this);
+        this.ampsController.connectAndSubscribe(subController.temporalDataMessageHandler.bind(subController),
+            subController.defaultSubscriptionDetailsHandler.bind(subController),
+            commandObject);
     }
 
     getBookmarkInPast(minutesInPast) {
         let dateNow = new Date(Date.now());
         dateNow.setMinutes(dateNow.getMinutes() - minutesInPast);
-        let bookmark = `${dateNow.getUTCFullYear()}${dateNow.getUTCMonth() + 1}${dateNow.getUTCDate() < 10 ? '0' + dateNow.getUTCDate() : dateNow.getUTCDate()}T\
-${dateNow.getUTCHours()}${dateNow.getUTCMinutes()}${dateNow.getUTCSeconds()}`;
+        let UTCfullYear = dateNow.getUTCFullYear();
+        let UTCdate = dateNow.getUTCDate() < 10 ? '0'+dateNow.getUTCDate() : dateNow.getUTCDate();
+        let UTCMonth = (dateNow.getUTCMonth()+1) < 10 ? '0'+(dateNow.getUTCMonth()+1) : (dateNow.getUTCMonth()+1);
+        let UTCHours = dateNow.getUTCHours() < 10 ? '0'+dateNow.getUTCHours() : dateNow.getUTCHours();
+        let UTCMinutes = dateNow.getUTCMinutes() < 10 ? '0'+dateNow.getUTCMinutes() : dateNow.getUTCMinutes();
+        let UTCSeconds = dateNow.getUTCSeconds() < 10 ? '0'+dateNow.getUTCSeconds() : dateNow.getUTCSeconds();
+
+        let bookmark = `${UTCfullYear}${UTCMonth}${UTCdate}T${UTCHours}${UTCMinutes}${UTCSeconds}`;
         console.log(bookmark);
+        return bookmark;
     }
 }

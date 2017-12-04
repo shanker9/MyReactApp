@@ -19,6 +19,7 @@ class TableView extends React.Component {
             isGroupedView: false
         }
         this.controller = undefined;
+        this.sliderValue = 15;
         this.columns = [
             {
                 columnkey: "counterparty",
@@ -31,6 +32,22 @@ class TableView extends React.Component {
             {
                 columnkey: "receiveIndex",
                 columnvalue: "receiveIndex"
+            },
+            {
+                columnkey: "rho10bps",
+                columnvalue: "rho10bps"
+            },
+            {
+                columnkey: "gamma1pct",
+                columnvalue: "gamma1pct"
+            },
+            {
+                columnkey: "delta1pct",
+                columnvalue: "delta1pct"
+            },
+            {
+                columnkey: "vega1pt",
+                columnvalue: "vega1pt"
             },
             {
                 columnkey: "lastUpdated",
@@ -111,22 +128,6 @@ class TableView extends React.Component {
             {
                 columnkey: "underlier",
                 columnvalue: "underlier"
-            },
-            {
-                columnkey: "rho10bps",
-                columnvalue: "rho10bps"
-            },
-            {
-                columnkey: "gamma1pct",
-                columnvalue: "gamma1pct"
-            },
-            {
-                columnkey: "delta1pct",
-                columnvalue: "delta1pct"
-            },
-            {
-                columnkey: "vega1pt",
-                columnvalue: "vega1pt"
             }
         ];
 
@@ -315,7 +316,18 @@ class TableView extends React.Component {
 
     sliderChangeHandler(e) {
         console.dir(15 - e.value);
+        this.changeSliderValue(e.value);
         this.controller.getDateAtBeforeMins(15 - e.value);
+    }
+
+    changeSliderValue(value){
+        this.sliderValue = value;
+    }
+
+    getLivePrices(){
+        this.changeSliderValue(15);
+        this.makeDefaultSubscription();
+        this.makeGroupSubscription('product');
     }
 
     render() {
@@ -328,7 +340,7 @@ class TableView extends React.Component {
                             min={0}
                             max={15}
                             step={5}
-                            defaultValue={15}
+                            defaultValue={this.sliderValue}
                             sliderSize={4}
                             thumbSize={15}
                             sliderColor="#61a9f9"
@@ -336,7 +348,7 @@ class TableView extends React.Component {
                             thumbColor="#307dd4"
                             onChange={this.sliderChangeHandler.bind(this)} />
                     </div>
-                    <button className={styles.temporalButton}> Live Prices </button>
+                    <button className={styles.temporalButton} onClick={this.getLivePrices.bind(this)}> Live Prices </button>
                 </div>
                 <BlotterInfo ref="blotterInfo"
                     subscribedTopic={this.props.subscriptionTopic}

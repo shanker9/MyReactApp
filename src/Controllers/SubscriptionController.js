@@ -35,6 +35,33 @@ export default class SubscriptionController {
         }
     }
 
+    temporalDataMessageHandler(message){
+        if (message.c == 'group_begin') {
+            console.log(message.c);
+            return;
+        } else if (message.c == 'group_end') {
+            console.log(message.c);
+            this.parentControllerRef.updateUIWithDefaultViewData();
+            return;
+        }
+
+        let newData = message.data;
+        let rowKey = message.k;
+        let item = this.appDataModel.getDataFromDefaultData(rowKey);
+
+        if (item == undefined) {
+            this.appDataModel.addorUpdateRowData(rowKey, { "rowID": rowKey, "data": newData, "isSelected": false, "isUpdated": false });
+        } else {
+            this.appDataModel.addorUpdateRowData(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+
+            if (this.appDataModel.getGroupedData() != undefined) {
+                this.parentControllerRef.updateRowDataInGroupedData(message);
+            }
+            this.parentControllerRef.updateUIRowWithData(newData,item.isSelected, item.rowID);
+        }
+
+    }
+
 
     defaultSubscriptionDetailsHandler(subscriptionId) {
         console.log('Default Subscription ID:', subscriptionId);
