@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import JsonView from 'react-pretty-json';
-import styles from '../../styles/AppStyles.css';
+import styles from '../../../../styles/AppStyles.css';
 
 class ObjectBrowser extends Component {
 

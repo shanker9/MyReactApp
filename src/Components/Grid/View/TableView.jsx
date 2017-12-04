@@ -176,7 +176,7 @@ class TableView extends React.Component {
         let commandObject1 = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
-            "orderBy": "/name",
+            "orderBy": "/product",
         }
 
         this.controller.ampsSubscribe(commandObject1);

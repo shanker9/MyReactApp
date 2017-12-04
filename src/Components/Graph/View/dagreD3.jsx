@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import dagre from 'dagre';
 import * as dagreD3 from 'dagre-d3';
 import * as d3Local from 'd3';
-import styles from '../../styles/AppStyles.css'
-import dagreStyles from '../../styles/Dagre.css'
+import styles from '../../../../styles/AppStyles.css';
+import dagreStyles from '../../../../styles/Dagre.css';
 import format from 'format-number';
 
 class DagreD3 extends Component {

@@ -1,20 +1,17 @@
 import React from 'react';
 import TableView from './Grid/View/TableView.jsx';
 import styles from '../../styles/AppStyles.css'
-import DagreD3 from './dagreD3.jsx';
-import ObjectBrowser from './ObjectBrowser.jsx';
-import ThreeDChart from './Charts/View/ThreeDChart.jsx';
+import DagreD3 from './Graph/View/dagreD3.jsx';
+import ObjectBrowser from './ObjectBrowser/View/ObjectBrowser.jsx';
 import ChartHOC from './Charts/View/ChartHOC.jsx';
 
-var scrollUpdateDelay = true;
 class App extends React.Component {
 
     constructor() {
         super();
         this.state = {
             rowHeight: 20,
-            subscriptionTopic: 'ProductAllTopic',
-            vertexData: undefined
+            subscriptionTopic: 'ProductAllTopic'
         }
     }
 
@@ -33,13 +30,9 @@ class App extends React.Component {
         return this.refs.chartHOC;
     }
 
-    get3DChartComponentReference() {
-        return this.refs.threeDchart;
-    }
-
-    passNewDatato3DChart() {
-        this.get3DChartComponentReference().formatData();
-    }
+    // passNewDatato3DChart() {
+    //     this.get3DChartComponentReference().formatData();
+    // }
 
 
     render() {

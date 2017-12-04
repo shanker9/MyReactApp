@@ -74,7 +74,7 @@ export default class TableController {
     /** GROUP SUBSCRIPTION DATAHANDLER **/
 
     groupDataByColumnKey(columnName) {
-        let subId = this.columnSubscriptionMapper.get(columnName);
+        // let subId = this.columnSubscriptionMapper.get(columnName);
         this.clearGroupSubscriptions();
 
         let index = this.groupingColumnsByLevel.indexOf(columnName);
