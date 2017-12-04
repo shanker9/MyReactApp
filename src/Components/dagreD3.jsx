@@ -195,8 +195,8 @@ class DagreD3 extends Component {
             let initialScale = 0.90;
 
             if (g.graph().width > this.svg.attr("width")) {
-                initialScaleX = (this.svg.attr("width") - 100) / g.graph().width;
-                initialScaleY = (this.svg.attr("height") - 20) / g.graph().height;
+                let initialScaleX = (this.svg.attr("width") - 100) / g.graph().width;
+                let initialScaleY = (this.svg.attr("height") - 20) / g.graph().height;
                 let temp = zoom
                     .translate([50, 10])
                     .scale(initialScaleX,initialScaleY);

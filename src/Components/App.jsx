@@ -58,9 +58,10 @@ class App extends React.Component {
                                 subscriptionTopic={this.state.subscriptionTopic}
                                 rowHeight={this.state.rowHeight} />
                         </div>
+
                         <div className={styles.chartContainer}>
                             <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
-                            <ChartHOC ref='chartHOC' />
+                            <ChartHOC ref='chartHOC'/>
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>

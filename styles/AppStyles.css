@@ -29,7 +29,7 @@
     }
 
     .tablecontainer {
-        max-width: 70%;
+        max-width: 60%;
         border: 1px solid rgb(150, 188, 211);
         border-collapse: collapse;
         display: flex;
@@ -274,7 +274,8 @@
     }
 
     .chartContainer{
-        width: 30%;
+        /* width: 100%; */
+        flex: 1;
         background-color: rgb(255, 255, 255);
         border: 1px solid rgb(150, 188, 211);
         display: flex;
@@ -284,7 +285,7 @@
     /* Graph */
 
     .graphContainer{
-        width: 70%;
+        width: 60%;
         background-color: #FFFFFF;        
         border: 1px solid rgb(150, 188, 211);        
         display: flex;
@@ -296,7 +297,8 @@
     }
 
     .objectBrowserContainer{
-        width: 30%;
+        /* width: 30%; */
+        flex: 1;
         background-color: #ffffff;
         border: 1px solid rgb(150, 188, 211);
         display: flex;
