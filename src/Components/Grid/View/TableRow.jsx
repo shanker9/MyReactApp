@@ -106,7 +106,7 @@ class TableRow extends React.Component {
                 className={styles.tableGridRow}
                 onClick={this.handleRowClick}
                 style={{ backgroundColor: this.dynamicBackgroundColor }}>
-                {this.props.isGroupedView ? <td className={styles.tdGroupedView}></td> : <tspan />}
+                {this.props.isGroupedView ? <td className={styles.tdGroupedView}></td> : null}
                 {
                     this.state.columnOrder.map((item, i) => {
                         return <TableCell key={i} parentBackgroundColor={this.dynamicBackgroundColor}

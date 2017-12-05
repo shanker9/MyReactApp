@@ -1,7 +1,7 @@
     .appEnclosingDiv{
         position: absolute;
         width: 98vw;
-        height: 90vh;
+        height: 95vh;
         background-color: rgb(226, 226, 226);
         padding: 5px;
     }
@@ -208,17 +208,17 @@
         cursor: default;
     }
 
+    .tableRow {
+        font-variant : bold;
+    }
+
     .td {
         border: 1px solid grey;
         border-bottom: 0px;
         text-align: center;
         font-size: 80%;
         font-weight: 300;
-        /* padding-left: 5px; */
-        /* padding-right: 5px; */
         min-width: 190px;
-        /* max-width: 190px; */
-        /* box-sizing: border-box; */
         outline-style: outset;
         outline-color : lightgray;
         outline-width : 1.3px;
@@ -233,10 +233,10 @@
         text-align: center;
         font-size: 100%;
         font-weight: bold;
-        padding: 2px;
+        /* padding: 2px; */
         min-width: 20px;
         box-sizing: border-box;
-        outline-style: outset;
+        /* outline-style: outset; */
         outline-color : lightgray;
         outline-width : 1.3px; 
     }

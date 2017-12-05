@@ -33,7 +33,7 @@ class GridView extends React.Component {
                 <table className={styles.table}>
                     <tbody className={styles.tableBody} >
                         <div style={{ height: this.props.topDivHeight }}></div>
-                        <div>
+                        {/* <div> */}
                             {this.props.viewableData.map((item, i) => {
                                 // rowColorBoolean = !rowColorBoolean;
                                 if (item.isAggregatedRow) {
@@ -60,7 +60,7 @@ class GridView extends React.Component {
                                         isRowColored={rowColorBoolean} />
                                 }
                             })}
-                        </div>
+                        {/* </div> */}
                         <div style={{ height: this.props.bottomDivHeight }}></div>
                     </tbody>
                 </table>
