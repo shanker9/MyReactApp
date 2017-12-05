@@ -40,7 +40,7 @@ class TableAggregatedRow extends React.Component {
             <tr ref={"tableRow"}
                 className={styles.tableRow}
                 onClick={this.handleRowClick}
-                style={{ backgroundColor: '#deeaed' }}>
+                style={{ backgroundColor: '#ededed' }}>
                 <td className={styles.tdGroupedView}>{this.state.expandStatus?'-':'+'}</td>
                 {
                     this.state.columnOrder.map((item, i) => {

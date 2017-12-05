@@ -27,7 +27,7 @@ class GridView extends React.Component {
     }
 
     groupedView() {
-        let rowColorBoolean = true;
+        let rowColorBoolean = false;
         return (
             <div>
                 <table className={styles.table}>
@@ -35,7 +35,7 @@ class GridView extends React.Component {
                         <div style={{ height: this.props.topDivHeight }}></div>
                         <div>
                             {this.props.viewableData.map((item, i) => {
-                                rowColorBoolean = !rowColorBoolean;
+                                // rowColorBoolean = !rowColorBoolean;
                                 if (item.isAggregatedRow) {
                                     return <TableAggregatedRow data={item.data.groupData}
                                         ref={'ref' + item.key}
