@@ -114,7 +114,7 @@
 
 
     .th {
-        border: 1px solid black;
+        border: 1px solid grey;
         font-size: 14px;
         font-weight: 300;
         /* text-align: center; */
@@ -222,9 +222,9 @@
         outline-style: outset;
         outline-color : lightgray;
         outline-width : 1.3px;
-        -webkit-transition: background-color 2s;
-        -moz-transition: background-color 2s;
-        transition: background-color 2s;       
+        -webkit-transition: background-color 1s;
+        -moz-transition: background-color 1s;
+        transition: background-color 1s;       
     }
 
     .tdGroupedView {

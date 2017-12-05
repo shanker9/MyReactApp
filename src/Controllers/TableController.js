@@ -118,10 +118,10 @@ export default class TableController {
 
         let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
         let nonNumericColumnsJsonpathArray = nonNumericColumns.map(item => this.getJSONPathForColumnKey(item));
-        let dateValueColumnsJsonpathArray = dateValueColumns.map(item => this.getJSONPathForColumnKey(item));
+        // let dateValueColumnsJsonpathArray = dateValueColumns.map(item => this.getJSONPathForColumnKey(item));
         let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
-        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray,nonNumericColumnsJsonpathArray,dateValueColumnsJsonpathArray);
+        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray,nonNumericColumnsJsonpathArray);
         projectionsArray.sort();
 
         projectionsArray = projectionsArray.map(path => {

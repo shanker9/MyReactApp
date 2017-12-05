@@ -216,7 +216,6 @@ class TableView extends React.Component {
             gridDataSource: gridDataSource,
             topDivHeight: topDivHeight,
             bottomDivHeight: bottomDivHeight,
-            isGroupedView: this.state.isGroupedView
         });
 
         let upperLimit = viewableUpperLimit > gridDataSource.length ? startIndex + gridDataSource.length : startIndex + viewableUpperLimit;

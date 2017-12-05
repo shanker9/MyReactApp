@@ -41,7 +41,7 @@ class App extends React.Component {
                 <div className={styles.appContainer}>
                     <div className={styles.gridAndChartContainer}>
                         <div className={styles.tablecontainer}>
-                            <div className={styles.ComponentTitle}><tspan>Blotter</tspan></div>
+                            <div className={styles.ComponentTitle}>Blotter</div>
                             <TableView ref='tableViewRef'
                                 graphTreeComponentReference={this.getGraphTreeComponentReference.bind(this)}
                                 subscriptionTopic={this.state.subscriptionTopic}
@@ -49,20 +49,20 @@ class App extends React.Component {
                         </div>
 
                         <div className={styles.chartContainer}>
-                            <div className={styles.ComponentTitle}><tspan>Chart</tspan></div>
+                            <div className={styles.ComponentTitle}>Chart</div>
                             <ChartHOC ref='chartHOC'/>
                         </div>
                     </div>
                     <div className={styles.graphAndObjectBrowserContainer}>
                         <div className={styles.graphContainer}>
-                            <div className={styles.ComponentTitle}><tspan>Graph Sources</tspan></div>
+                            <div className={styles.ComponentTitle}>Graph Sources</div>
                             <DagreD3 ref="graphTree"
                                 objectBrowserComponentReference={this.getObjectBrowserComponentReference.bind(this)}
                                 chartComponentReference={this.getChartComponentReference.bind(this)}
                                 qGraphData={{}} />
                         </div>
                         <div className={styles.objectBrowserContainer}>
-                            <div className={styles.ComponentTitle}><tspan>Object Browser</tspan></div>
+                            <div className={styles.ComponentTitle}>Object Browser</div>
                             <ObjectBrowser ref="objectBrowser" />
                         </div>
                     </div>
