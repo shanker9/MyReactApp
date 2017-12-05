@@ -317,7 +317,7 @@ class TableView extends React.Component {
     sliderChangeHandler(e) {
         console.dir(15 - e.value);
         this.changeSliderValue(e.value);
-        this.controller.getDateAtBeforeMins(15 - e.value);
+        this.controller.getDataAtBeforeMins(15 - e.value);
     }
 
     changeSliderValue(value){

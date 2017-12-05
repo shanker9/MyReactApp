@@ -96,6 +96,7 @@ export default class TableController {
 
     ampsGroupSubscribe(columnName) {
         let commandObject = this.formCommandObjectForGroupSubscription(columnName);
+        this.aggregateSubscriptionCommandCache = commandObject;
         let subController = new GroupSubscriptionController(this, this.groupingColumnsByLevel, commandObject);
 
         this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
@@ -117,9 +118,10 @@ export default class TableController {
 
         let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
         let nonNumericColumnsJsonpathArray = nonNumericColumns.map(item => this.getJSONPathForColumnKey(item));
+        let dateValueColumnsJsonpathArray = dateValueColumns.map(item => this.getJSONPathForColumnKey(item));
         let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
-        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray,nonNumericColumnsJsonpathArray);
+        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray,nonNumericColumnsJsonpathArray,dateValueColumnsJsonpathArray);
         projectionsArray.sort();
 
         projectionsArray = projectionsArray.map(path => {
@@ -275,19 +277,28 @@ export default class TableController {
 
     /* TEMPORAL METHODS */
 
-    getDateAtBeforeMins(minutesInPast) {
+    getDataAtBeforeMins(minutesInPast) {
         let bookmark = this.getBookmarkInPast(minutesInPast);
-        let commandObject = {
+        let temporalDatacommandObject = {
             "command": "sow",
             "topic": this.subscriptionTopic,
             "bookmark": bookmark,            
             "orderBy": "/product",
         }
-        // this.ampsSubscribe(commandObject);
-        this.unsubscribe(this.livedatasubscriptionId,(subid,colname)=>console.log('unsubscribed live data subscription with id',subid))
-        let subController = new SubscriptionController(this);
-        this.ampsController.connectAndSubscribe(subController.temporalDataMessageHandler.bind(subController),
-            subController.defaultSubscriptionDetailsHandler.bind(subController),
+        this.unsubscribeLiveData();
+        this.clearGroupSubscriptions();
+        let commandObject = this.aggregateSubscriptionCommandCache;
+        commandObject.command = 'sow';
+        commandObject.bookmark = bookmark;
+        console.log(commandObject);
+
+        this.ampsSubscribe(temporalDatacommandObject);
+
+
+
+        let subController = new GroupSubscriptionController(this,['product'],commandObject);
+        this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
+            subController.groupingSubscriptionDetailsHandler.bind(subController),
             commandObject);
     }
 
@@ -304,5 +315,9 @@ export default class TableController {
         let bookmark = `${UTCfullYear}${UTCMonth}${UTCdate}T${UTCHours}${UTCMinutes}${UTCSeconds}`;
         console.log(bookmark);
         return bookmark;
+    }
+
+    unsubscribeLiveData(){
+        this.unsubscribe(this.livedatasubscriptionId,(subid,colname)=>console.log('unsubscribed live data subscription with id',subid))
     }
 }
