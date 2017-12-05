@@ -1,4 +1,4 @@
-import AmpsControllerSingleton from '../Amps/AmpsData.js';
+import AmpsControllerSingleton from '../Amps/AmpsController.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 import SubscriptionController from './SubscriptionController.js';
 import GroupSubscriptionController from './GroupSubscriptionController.js';

@@ -1,4 +1,3 @@
-import AmpsController from '../Amps/AmpsData.js';
 
 var AppDataModelSingleton = (function () {
     var instance;

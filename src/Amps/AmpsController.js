@@ -13,7 +13,7 @@ var AmpsControllerSingleton = (function () {
             if (instance != undefined) {
                 return instance;
             } else {
-                instance = new AmpsData();
+                instance = new AmpsController();
                 return instance;
             }
         }
@@ -21,7 +21,7 @@ var AmpsControllerSingleton = (function () {
 })();
 
 
- class AmpsData {
+ class AmpsController {
 
     constructor() {
         this.ampsconnectObject = undefined;
