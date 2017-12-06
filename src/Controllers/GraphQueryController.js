@@ -1,7 +1,7 @@
 import AmpsControllerSingleton from '../Amps/AmpsController.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 
-export default class QueryController {
+export default class GraphQueryController {
     constructor() {
         this.ampsController = AmpsControllerSingleton.getInstance();
         this.parentNodeSubscriptionId = undefined;

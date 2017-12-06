@@ -149,7 +149,8 @@ class TableView extends React.Component {
     }
 
     componentDidMount() {
-        this.makeDefaultSubscription();
+        this.controller = new TableController(this, this.subscriptionTopic);        
+        // this.makeDefaultSubscription();
         this.makeGroupSubscription('product');
     }
 
