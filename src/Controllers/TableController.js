@@ -163,6 +163,10 @@ export default class TableController {
         this.uiRef.loadDataGridWithGroupedView();
     }
 
+    updateGroupedViewData() {
+        this.uiRef.updateDataGridWithGroupedView();
+    }
+
     setGroupingColumnKeyMap(groupingColumnKeyMapper) {
         this.setGroupingColumnKeyMapper = groupingColumnKeyMapper;
     }
@@ -202,15 +206,15 @@ export default class TableController {
             let filterString = filterValuesArray.join(' AND ');
             command.filter = filterString;
 
-            aggDataQueryManager.subscribeToIndividualDataOfAggregatedRowWithKey(groupKey, command,
-                this.updateUIWithGroupedViewData.bind(this), this.updateUIRowWithData.bind(this));
-        }else{
-            aggDataQueryManager.unsubscribeToIndividualDataOfAggregatedRowWithKey(groupKey);
+            aggDataQueryManager.subscribeToDetailsOfAggRow(groupKey, command,
+                this.updateGroupedViewData.bind(this), this.updateUIRowWithData.bind(this));
+        } else {
+            aggDataQueryManager.unsubscribeToDetailsOfAggRow(groupKey);
             aggRowData.bucketData.clear();
             aggRowData.bucketData = null;
             let groupedViewData = this.appDataModel.createGroupedViewedData(this.appDataModel.getGroupedData());
             this.appDataModel.setGroupedViewData(groupedViewData);
-            this.updateUIWithGroupedViewData();
+            this.updateGroupedViewData();
         }
 
     }
@@ -236,8 +240,8 @@ export default class TableController {
         });
         this.appDataModel.getGroupedData().clear();
         this.appDataModel.setGroupedData(undefined);
-        this.appDataModel.getGroupColumnKeyMapper().clear();
-        this.appDataModel.setGroupColumnKeyMapper(undefined);
+        // this.appDataModel.getGroupColumnKeyMapper().clear();
+        // this.appDataModel.setGroupColumnKeyMapper(undefined);
         this.clearArray(this.appDataModel.getGroupedViewData());
         this.appDataModel.setGroupedViewData(undefined);
     }
@@ -319,7 +323,7 @@ export default class TableController {
         commandObject.bookmark = bookmark;
         console.log(commandObject);
 
-        this.ampsSubscribe(temporalDatacommandObject);
+        // this.ampsSubscribe(temporalDatacommandObject);
 
 
 
@@ -345,6 +349,8 @@ export default class TableController {
     }
 
     unsubscribeLiveData() {
-        this.unsubscribe(this.livedatasubscriptionId, (subid, colname) => console.log('unsubscribed live data subscription with id', subid))
+        if (this.livedatasubscriptionId != undefined) {
+            this.unsubscribe(this.livedatasubscriptionId, (subid, colname) => console.log('unsubscribed live data subscription with id', subid))
+        }
     }
 }
