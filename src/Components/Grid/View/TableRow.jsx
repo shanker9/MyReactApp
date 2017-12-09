@@ -58,7 +58,7 @@ class TableRow extends React.Component {
     handleRowClick(e) {
         e.preventDefault();
         console.log('Is Ctrl Pressed: ' + e.shiftKey);
-        this.props.selectionDataUpdateHandler(this.props.indexVal, e); // Update the selection state in the data
+        this.props.selectionDataUpdateHandler(this.props.indexVal,this.props.parentRowKey, e); // Update the selection state in the data
     }
 
     triggerUpdate(newdata, selectState) {

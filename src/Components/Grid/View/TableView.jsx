@@ -173,7 +173,7 @@ class TableView extends React.Component {
     /** NON-GROUPING METHODS**/
 
     makeDefaultSubscription() {
-        this.controller = new TableController(this, this.subscriptionTopic);
+        // this.controller = new TableController(this, this.subscriptionTopic);
         let commandObject1 = {
             "command": "sow_and_subscribe",
             "topic": this.subscriptionTopic,
@@ -273,7 +273,8 @@ class TableView extends React.Component {
     clearGrouping() {
         this.controller.clearGroupSubscriptions();
         this.controller.clearArray(this.controller.groupingColumnsByLevel);
-        this.loadDataGridWithDefaultView();
+        // this.loadDataGridWithDefaultView();
+        this.makeDefaultSubscription();
         let columnDragToBar = this.refs.dragToBar;
         while (columnDragToBar.firstChild) {
             columnDragToBar.removeChild(columnDragToBar.firstChild);
@@ -299,13 +300,13 @@ class TableView extends React.Component {
         }
     }
 
-    selectionDataUpdateHandler(rowIndexValue, event) {
-        this.controller.updateRowSelectionData(rowIndexValue);
-        this.updateGraphData(rowIndexValue);
+    selectionDataUpdateHandler(rowIndexValue,parentRowKey, event) {
+        this.controller.updateRowSelectionData(rowIndexValue,parentRowKey);
+        this.updateGraphData(rowIndexValue,parentRowKey);
     }
 
-    updateGraphData(rowIndexValue) {
-        this.controller.fetchAndFormatGraphData(rowIndexValue, (updateData) => {
+    updateGraphData(rowIndexValue,parentRowKey) {
+        this.controller.fetchAndFormatGraphData(rowIndexValue,parentRowKey,(updateData) => {
             this.props.graphTreeComponentReference().updateParentNodeData(updateData);
         });
     }

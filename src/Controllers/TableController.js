@@ -254,10 +254,14 @@ export default class TableController {
 
     /** DATA ROW SELECTION */
 
-    updateRowSelectionData(indexValue) {
+    updateRowSelectionData(indexValue,parentRowKey) {
         this.appDataModel.clearSelectionStateData();
         // Updating selectionstate in the rowData for later use in lazyloading
-        let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
+        let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
+        let childRows = parentDataofSelectedRow.bucketData;
+        let dataForSelectedRow = childRows.get(indexValue);
+
+        // let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
         if (dataForSelectedRow != undefined) {
             dataForSelectedRow.isSelected = !dataForSelectedRow.isSelected;
         } else {
@@ -282,8 +286,12 @@ export default class TableController {
         this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, indexValue);
     }
 
-    fetchAndFormatGraphData(rowIndexValue, graphUpdateCallback) {
-        let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
+    fetchAndFormatGraphData(rowIndexValue,parentRowKey,graphUpdateCallback) {
+        let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
+        let childRows = parentDataofSelectedRow.bucketData;
+        let dataForSelectedRow = childRows.get(rowIndexValue);
+        
+        // let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
         const id = dataForSelectedRow.data.vertex;
         let parentNodeData, parentNodeSources, childNodesArray;
 
@@ -323,14 +331,14 @@ export default class TableController {
         commandObject.bookmark = bookmark;
         console.log(commandObject);
 
-        // this.ampsSubscribe(temporalDatacommandObject);
+        this.ampsSubscribe(temporalDatacommandObject);
 
 
 
-        let subController = new GroupSubscriptionController(this, ['product'], commandObject);
-        this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
-            subController.groupingSubscriptionDetailsHandler.bind(subController),
-            commandObject);
+        // let subController = new GroupSubscriptionController(this, ['product'], commandObject);
+        // this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
+        //     subController.groupingSubscriptionDetailsHandler.bind(subController),
+        //     commandObject);
     }
 
     getBookmarkInPast(minutesInPast) {

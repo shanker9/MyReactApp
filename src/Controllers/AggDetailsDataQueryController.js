@@ -36,13 +36,13 @@ export default class AggDetailsDataQueryController {
             this.initialUIupdateCallback();
             return;
         } else if (message.c == 'sow') {
-            this.data.set(message.k, { "rowID": message.k, "data": message.data, "isSelected": false, "isUpdated": false });
+            this.data.set(message.k, { "rowID": message.k, "data": message.data, "isSelected": false, "isUpdated": false, "aggRowKey": this.rowKey });
         } else if (message.c == 'p') {
             let newData = message.data;
             let rowKey = message.k;
             let item = this.aggRowData.bucketData.get(rowKey);
 
-            this.aggRowData.bucketData.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true });
+            this.aggRowData.bucketData.set(rowKey, { "rowID": item.rowID, "data": newData, "isSelected": item.isSelected, "isUpdated": true, "aggRowKey": item.aggRowKey });
 
             this.uiUpdateCallback(newData, item.isSelected, item.rowID);
         }
