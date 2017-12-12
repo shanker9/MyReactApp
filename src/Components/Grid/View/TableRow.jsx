@@ -16,42 +16,80 @@ class TableRow extends React.Component {
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
 
+        // this.dataKeysJsonpathMapper = {
+        //     "amerOrEuro": "/data/amerOrEuro",
+        //     "contractSize":"/data/contractSize",
+        //     "counterparty": "/data/counterparty",
+
+        //     "maturityDate": "/data/maturityDate/str",
+
+        //     "payCurrency": "/data/pay/currency",
+        //     "payDiscountCurve": "/data/pay/discountCurve",
+        //     "payFixedRate": "/data/pay/fixedRate",
+        //     "payNotional": "/data/pay/notional",
+
+        //     "putOrCall":"/data/putOrCall",            
+
+        //     "receiveCurrency": "/data/receive/currency",
+        //     "receiveDiscountCurve": "/data/receive/discountCurve",
+        //     "receiveIndex": "/data/receive/index",
+        //     "receiveNotional": "/data/receive/notional",
+
+        //     "strike":"/data/strike",
+
+        //     "lastUpdated": "/lastUpdated/str",
+
+        //     "payLeg": "/output/componentPrices/payLeg",
+        //     "receiveLeg": "/output/componentPrices/receiveLeg",
+
+        //     "price": "/output/price",
+        //     "rho10bps": "/output/rho10bps",
+        //     "gamma1pct": "/output/gamma1pct",
+        //     "delta1pct": "/output/delta1pct",
+        //     "vega1pt": "/output/vega1pt",            
+        //     "volatility":"/output/volatility",
+
+        //     "product": "/product",
+        //     "underlier": "/underlier",
+        //     "vertex": "/vertex"
+        // }
+
         this.dataKeysJsonpathMapper = {
-            "amerOrEuro": "/data/amerOrEuro",
-            "contractSize":"/data/contractSize",
-            "counterparty": "/data/counterparty",
+            "amerOrEuro": "/AmerOrEuro",
+            "contractSize": "/ContractSize",
+            "counterparty": "/Counterparty",
 
-            "maturityDate": "/data/maturityDate/str",
+            "maturityDate": "/MaturityDate",
 
-            "payCurrency": "/data/pay/currency",
-            "payDiscountCurve": "/data/pay/discountCurve",
-            "payFixedRate": "/data/pay/fixedRate",
-            "payNotional": "/data/pay/notional",
+            "payCurrency": "/PayCurrency",
+            "payDiscountCurve": "/PayDiscountCurve",
+            "payFixedRate": "/PayFixedRate",
+            "payNotional": "/PayNotional",
 
-            "putOrCall":"/data/putOrCall",            
+            "putOrCall": "/PutOrCall",
 
-            "receiveCurrency": "/data/receive/currency",
-            "receiveDiscountCurve": "/data/receive/discountCurve",
-            "receiveIndex": "/data/receive/index",
-            "receiveNotional": "/data/receive/notional",
+            "receiveCurrency": "/ReceiveCurrency",
+            "receiveDiscountCurve": "/RreceiveDiscountCurve",
+            "receiveIndex": "/ReceiveIndex",
+            "receiveNotional": "/ReceiveNotional",
 
-            "strike":"/data/strike",
+            "strike": "/Strike",
 
-            "lastUpdated": "/lastUpdated/str",
+            "lastUpdated": "/LastUpdated",
 
-            "payLeg": "/output/componentPrices/payLeg",
-            "receiveLeg": "/output/componentPrices/receiveLeg",
+            "payLeg": "/PayLeg",
+            "receiveLeg": "/ReceiveLeg",
 
-            "price": "/output/price",
-            "rho10bps": "/output/rho10bps",
-            "gamma1pct": "/output/gamma1pct",
-            "delta1pct": "/output/delta1pct",
-            "vega1pt": "/output/vega1pt",            
-            "volatility":"/output/volatility",
+            "price": "/Price",
+            "rho10bps": "/Rho10bps",
+            "gamma1pct": "/Gamma1pct",
+            "delta1pct": "/Delta1pct",
+            "vega1pt": "/Vega1pt",
+            "volatility": "/Volatility",
 
-            "product": "/product",
-            "underlier": "/underlier",
-            "vertex": "/vertex"
+            "name": "/Name",
+            "underlier": "/Underlier",
+            "vertex": "/Vertex"
         }
     }
 

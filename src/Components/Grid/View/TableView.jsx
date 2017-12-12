@@ -26,8 +26,8 @@ class TableView extends React.Component {
                 columnvalue: "counterparty"
             },
             {
-                columnkey: "product",
-                columnvalue: "product"
+                columnkey: "name",
+                columnvalue: "Name"
             },
             {
                 columnkey: "receiveIndex",
@@ -151,7 +151,7 @@ class TableView extends React.Component {
     componentDidMount() {
         this.controller = new TableController(this, this.subscriptionTopic);        
         // this.makeDefaultSubscription();
-        this.makeGroupSubscription('product');
+        this.makeGroupSubscription('name');
     }
 
     componentDidUpdate() {
@@ -327,7 +327,7 @@ class TableView extends React.Component {
 
     getLivePrices(){
         this.changeSliderValue(15);
-        this.makeDefaultSubscription();
+        // this.makeDefaultSubscription();
         this.makeGroupSubscription('product');
     }
 

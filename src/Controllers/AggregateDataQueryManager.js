@@ -2,12 +2,12 @@ import AmpsControllerSingleton from '../Amps/AmpsController.js';
 import AppDataModelSingleton from '../DataModel/AppDataModel.js';
 import AggDetailsDataQueryController from './AggDetailsDataQueryController.js';
 
-var AggregateDataQueryManagerSingleton = function () {
+var AggregateDataQueryManager = function () {
     let instance = null;
     return {
         getInstance: function () {
             if (instance == null) {
-                instance = new AggregateDataQueryManager();
+                instance = new AggregateDataQueryManagerPrivate();
                 return instance;
             } else {
                 return instance;
@@ -16,7 +16,7 @@ var AggregateDataQueryManagerSingleton = function () {
     };
 }();
 
-class AggregateDataQueryManager {
+class AggregateDataQueryManagerPrivate {
     constructor() {
         this.subscriptionsMapper = new Map();
         this.subscriptionControllers = new Map();
@@ -40,4 +40,4 @@ class AggregateDataQueryManager {
     }
 }
 
-export default AggregateDataQueryManagerSingleton;
+export default AggregateDataQueryManager;

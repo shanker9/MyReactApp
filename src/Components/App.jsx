@@ -11,7 +11,7 @@ class App extends React.Component {
         super();
         this.state = {
             rowHeight: 20,
-            subscriptionTopic: 'ProductAllTopic'
+            subscriptionTopic: 'ProductUI'
         }
     }
 

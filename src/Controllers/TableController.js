@@ -4,7 +4,7 @@ import SubscriptionController from './SubscriptionController.js';
 import GroupSubscriptionController from './GroupSubscriptionController.js';
 import AggregateSubscriptionController from './AggregateSubscriptionController';
 import GraphQueryController from './GraphQueryController.js';
-import AggregateDataQueryManagerSingleton from './AggregateDataQueryManager';
+import AggregateDataQueryManager from './AggregateDataQueryManager';
 
 export default class TableController {
     constructor(componentRef, subscriptionTopic) {
@@ -86,8 +86,8 @@ export default class TableController {
 
         let index = this.groupingColumnsByLevel.indexOf(columnName);
         if (index != -1) {
-            let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
-            this.groupingColumnsByLevel = newGroupingColumnsOrderArray;
+            // let newGroupingColumnsOrderArray = this.groupingColumnsByLevel.slice(0, index);
+            // this.groupingColumnsByLevel = newGroupingColumnsOrderArray;
         } else {
             this.groupingColumnsByLevel.push(columnName);
         }
@@ -192,7 +192,7 @@ export default class TableController {
         aggRowData.showBucketData = !isExpanded;
 
         /** Write Logic to get childdata of aggregated row from amps */
-        let aggDataQueryManager = AggregateDataQueryManagerSingleton.getInstance();
+        let aggDataQueryManager = AggregateDataQueryManager.getInstance();
         if (!isExpanded) {
             let command = {
                 "command": "sow_and_subscribe",
@@ -200,8 +200,10 @@ export default class TableController {
                 "orderBy": "/product",
             };
             let filterValuesArray = this.groupingColumnsByLevel.map((item) => {
-                let value = this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[item], aggRowData.groupData);
-                return `/${item}=='${value}'`;
+                let key = this.appDataModel.dataKeysJsonpathMapper[item];
+                let value = this.getJsonValAtPath(key, aggRowData.groupData);
+
+                return `${key}=='${value}'`;
             });
             let filterString = filterValuesArray.join(' AND ');
             command.filter = filterString;
@@ -244,6 +246,7 @@ export default class TableController {
         // this.appDataModel.setGroupColumnKeyMapper(undefined);
         this.clearArray(this.appDataModel.getGroupedViewData());
         this.appDataModel.setGroupedViewData(undefined);
+        this.clearArray(this.groupingColumnsByLevel);
     }
 
     clearArray(array) {
@@ -282,7 +285,7 @@ export default class TableController {
             this.appDataModel.removeSelectedRow(indexValue);
         }
 
-        // update the UI for the selected row      
+        // update the UI for the selected row
         this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, indexValue);
     }
 
@@ -292,7 +295,7 @@ export default class TableController {
         let dataForSelectedRow = childRows.get(rowIndexValue);
         
         // let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
-        const id = dataForSelectedRow.data.vertex;
+        const id = dataForSelectedRow.data.Vertex;
         let parentNodeData, parentNodeSources, childNodesArray;
 
         this.graphQueryController.unsubscribeParentNodeData();
@@ -331,14 +334,12 @@ export default class TableController {
         commandObject.bookmark = bookmark;
         console.log(commandObject);
 
-        this.ampsSubscribe(temporalDatacommandObject);
+        // this.ampsSubscribe(temporalDatacommandObject);
 
-
-
-        // let subController = new GroupSubscriptionController(this, ['product'], commandObject);
-        // this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
-        //     subController.groupingSubscriptionDetailsHandler.bind(subController),
-        //     commandObject);
+        let subController = new GroupSubscriptionController(this, ['product'], commandObject);
+        this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
+            subController.groupingSubscriptionDetailsHandler.bind(subController),
+            commandObject);
     }
 
     getBookmarkInPast(minutesInPast) {
