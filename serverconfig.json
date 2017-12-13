@@ -1,0 +1,17 @@
+{
+    "Hyderabad": {
+        "serverIP": "182.71.244.27",
+        "serverPort": "9008",
+        "active": true
+    },
+    "Charlotte": {
+        "serverIP": "",
+        "serverPort": "9008",
+        "active": false
+    },
+    "Personal": {
+        "serverIP": "",
+        "serverPort": "9008",
+        "active": false
+    }
+}

@@ -21,11 +21,9 @@ class TableAggregatedRow extends React.Component {
 
         this.dynamicBackgroundColor = undefined;
         this.handleRowClick = this.handleRowClick.bind(this);
-        // this.displayBucketData = this.displayBucketData.bind(this);
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps);
         this.setState({
             data: nextProps.data,
             columnOrder: nextProps.columnKeyValues,
@@ -35,7 +33,6 @@ class TableAggregatedRow extends React.Component {
 
     handleRowClick(e) {
         e.preventDefault();
-        // this.setState({ showBucketData: !this.state.showBucketData })
         this.props.updateAggregatedRowExpandStatus(this.props.aggregatedRowKey);
         this.setState({expandStatus: !this.state.expandStatus});
     }

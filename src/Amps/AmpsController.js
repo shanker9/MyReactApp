@@ -1,8 +1,18 @@
 import * as Amps from 'amps';
+import serverconfig from '../../serverconfig.json';
 
-// var ampsServerUri = "ws://192.168.0.138:9008/amps/json";
-var ampsServerUri = "ws://182.71.244.27:9008/amps/json";
-// var ampsServerUri = "ws://10.0.0.4:9008/amps/json";
+var targetConfig 
+for(var item in serverconfig){
+    if(serverconfig[item].active){
+        targetConfig = serverconfig[item];
+        break;
+    }
+}
+
+var ip = targetConfig.serverIP;
+var port = targetConfig.serverPort;
+
+var ampsServerUri = `ws://${ip}:${port}/amps/json`;
 var ampsClient = new Amps.Client(`AmpsWebClient-${Date.now()}`);
 var i = 0;
 
@@ -19,7 +29,6 @@ var AmpsControllerSingleton = (function () {
         }
     }
 })();
-
 
  class AmpsController {
 

@@ -144,19 +144,11 @@ class TableView extends React.Component {
         this.updateAggregatedRowExpandStatus = this.updateAggregatedRowExpandStatus.bind(this);
     }
 
-    componentWillMount() {
-
-    }
-
     componentDidMount() {
-        this.controller = new TableController(this, this.subscriptionTopic);        
+        this.controller = new TableController(this, this.subscriptionTopic);
         // this.makeDefaultSubscription();
         this.makeGroupSubscription('name');
     }
-
-    componentDidUpdate() {
-    }
-
 
     /*** EventHandler for scrolling of Tabledata ***/
     scrollEventHandler() {
@@ -250,26 +242,6 @@ class TableView extends React.Component {
         this.setState(this.controller.getGroupedViewData(startIndex, endIndex, this.props.rowHeight, this.state.isGroupedView));
     }
 
-
-    /** ROW DATA UI UPDATE HANDLER **/
-    rowUpdate(data, selectState, rowReference) {
-        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
-        if (rowElem != undefined) {
-            rowElem.triggerUpdate(data, selectState);
-        }
-    }
-
-    aggRowUpdate(data, rowReference) {
-        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
-        if (rowElem != undefined) {
-            rowElem.triggerUpdate(data);
-        }
-    }
-
-    updateAggregatedRowExpandStatus(groupKey) {
-        this.controller.updateGroupExpansionStatus(groupKey);
-    }
-
     clearGrouping() {
         this.controller.clearGroupSubscriptions();
         this.controller.clearArray(this.controller.groupingColumnsByLevel);
@@ -300,13 +272,36 @@ class TableView extends React.Component {
         }
     }
 
-    selectionDataUpdateHandler(rowIndexValue,parentRowKey, event) {
-        this.controller.updateRowSelectionData(rowIndexValue,parentRowKey);
-        this.updateGraphData(rowIndexValue,parentRowKey);
+    selectionDataUpdateHandler(rowIndexValue, parentRowKey, event) {
+        this.controller.updateRowSelectionData(rowIndexValue, parentRowKey);
+        this.updateGraphData(rowIndexValue, parentRowKey);
     }
 
-    updateGraphData(rowIndexValue,parentRowKey) {
-        this.controller.fetchAndFormatGraphData(rowIndexValue,parentRowKey,(updateData) => {
+    /** ROW UPDATE HANDLER **/
+
+    rowUpdate(data, selectState, rowReference) {
+        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
+        if (rowElem != undefined) {
+            rowElem.triggerUpdate(data, selectState);
+        }
+    }
+
+    aggRowUpdate(data, rowReference) {
+        let rowElem = this.refs.gridViewRef.refs['ref' + rowReference];
+        if (rowElem != undefined) {
+            rowElem.triggerUpdate(data);
+        }
+    }
+
+    updateAggregatedRowExpandStatus(groupKey) {
+        this.controller.updateGroupExpansionStatus(groupKey);
+    }
+
+
+    /** GRAPH METHODS **/
+
+    updateGraphData(rowIndexValue, parentRowKey) {
+        this.controller.fetchAndFormatGraphData(rowIndexValue, parentRowKey, (updateData) => {
             this.props.graphTreeComponentReference().updateParentNodeData(updateData);
         });
     }
@@ -315,17 +310,19 @@ class TableView extends React.Component {
         this.props.graphTreeComponentReference().updateGraphData(graphData);
     }
 
+    /** TEMPORAL METHODS **/
+
     sliderChangeHandler(e) {
         console.dir(15 - e.value);
         this.changeSliderValue(e.value);
         this.controller.getDataAtBeforeMins(15 - e.value);
     }
 
-    changeSliderValue(value){
+    changeSliderValue(value) {
         this.sliderValue = value;
     }
 
-    getLivePrices(){
+    getLivePrices() {
         this.changeSliderValue(15);
         // this.makeDefaultSubscription();
         this.makeGroupSubscription('name');
