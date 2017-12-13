@@ -127,8 +127,13 @@ class AppDataModel {
     clearSelectedRows() { this.selectedRows.clear() };
     clearSelectionStateData() {
         this.selectedRows.forEach((item, key) => {
-            this.getDataFromDefaultData(key).isSelected = false;
+            if(item.hasOwnProperty('aggRowKey')){
+                let childRows = this.getDataFromGroupedData(item.aggRowKey).bucketData;
+                let dataForSelectedRow = childRows.get(item.rowID);
+                dataForSelectedRow.isSelected = false;
+            }
         })
+        this.clearSelectedRows();        
     }
 
     /** groupedData methods */

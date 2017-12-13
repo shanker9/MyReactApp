@@ -273,8 +273,8 @@ class TableView extends React.Component {
     }
 
     selectionDataUpdateHandler(rowIndexValue, parentRowKey, event) {
-        this.controller.updateRowSelectionData(rowIndexValue, parentRowKey);
-        this.updateGraphData(rowIndexValue, parentRowKey);
+        this.controller.updateRowSelectionData(rowIndexValue, parentRowKey, this.state.isGroupedView);
+        this.updateGraphData(rowIndexValue, parentRowKey, this.state.isGroupedView);
     }
 
     /** ROW UPDATE HANDLER **/
@@ -300,8 +300,8 @@ class TableView extends React.Component {
 
     /** GRAPH METHODS **/
 
-    updateGraphData(rowIndexValue, parentRowKey) {
-        this.controller.fetchAndFormatGraphData(rowIndexValue, parentRowKey, (updateData) => {
+    updateGraphData(rowIndexValue, parentRowKey, isGroupedView) {
+        this.controller.fetchAndFormatGraphData(rowIndexValue, parentRowKey, isGroupedView, (updateData) => {
             this.props.graphTreeComponentReference().updateParentNodeData(updateData);
         });
     }
@@ -315,7 +315,7 @@ class TableView extends React.Component {
     sliderChangeHandler(e) {
         console.dir(15 - e.value);
         this.changeSliderValue(e.value);
-        this.controller.getDataAtBeforeMins(15 - e.value);
+        this.controller.getDataAtBeforeMins(15 - e.value,this.state.isGroupedView);
     }
 
     changeSliderValue(value) {

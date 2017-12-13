@@ -209,9 +209,9 @@ export default class TableController {
             let filterValuesArray = this.groupingColumnsByLevel.map((item) => {
                 let key = this.appDataModel.dataKeysJsonpathMapper[item];
                 let value = this.getJsonValAtPath(key, aggRowData.groupData);
-                if(value==null){
+                if (value == null) {
                     return `(${key} NOT LIKE '.')`
-                }else{
+                } else {
                     return `${key}=='${value}'`;
                 }
             });
@@ -267,12 +267,17 @@ export default class TableController {
 
     /** DATA ROW SELECTION */
 
-    updateRowSelectionData(indexValue,parentRowKey) {
-        this.appDataModel.clearSelectionStateData();
+    updateRowSelectionData(indexValue, parentRowKey, isGroupedView) {
+        // this.appDataModel.clearSelectionStateData();
         // Updating selectionstate in the rowData for later use in lazyloading
-        let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
-        let childRows = parentDataofSelectedRow.bucketData;
-        let dataForSelectedRow = childRows.get(indexValue);
+        let dataForSelectedRow;
+        if (isGroupedView) {
+            let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
+            let childRows = parentDataofSelectedRow.bucketData;
+            dataForSelectedRow = childRows.get(indexValue);
+        } else {
+            dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
+        }
 
         // let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(indexValue);
         if (dataForSelectedRow != undefined) {
@@ -284,8 +289,14 @@ export default class TableController {
         //deselecting selected Rows
         let selectedRows = this.appDataModel.getSelectedRows();
         selectedRows.forEach((item, key) => {
-            let dataFromDataMap = this.appDataModel.getDataFromDefaultData(key);
-            this.updateUIRowWithData(dataFromDataMap.data, dataFromDataMap.isSelected, key);
+            if (item.hasOwnProperty('aggRowKey')) {
+                let childRows = this.appDataModel.getDataFromGroupedData(item.aggRowKey).bucketData;
+                let dataForSelectedRow = childRows.get(item.rowID);
+                dataForSelectedRow.isSelected = false;
+                this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, key);
+            }
+
+            // let dataFromDataMap = this.appDataModel.getDataFromDefaultData(key);
         })
 
         // updating selectedRows data
@@ -299,13 +310,22 @@ export default class TableController {
         this.updateUIRowWithData(dataForSelectedRow.data, dataForSelectedRow.isSelected, indexValue);
     }
 
-    fetchAndFormatGraphData(rowIndexValue,parentRowKey,graphUpdateCallback) {
-        let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
-        let childRows = parentDataofSelectedRow.bucketData;
-        let dataForSelectedRow = childRows.get(rowIndexValue);
-        
+    fetchAndFormatGraphData(rowIndexValue, parentRowKey, isGroupedView, graphUpdateCallback) {
+        let dataForSelectedRow;
+        if (isGroupedView) {
+            let parentDataofSelectedRow = this.appDataModel.getDataFromGroupedData(parentRowKey);
+            let childRows = parentDataofSelectedRow.bucketData;
+            dataForSelectedRow = childRows.get(rowIndexValue);
+        } else {
+            dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
+        }
+
         // let dataForSelectedRow = this.appDataModel.getDataFromDefaultData(rowIndexValue);
         const id = dataForSelectedRow.data.Vertex;
+        if (id == null) {
+            this.graphQueryController.unsubscribeParentNodeData();
+            return;
+        }
         let parentNodeData, parentNodeSources, childNodesArray;
 
         this.graphQueryController.unsubscribeParentNodeData();
@@ -329,7 +349,7 @@ export default class TableController {
 
     /* TEMPORAL METHODS */
 
-    getDataAtBeforeMins(minutesInPast) {
+    getDataAtBeforeMins(minutesInPast, isGroupedView) {
         let bookmark = this.getBookmarkInPast(minutesInPast);
         let temporalDatacommandObject = {
             "command": "sow",
@@ -343,13 +363,16 @@ export default class TableController {
         commandObject.command = 'sow';
         commandObject.bookmark = bookmark;
         console.log(commandObject);
+        if (isGroupedView) {
+            let subController = new AggregateSubscriptionController(this, ['name'], commandObject);
+            this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
+                subController.groupingSubscriptionDetailsHandler.bind(subController),
+                commandObject);
+        } else {
+            this.ampsSubscribe(temporalDatacommandObject);
+        }
 
-        // this.ampsSubscribe(temporalDatacommandObject);
 
-        let subController = new AggregateSubscriptionController(this, ['name'], commandObject);
-        this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
-            subController.groupingSubscriptionDetailsHandler.bind(subController),
-            commandObject);
     }
 
     getBookmarkInPast(minutesInPast) {
