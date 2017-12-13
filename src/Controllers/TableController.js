@@ -24,13 +24,17 @@ export default class TableController {
 
     /** FOR DEFAULT VIEW DATA SUBSCRIPTION */
     ampsSubscribe(commandObject, columnName) {
-        let subController = new SubscriptionController(this);
+        let subController = new SubscriptionController(this,this.updateUIWithDefaultViewData.bind(this),this.rowUpdate.bind(this));
         this.ampsController.connectAndSubscribe(subController.defaultSubscriptionDataHandler.bind(subController),
             (subId) => {
                 this.livedatasubscriptionId = subId;
                 this.livedatasubscriptionCommmandCache = commandObject;
             },
             commandObject, columnName);
+    }
+
+    rowUpdate(rowObject, isAggregatedView) {
+        isAggregatedView ? this.updateRowDataInGroupedData(rowObject) : this.updateUIRowWithData(rowObject.data, rowObject.isSelected, rowObject.rowID);
     }
 
     unsubscribe(subscriptionId, successCallback, subscriptionColumnReference) {
@@ -57,7 +61,7 @@ export default class TableController {
         let columnValue = this.groupingColumnsByLevel.map((val, k) => this.getJsonValAtPath(this.appDataModel.dataKeysJsonpathMapper[val], message.data)).join('-');
         let groupKey = columnKeyMapper.get(columnValue);
         let groupData = this.appDataModel.getDataFromGroupedData(groupKey);
-        let existingData = groupData.bucketData.get(message.k);
+        let existingData = groupData.bucketData.get(message.rowID);
         existingData.data = message.data;
     }
 
