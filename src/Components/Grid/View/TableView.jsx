@@ -328,7 +328,7 @@ class TableView extends React.Component {
     getLivePrices(){
         this.changeSliderValue(15);
         // this.makeDefaultSubscription();
-        this.makeGroupSubscription('product');
+        this.makeGroupSubscription('name');
     }
 
     render() {

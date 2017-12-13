@@ -125,10 +125,10 @@ export default class TableController {
 
         let groupingColumnsJsonpathArray = groupingColumnsCopy.map(item => this.getJSONPathForColumnKey(item));
         let nonNumericColumnsJsonpathArray = nonNumericColumns.map(item => this.getJSONPathForColumnKey(item));
-        // let dateValueColumnsJsonpathArray = dateValueColumns.map(item => this.getJSONPathForColumnKey(item));
+        let dateValueColumnsJsonpathArray = dateValueColumns.map(item => this.getJSONPathForColumnKey(item));
         let aggregateColumnsJsonpathArray = numericValueColumns.map(item => this.getJSONPathForColumnKey(item));
 
-        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray, nonNumericColumnsJsonpathArray);
+        let projectionsArray = groupingColumnsJsonpathArray.concat(aggregateColumnsJsonpathArray, nonNumericColumnsJsonpathArray, dateValueColumnsJsonpathArray);
         projectionsArray.sort();
 
         projectionsArray = projectionsArray.map(path => {
@@ -136,6 +136,13 @@ export default class TableController {
                 return `SUM(${path}) AS ${path}`;
             } else {
                 return `${path}`;
+            }
+        });
+        projectionsArray = projectionsArray.map(projection => {
+            if (projection === dateValueColumnsJsonpathArray[0]) {
+                return `MAX(${projection}) AS ${projection}`;
+            } else {
+                return `${projection}`;
             }
         });
 
@@ -202,8 +209,11 @@ export default class TableController {
             let filterValuesArray = this.groupingColumnsByLevel.map((item) => {
                 let key = this.appDataModel.dataKeysJsonpathMapper[item];
                 let value = this.getJsonValAtPath(key, aggRowData.groupData);
-
-                return `${key}=='${value}'`;
+                if(value==null){
+                    return `(${key} NOT LIKE '.')`
+                }else{
+                    return `${key}=='${value}'`;
+                }
             });
             let filterString = filterValuesArray.join(' AND ');
             command.filter = filterString;
@@ -336,7 +346,7 @@ export default class TableController {
 
         // this.ampsSubscribe(temporalDatacommandObject);
 
-        let subController = new GroupSubscriptionController(this, ['product'], commandObject);
+        let subController = new AggregateSubscriptionController(this, ['name'], commandObject);
         this.ampsController.connectAndSubscribe(subController.groupingSubscriptionDataHandler.bind(subController),
             subController.groupingSubscriptionDetailsHandler.bind(subController),
             commandObject);

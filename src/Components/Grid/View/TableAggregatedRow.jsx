@@ -24,6 +24,15 @@ class TableAggregatedRow extends React.Component {
         // this.displayBucketData = this.displayBucketData.bind(this);
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps);
+        this.setState({
+            data: nextProps.data,
+            columnOrder: nextProps.columnKeyValues,
+            expandStatus : nextProps.selectState
+        })
+    }
+
     handleRowClick(e) {
         e.preventDefault();
         // this.setState({ showBucketData: !this.state.showBucketData })
